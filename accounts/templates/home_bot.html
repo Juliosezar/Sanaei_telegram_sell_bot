@@ -1,0 +1,119 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "base_head.html" %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'home_page.css' %}">
+    <script>
+        $(document).ready(function() {
+            $('#create_config_box').hide()
+            $('#list_config_box').hide()
+            $('#create_config').click(function () {
+                $('#main').hide()
+                $('#create_config_box').show()
+                }
+            )
+            $('#list_config').click(function () {
+                $('#main').hide()
+                $('#list_config_box').show()
+                }
+            )
+            $('.close_btn').click(function () {
+                $('#create_config_box').hide()
+                $('#list_config_box').hide()
+                $('#main').show()
+            })
+        });
+    </script>
+
+</head>
+
+<body dir="rtl">
+
+    <header dir="ltr" class="header">
+    <h1 class="logo"><a id="logo" href="{% url 'accounts:home_bot' %}">NapsV Telegram BOT</a></h1>
+    <ul class="main-nav">
+        <div class="dropdown www">
+            <h3 dir="rtl" class="dropbtn" id="user boxx" >
+                <div class="boz">
+                    <span id="username">{{ user.username }}</span>
+                    <img id="usericon" src="{% static "img/user.png" %}" alt="user">
+                </div>
+            </h3>
+            <div class="dropdown-content">
+                <a href="{% url 'accounts:logout' %}">خروج از حساب</a>
+            </div>
+        </div>
+        <li id="cahnge_li" ><a  class="www" id="home change_a" href='{% url 'accounts:home_sellers' %}'><img
+                src="{% static "img/change.png" %}" id="usericon" alt=""> Panel</a></li>
+
+        <style>
+            #cahnge_li {
+                display: flex;
+                flex-direction: row;
+                width:35vw;
+                justify-content:space-around;
+                align-content: center;
+                align-items: center;
+                justify-items: center;
+                padding: 0;
+            }
+            #change_a {
+                width: max-content;
+                padding: 0.6rem 0;
+                margin: 0;
+                align-content: center;
+                display:flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                text-align: center
+            }
+        </style>
+        <li class="hidephone"><a class="www" href="" id="action_create_config">ساخت کانفیگ</a></li>
+        <li class="hidephone"><a class="www" href="" id="action_list_config">لیست کانفیگ ها</a></li>
+    </ul>
+</header>
+    {% include 'messages.html' %}
+    <div id="main">
+        <div id="box1">
+            <div id="searchbox">
+                <form novalidate action="" class="serch_box_inside" method="post">
+                    {% csrf_token %}
+                    <img class="search_img" src="{% static 'img/search-config.png' %}" alt="search">
+                    {{ search_config.search_config }}
+                    <input class="input_btn submit_btn" type="submit" value="🔍">
+                </form>
+                <form novalidate action="" class="serch_box_inside" method="post">
+                    {% csrf_token %}
+                    <img class="search_img" src="{% static 'img/search-user.png' %}" alt="search">
+                    {{ search_user.search_user }}
+                    <input class="input_btn submit_btn" type="submit" value="🔍">
+                </form>
+            </div>
+            <a href="" class="links link2" id="pay_confirm">✅ تایید پرداخت 💳</a>
+            <a href="" class="links link2">➕ ساخت کانفیگ 🔗</a>
+            <a href="" class="links link2">📋 لیست کانفیگ ها 🔗</a>
+            <a href="" class="links" id="servers">🌐 سرور ها 📶</a>
+            <a href="" class="links" id="setting">📑 Status 📶</a>
+            <a href="" class="links" id="customers">👥 مشتری ها 🤖</a>
+{#            <a href="{% url "reports:admin_logs" %}" class="links" id="setting">🗃️ Admin Log 👨🏻‍🔧</a>#}
+{#            <a href="{% url "reports:pay_logs" %}" class="links" id="setting">🗃️ Pays Log 💰</a>#}
+{#            <a href="{% url "reports:celery_delete_conf_logs" %}" class="links" id="setting">🗃️ Celery Log 🗑</a>#}
+{#            <a href="{% url "reports:send_msgs_log" %}" class="links" id="setting">🗃️ MSG Log 📨</a>#}
+            <a href="" class="links" id="message">️📝 پیام همگانی 📨</a>
+            <a href="" class="links" id="tarefeh">💰 تعرفه ها 🛒</a>
+{#            <a href="{% url "reports:reports" %}" class="links" id="report">📊 گزارشات 📈</a>#}
+            <a href="" class="links" id="tarefeh">💲 کد تخفیف 🆓</a>
+            <a href="" class="links" id="setting">⚙️ تنظیمات 🛠️</a>
+            <a href="" class="links" id="setting">💻 Apps 📱️</a>
+{#            <a href="" class="links" id="setting">❗️ Errors ❗️</a>#}
+        </div>
+    </div>
+
+
+{% include "loading.html" %}
+</body>
+</html>

@@ -1,0 +1,66 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "base_head.html" %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'create_form.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bot_config/create_config.css' %}">
+</head>
+<body>
+{% include "navbar_sellers.html" %}
+{% include 'messages.html' %}
+<div id="main">
+    <div id="zx">
+    </div>
+        <form novalidate action="" method="post" dir="rtl">
+            {% for field_errors in form.errors.values %}
+              {% for error in field_errors %}
+                  <p dir="rtl" class="errors">{{ error }}</p>
+              {% endfor %}
+            {% endfor %}
+        {% if edit %}
+            <h3 id="title">ویرایش / {{ usernamr }}</h3>
+        {% else %}
+            <h3 id="title">فروشنده جدید</h3>
+        {% endif %}
+
+            {% csrf_token %}
+
+            <div class="textinput item"><h3 class="item_text">یوزرنیم:</h3>{{ form.username }}</div>
+            <div class="textinput item"><h3 class="item_text">پسوورد:</h3>{{ form.password }}</div>
+            {% if edit %}
+            <script>
+                $(document).ready(function() {
+                    $("#id_username").prop("disabled", true);
+                    $("#id_password").prop("disabled", true);
+                });
+            </script>
+            {% endif %}
+            <div id="time_limit" class="textinput item"><h3 class="item_text">نقش : </h3>{{ form.level_access }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">محدودیت خرید : </h3>{{ form.payment_limit }} هزار تومان / 0 = بدون محدودیت</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">بات تلگرام : </h3>{{ form.bot }}</div>
+            <hr style="color: #000d3f;background-color: #000d3f">
+            <h3 id="title" style="font-size: large">دسترسی ها</h3>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">قیمت و صورتحساب : </h3>{{ form.finanace_access }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">ساخت کانفیگ : </h3>{{ form.create_config_acc }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">لیست کانفیگ : </h3>{{ form.list_configs_acc }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">حذف کانفیگ : </h3>{{ form.delete_config_acc }}</div>
+            <input id="create" class="submit_btn" type="submit" value="Create">
+        </form>
+    </div>
+<style>
+    #id_finanace_access,
+    #id_create_config_acc,
+    #id_list_configs_acc,
+    #id_delete_config_acc{
+        width: 1.2rem ;
+        height: 1.2rem;
+    }
+</style>
+{% include "loading.html" %}
+
+</body>
+</html>

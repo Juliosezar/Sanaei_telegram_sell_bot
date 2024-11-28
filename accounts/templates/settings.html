@@ -1,0 +1,42 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "base_head.html" %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'create_form.css' %}">
+</head>
+<body>
+{% include "navbar_bot.html" %}
+{% include 'messages.html' %}
+<div id="main">
+        <form novalidate action="" method="post" dir="rtl">
+            {% for field_errors in form.errors.values %}
+              {% for error in field_errors %}
+                  <p dir="rtl" class="errors">{{ error }}</p>
+              {% endfor %}
+            {% endfor %}
+            <h3 id="title">تنظیمات</h3>
+            {% csrf_token %}
+            <div id="time_limit" class="textinput item"><h3 class="item_text">شماره کارت : </h3>{{ form.card_number }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">اسم کارت : </h3>{{ form.card_name }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text"> محدودیت حجم 1 کاربره 1 ماهه: </h3>{{ form.U1_1M }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text"> محدودیت حجم 1 کاربره 2 ماهه: </h3>{{ form.U1_2M }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text"> محدودیت حجم 1 کاربره 3 ماهه: </h3>{{ form.U1_3M }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text"> محدودیت حجم 2 کاربره 1 ماهه: </h3>{{ form.U2_1M }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text"> محدودیت حجم 2 کاربره 2 ماهه: </h3>{{ form.U2_2M }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text"> محدودیت حجم 2 کاربره 3 ماهه: </h3>{{ form.U2_3M }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">msg_id تعرقه ها : </h3>{{ form.prices_msg_id }}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text"> شمارنده اسم کانفیگ : </h3>{{ form.config_name_counter }}</div>
+            <h4 style="font-size: large">👆🏻 دست به این نزنید. </h4>
+
+
+            <input id="create" type="submit" value="Change">
+        </form>
+    </div>
+{% include "loading.html" %}
+
+</body>
+</html>

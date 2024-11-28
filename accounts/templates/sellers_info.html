@@ -1,0 +1,65 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fa" class="no-js">
+	<head>
+		<title>List Configs</title>
+        {% include "base_head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'component.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'bot_finance/surathesab_page.css' %}"/>
+    </head>
+	<body dir="ltr">
+        {% include "navbar_sellers.html" %}
+        {% include 'messages.html' %}
+        <div id="main">
+            <div class="addbox">
+                <a href="{% url 'accounts:add_seller' %}" class="addprice">➕ جدید</a>
+            </div>
+            <h3 dir="auto" id="counter">فروشنده ها</h3>
+            <div class="xcontainer">
+		    		<table class="overflow-y">
+		    			<thead>
+		    				<tr>
+                                <th>Username</th>
+                                <th>نقش</th>
+                                <th>محدودیت خرید</th>
+                                <th>بات تلگرام</th>
+                                <th>قیمت و صورتحساب</th>
+                                <th>ساخت کانفیگ</th>
+                                <th>لیست کانفیگ</th>
+                                <th>حذف کانفیگ</th>
+
+                            </tr>
+		    			</thead>
+		    			<tbody>
+                        {% for seller in user_obj %}
+                            {% if not seller.level_access == 10 %}
+		    				<tr>
+                                <td><a href="{% url "accounts:edit_seller" seller.id %}">{{ seller.username }}</a></td>
+
+                                <td>{% if seller.level_access == 0%}فروشنده{% else %}عمده فروش{% endif %}</td>
+                                <td>{{ seller.payment_limit|price }} T</td>
+                                <td>{{ seller.bot.name }}</td>
+                                <td>{% if seller.finanace_access %}✅{% else %}⛔{% endif %}</td>
+                                <td>{% if seller.create_config_acc %}✅{% else %}⛔{% endif %}</td>
+                                <td>{% if seller.list_configs_acc %}✅{% else %}⛔{% endif %}</td>
+                                <td>{% if seller.delete_config_acc %}✅{% else %}⛔{% endif %}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+		    			</tbody>
+		    		</table>
+            </div>
+
+
+        </div>
+
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script src={% static "js/list.js" %}></script>
+	</body>
+
+{% include "loading.html" %}
+
+</html>
