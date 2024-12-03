@@ -5,49 +5,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/SanaeiBot.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/highlightedFiles.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SanaeiBot/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SanaeiBot/asgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SanaeiBot/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SanaeiBot/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SanaeiBot/wsgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/managers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/0001_initial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/add_seller.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/add_vpn_app.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/home_bot.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/home_sellers.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/log_in.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/register_user.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/sellers_info.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/settings.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/show_apps.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requierments.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SanaeiBot/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/SanaeiBot/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SanaeiBot/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/SanaeiBot/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/telbot/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/commands.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/telbot/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/telbot/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/telbot/migrations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/signals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/telbot/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/telbot/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/telbot/views.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/bot/commands.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/bot/views.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -63,6 +56,7 @@
     &quot;Django Server.SanaeiBot.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/sezar/projects/SanaeiBot&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -70,6 +64,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -125,7 +120,10 @@
       <option name="presentableId" value="Default" />
       <updated>1732707890432</updated>
       <workItem from="1732707891789" duration="2323000" />
-      <workItem from="1732810956027" duration="397000" />
+      <workItem from="1732810956027" duration="4492000" />
+      <workItem from="1733075780682" duration="5449000" />
+      <workItem from="1733145394549" duration="22516000" />
+      <workItem from="1733250632470" duration="241000" />
     </task>
     <servers />
   </component>

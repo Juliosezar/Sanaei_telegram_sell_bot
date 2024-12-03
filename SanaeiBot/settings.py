@@ -33,6 +33,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'compressor',
     'accounts.apps.AccountsConfig',
+    'configs.apps.ConfigsConfig',
+    'customers.apps.CustomersConfig',
+    'finance.apps.FinanceConfig',
+    'logs.apps.LogsConfig',
+    'sellers.apps.SellersConfig',
+    'servers.apps.ServersConfig',
+    'bot.apps.BotConfig',
+    'side_bot.apps.SideBotConfig',
 ]
 
 MIDDLEWARE = [
