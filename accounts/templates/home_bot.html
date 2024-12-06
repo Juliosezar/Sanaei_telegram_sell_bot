@@ -86,19 +86,19 @@
                     {{ search_config.search_config }}
                     <input class="input_btn submit_btn" type="submit" value="🔍">
                 </form>
-                <form novalidate action="" class="serch_box_inside" method="post">
+                <form novalidate action="{% url "customers:custumers_list" %}" class="serch_box_inside" method="post">
                     {% csrf_token %}
                     <img class="search_img" src="{% static 'img/search-user.png' %}" alt="search">
-                    {{ search_user.search_user }}
+                    {{ search_customer.search_user }}
                     <input class="input_btn submit_btn" type="submit" value="🔍">
                 </form>
             </div>
-            <a href="" class="links link2" id="pay_confirm">✅ تایید پرداخت 💳</a>
+            <a href="{% url "finance:confirm_payments" 1 %}" class="links link2" id="pay_confirm">✅ تایید پرداخت 💳</a>
             <a href="" class="links link2">➕ ساخت کانفیگ 🔗</a>
             <a href="" class="links link2">📋 لیست کانفیگ ها 🔗</a>
-            <a href="" class="links" id="servers">🌐 سرور ها 📶</a>
+            <a href="{% url "servers:show_servers" %}" class="links" id="servers">🌐 سرور ها 📶</a>
             <a href="" class="links" id="setting">📑 Status 📶</a>
-            <a href="" class="links" id="customers">👥 مشتری ها 🤖</a>
+            <a href="{% url "customers:custumers_list" %}" class="links" id="customers">👥 مشتری ها 🤖</a>
 {#            <a href="{% url "reports:admin_logs" %}" class="links" id="setting">🗃️ Admin Log 👨🏻‍🔧</a>#}
 {#            <a href="{% url "reports:pay_logs" %}" class="links" id="setting">🗃️ Pays Log 💰</a>#}
 {#            <a href="{% url "reports:celery_delete_conf_logs" %}" class="links" id="setting">🗃️ Celery Log 🗑</a>#}

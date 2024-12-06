@@ -5,20 +5,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/configs/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/configs/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customers/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customers/templates/Custumer_details.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customers/templates/change_wallet.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customers/templates/list_custumers.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customers/templates/register_conf_for_customer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customers/templates/send_msg_to_all.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customers/templates/send_msg_to_custumer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customers/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/base_head.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/loading.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/messages.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/navbar_bot.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/navbar_sellers.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/subsellers_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/highlightedFiles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/highlightedFiles.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SanaeiBot/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/SanaeiBot/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SanaeiBot/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/SanaeiBot/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customers/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/home_bot.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_bot.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bot/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/commands.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/finance/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telbot/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/commands.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telbot/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/telbot/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/telbot/migrations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/signals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/telbot/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/telbot/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/telbot/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,31 +63,40 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2pQovRL6jjeg0tHUStM0vhrbSFN" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Django Server.SanaeiBot.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/sezar/projects/SanaeiBot&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Django Server.SanaeiBot.executor": "Run",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
+    "django.template.preview.state": "SHOW_EDITOR",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/sezar/projects/SanaeiBot/finance",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/finance" />
+      <recent name="$PROJECT_DIR$/servers" />
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/customers" />
+      <recent name="$PROJECT_DIR$/side_bot" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -124,6 +150,9 @@
       <workItem from="1733075780682" duration="5449000" />
       <workItem from="1733145394549" duration="22516000" />
       <workItem from="1733250632470" duration="241000" />
+      <workItem from="1733250898169" duration="4449000" />
+      <workItem from="1733315323746" duration="3417000" />
+      <workItem from="1733412473036" duration="10178000" />
     </task>
     <servers />
   </component>

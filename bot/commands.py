@@ -204,7 +204,7 @@ class CommandRunner:
             cls.send_msg(chat_id,"پرداخت شما ثبت شد. \n لطفا منتظر باشید تا پرداخت شما توسط ادمین تایید شود.")
             cls.main_menu(chat_id)
         else:
-            cls.send_msg(chat_id, "مشکل در دریافت تصویر")
+            cls.send_msg(chat_id, "مشکل در دریافت تصویر / لطفا دقایقی دیگر دوباره امتحان کنید.")
             BotPayment.objects.get(customer=Customer.objects.get(chat_id=chat_id),status=-1).delete()
 
 
@@ -501,13 +501,13 @@ class CommandRunner:
     @classmethod
     def get_pic_for_buy_config(cls, chat_id, file_id,*args):
         customer_temp = CustomerTmpStatus.objects.get(customer__chat_id=chat_id, status="waiting_for_pic_for_buy_config")
-        config = Prices.objects.get(id=customer_temp.values["price_obj_id"])
+        price_obj = Prices.objects.get(id=customer_temp.values["price_obj_id"])
         customer = Customer.objects.get(chat_id=chat_id)
         BotPayment.objects.create(
             customer=customer,
-            price=config.price - customer.wallet,
+            price=price_obj.price - customer.wallet,
             action=1,
-            action_id=config.id,
+            info={"config_price":price_obj.price, "usage_limit":price_obj.usage_limit, "expre_time":price_obj.expire_limit, "user_limit":price_obj.user_limit},
             status=-1
         ).save()
         if cls.download_photo(file_id, chat_id):

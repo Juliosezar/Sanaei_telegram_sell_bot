@@ -1,3 +1,13 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.views import View
 
-# Create your views here.
+
+class BotCreateConfigView(LoginRequiredMixin, View):
+    def get(self, request, type_):
+        pass
+
+
+class BotListConfigView(LoginRequiredMixin, View):
+    def get(self, request):
+        pass

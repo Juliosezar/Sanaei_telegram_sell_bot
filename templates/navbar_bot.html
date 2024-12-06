@@ -1,0 +1,21 @@
+{% load static %}
+
+<header dir="ltr" class="header">
+    <h1 class="logo"><a id="logo" href="{% url 'accounts:home_bot' %}">NapsV Telegram BOT</a></h1>
+    <ul class="main-nav">
+        <div class="dropdown www">
+            <h3 dir="rtl" class="dropbtn" id="user boxx" >
+                <div class="boz">
+                    <span id="username">{{ user.username }}</span>
+                    <img id="usericon" src="{% static "img/user.png" %}" alt="user">
+                </div>
+            </h3>
+            <div class="dropdown-content">
+                <a href="{% url 'accounts:logout' %}">خروج از حساب</a>
+            </div>
+        </div>
+        <li class="hidephone"><a class="www" id="home" href='{% url 'accounts:home_bot' %}'>صفحه اصلی</a></li>
+        <li class="hidephone"><a class="www" href="{% url "configs:bot_create_config" 0 %}" id="action_create_config">ساخت کانفیگ</a></li>
+        <li class="hidephone"><a class="www" href="{% url "configs:bot_list_config" %}" id="action_list_config">لیست کانفیگ ها</a></li>
+    </ul>
+</header>

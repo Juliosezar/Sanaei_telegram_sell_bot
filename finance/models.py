@@ -7,11 +7,12 @@ class BotPayment(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     price = models.IntegerField()
     action = models.IntegerField() # 0 => add wallet / 1 => buy / 2 => renew
-    action_id = models.IntegerField(default=-1) # price model id / config model id
+    info = models.JSONField(default=dict)
     image = models.ImageField(upload_to='payment_images/', blank=True, null=True)
     status = models.IntegerField()
     # -1 waiting for download pic / 0 waiting for firts confirm /
     # 1 first confirm / 2 second confirm / 9 deny confirm
+
 
 class Prices(models.Model):
     usage_limit = models.PositiveIntegerField()
@@ -31,6 +32,7 @@ class OffCodes(models.Model):
     for_infinit_usages = models.BooleanField()
     for_infinit_times = models.BooleanField()
     for_not_infinity = models.BooleanField()
+
 
 class UserActiveOffCodes(models.Model):
     off_code = models.ForeignKey(OffCodes, on_delete=models.CASCADE)

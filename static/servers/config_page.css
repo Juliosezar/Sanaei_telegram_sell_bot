@@ -1,0 +1,240 @@
+body {
+    font-family: "vazirmatn";
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(52, 73, 94, 0.18);
+}
+#conf_name {
+    margin: 3rem 0 1rem 0;
+    font-size: xx-large;
+}
+
+#main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.progressـusage_box {
+    width: 100%;
+}
+.centering {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+
+}
+
+.progress{
+    height: 1.5rem;
+    font-size: large;
+    width: 100%;
+}
+.green {
+    background-color: #4CAF50;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+}
+
+.orange {
+    background-color: #eedc68;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+}
+
+.red {
+    background-color: #ff4949;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+}
+
+.blue {
+    background-color: #49d5ff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+}
+
+.blue_infinite {
+    background-color: #2170fc;
+    padding: 0.8rem 1.5rem;
+    width: max-content;
+    border-radius: 25px;
+}
+#box1, #box2, #box0 {
+    background-color: #000d3f;
+    padding: 1rem;
+    box-shadow: black 0 0 10px 3px ;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 95%;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+    margin: 1rem 0;
+}
+
+.show_usage {
+    background-color: white;
+    box-shadow: #000000 0 0 10px 3px ;
+    margin: 1rem;
+    width: 30rem;
+    padding: 1rem;
+
+}
+
+.kdfj {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: space-around;
+    justify-items: center;
+    text-align: center;
+    width: max-content;
+}
+
+.safd {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: space-around;
+    width: 100%;
+}
+
+#u_reg {
+    background-color: white;
+    color: #000d3f;
+    padding: 0.2rem 0.8rem;
+    border-radius: 10px;
+    margin-right: 0.5rem;
+}
+.sys_limit {
+    background-color: #0048d5;
+    color: white;
+    padding: 0.3rem 1rem 0.1rem;
+    border-radius: 15px;
+    margin-top: 0.25rem;
+    font-size: large;
+    justify-content: center;
+    width: max-content;
+}
+
+#his {
+    font-size: xx-large;
+    margin-top: 1rem;
+}
+.show_time {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-items: center;
+    align-content: space-evenly;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: white;
+    box-shadow: #000000 0 0 10px 3px ;
+    margin: 1rem;
+    width: 30rem;
+    padding: 1rem;
+}
+
+.btnslist {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem 0;
+}
+.btn{
+        font-size: larger;
+}
+
+#box0 {
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.progressـusage {
+    width: 100%;
+}
+.time{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.c_info {
+    font-size: large;
+    margin: 0.5rem 1rem;
+    color: white;
+}
+.text_error {
+    color: white;
+    font-size: x-large;
+}
+
+.conf_btnsbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    /*background-color: #000609;*/
+        flex-wrap: wrap;
+    border-radius: 10px;
+}
+
+.conf_btnss{
+    width: 43%;
+    text-align: center;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    margin: 1rem 0.5rem;
+    background-color: #ececec;
+    color: #000d3f;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+
+img {
+    width: 2rem;
+}
+
+@media (max-width: 650px) {
+    #dis {
+        font-size: larger;
+    }
+    #his {
+        font-size: x-large;
+    }
+    .c_info {
+    font-size: large;
+}
+    .btn{
+        font-size: medium;
+}
+    .usage_text ,.expire_text {
+        font-size:  large;
+        margin: 0.25rem 0;
+}
+#conf_name {
+    margin: 1.5rem 0 0.5rem 0;
+    font-size: x-large;
+}
+.text_error {
+    font-size: large;
+}
+}
+
+@media (min-width: 1000px) {
+        #qr {
+    width: 30rem;
+}
+}

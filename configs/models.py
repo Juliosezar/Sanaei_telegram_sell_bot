@@ -10,8 +10,8 @@ class Service(models.Model):
     usage_limit = models.IntegerField(default=0)
     expire_time = models.BigIntegerField(default=0)
     user_limit = models.SmallIntegerField(default=0)
-    paid = models.BooleanField(default=False)
-
+    paid = models.BooleanField(default=True)
+    status = models.SmallIntegerField(default=0) # -1 creating / 0 Active / 1 disable / 2 Ended / 4 deleting
 
 
 class Config(models.Model):

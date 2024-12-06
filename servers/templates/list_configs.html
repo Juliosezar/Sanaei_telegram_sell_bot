@@ -1,0 +1,303 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fa" class="no-js">
+	<head>
+		<title>List Configs</title>
+        {% include "base_head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'servers/list_configs.css' %}" />
+    </head>
+	<body dir="ltr">
+    <script>
+    function confirmDelete(uuid, name, inbound_id) {
+        const result = confirm(" آیا از حذف کانفیگ " + name + " مطمئنید؟ " );
+        if (result) {
+            window.location.href = "/servers/delete_config/{{ server_id }}/"+ uuid + '/' + name + "/" + inbound_id;
+        }
+}
+    </script>
+    <script>
+        function togg() {
+            $("#Active").prop("checked", false);
+            $("#Ended").prop("checked", false);
+            $("#Disabled").prop("checked", false);
+            $("#All").prop("checked", false);
+            $(".ended").show();
+            $(".active").show();
+            $(".disabled").show();
+        }
+        $(document).ready(function() {
+            $("#All").prop("checked", true);
+            $("#All").click(function () {
+                $("#Active").prop("checked", false);
+                $("#Ended").prop("checked", false);
+                $("#Disabled").prop("checked", false);
+                $(".ended").show();
+                $(".active").show();
+                $(".disabled").show();
+            });
+
+            $("#Active").click(function () {
+                togg();
+                $("#Active").prop("checked", true);
+                $(".ended").hide();
+                $(".active").show();
+                $(".disabled").hide();
+            });
+
+            $("#Ended").click(function () {
+                togg();
+                $("#Ended").prop("checked", true);
+                $(".ended").show();
+                $(".active").hide();
+                $(".disabled").hide();
+            });
+            $("#Disabled").click(function () {
+                togg();
+                $("#Disabled").prop("checked", true);
+                $(".ended").hide();
+                $(".active").hide();
+                $(".disabled").show();
+            });
+
+        })
+    </script>
+
+
+        {% include "navbar.html" %}
+        {% include 'messages.html' %}
+        <div id="main">
+
+
+            <form action="" method="post">
+            {% csrf_token %}
+             <div id="searchbox">
+                <h3 id="textin" dir="rtl">{{ searchform.search }}</h3>
+                <input id="subbut" value="Search" class="submit_btn" type="submit">
+                 {% if searched == True %}
+                    <a id="comeback" href="{% url 'servers:list_configs' server_id %}">بازگشت</a>
+                 {% endif %}
+             </div>
+         </form>
+        <div id="filterbox">
+                    <div><input id="All" type="checkbox" value="All Configs" name="All"> <label for="All"> All Configs</label></div>
+                    <div><input id="Ended" type="checkbox" value="Ended" name="Ended"> <label for="Ended"> Ended</label></div>
+                    <div><input id="Disabled" type="checkbox" value="Disabled" name="Disabled"> <label for="Disabled"> Disabled</label></div>
+                    <div><input id="Active" type="checkbox" value="Active" name="Active"> <label for="Active"> Active</label></div>
+                </div>
+		    <div class="xcontainer">
+
+		    		<table class="overflow-y">
+		    			<thead>
+		    				<tr>
+		    					<th>نام کانفیگ</th>
+                                <th>حجم مصرفی</th>
+                                <th>انقضا (روز)</th>
+                                <th>محدودیت کاربر</th>
+                                <th>نوع</th>
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+                        {% for key ,value in data.items %}
+                            {% if key|break_name %}
+
+                                {% if not value.ended %}
+                                <tr class="ended">
+                                {% elif not value.enable %}
+                                <tr class="disabled">
+                                {% else %}
+                                <tr class="active">
+                                {% endif %}
+
+
+                                {% if not value.enable %}
+		    					    <th style="background-color: #888888" class="fix_col name_red"><p onclick="hidden_page(`{{ key }}`, `{{ value.uuid }}`, {{ server_id }}, {{ value.inbound_id }},{% if value.uuid|config_seved %}true{% else %}false{% endif %},false, {{ value.ip_limit }})" class="c_name" style="color: #000e47" href="{% url 'servers:conf_page' server_id value.uuid key  %}">🚫 {{ key|break_name }} 🚫</p></th>
+                                {% elif not value.ended %}
+		    					    <th class="fix_col name_red"><p onclick="hidden_page(`{{ key }}`, `{{ value.uuid }}`, {{ server_id }}, {{ value.inbound_id }},{% if value.uuid|config_seved %}true{% else %}false{% endif %},true, {{ value.ip_limit }})" class="c_name" style="color: red" href="{% url 'servers:conf_page' server_id value.uuid key %}">{{ key|break_name }}</p></th>
+                                {% else %}
+		    					    <th class="fix_col"><p onclick="hidden_page(`{{ key }}`, `{{ value.uuid }}`, {{ server_id }}, {{ value.inbound_id }},{% if value.uuid|config_seved %}true{% else %}false{% endif %},true, {{ value.ip_limit }})" class="c_name">{{ key|break_name }}</p></th>
+                                {% endif %}
+                                <td>
+                                    {% if value.usage_limit == 0  %}
+                                        <div class="centering">
+                                            <h4 class="usage_text">{{ value.usage}} GB / <span style="font-size: x-large">∞</span></h4>
+                                            <div class="progress progressـusage_box">
+                                                {% if value.started %}
+                                                    <div class="progressـusage progress-bar bg-unlimit" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">∞</div>
+                                                {% else %}
+                                                    <div class="progressـusage progress-bar bg-success" role="progressbar" style="width:100%"  aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Not Started</div>
+                                                {% endif %}
+                                            </div>
+                                            {% if value.uuid|infinit_limit %}
+                                                <h3 class="sys_limit">⛔ {{ value.uuid|infinit_limit }} GB ⛔</h3>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        {% if value.usage|percent:value.usage_limit > 99 %}
+                                        <div class="centering">
+                                            <h4 class="usage_text">{{ value.usage }} GB / {{ value.usage_limit }} GB</h4>
+                                            <div class="progress progressـusage_box">
+                                                <div class="progressـusage progress-bar bg-danger" role="progressbar" style="width: {{ value.usage|percent:value.usage_limit }}%" aria-valuenow="{{ value.usage|percent:value.usage_limit }}" aria-valuemin="0" aria-valuemax="100">{{ value.usage|percent:value.usage_limit }}%</div>
+                                            </div>
+                                        </div>
+                                        {% elif value.usage|percent:value.usage_limit > 95 %}
+                                        <div class="centering">
+                                            <h4 class="usage_text">{{ value.usage }} GB / {{ value.usage_limit }} GB</h4>
+                                            <div class="progress progressـusage_box">
+                                                <div class="progressـusage progress-bar bg-warning" role="progressbar" style="width: {{ value.usage|percent:value.usage_limit }}%" aria-valuenow="{{ value.usage|percent:value.usage_limit }}" aria-valuemin="0" aria-valuemax="100">{{ value.usage|percent:value.usage_limit }}%</div>
+                                            </div>
+                                        </div>
+                                        {% elif value.usage|percent:value.usage_limit > 0 %}
+                                            <div class="centering">
+                                            <h4 class="usage_text">{{ value.usage }} GB / {{ value.usage_limit }} GB</h4>
+                                            <div class="progress progressـusage_box">
+                                                <div class="progressـusage progress-bar bg-info" role="progressbar" style="width: {{ value.usage|percent:value.usage_limit }}%" aria-valuenow="{{ value.usage|percent:value.usage_limit }}" aria-valuemin="0" aria-valuemax="100">{{ value.usage|percent:value.usage_limit }}%</div>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="centering">
+                                            <h4 class="usage_text">{{ value.usage }} GB / {{ value.usage_limit }} GB</h4>
+                                            <div class="progress progressـusage_box">
+                                                {% if value.started  %}
+                                                    <div class="progressـusage progress-bar bg-info" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                                {% else %}
+                                                    <div class="progressـusage progress-bar bg-success" role="progressbar" style="width:100%" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">Not Started</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+                                    {% if value.expire_time == 0 %}
+                                    <div class="centering">
+                                        <h4 class="expire_text blue_infinite">∞ day</h4>
+                                    </div>
+                                    {% elif value.expire_time > 0 and not value.started %}
+                                        <div class="centering">
+                                        <h4 class="expire_text green">{{ value.expire_time|floatformat:0 }} day</h4>
+                                    </div>
+                                    {% elif value.expire_time > 3 %}
+                                    <div class="centering">
+                                        <h4 class="expire_text blue ">{{ value.expire_time|dh }}</h4>
+                                    </div>
+
+                                    {% elif  value.expire_time > 0 %}
+                                    <div class="centering">
+                                        <h4 class="expire_text orange">{{ value.expire_time|dh }}</h4>
+                                    </div>
+
+                                    {% else %}
+                                    <div class="centering">
+                                        <h4 class="expire_text red">{{ value.expire_time|dh }} ago</h4>
+                                    </div>
+                                    {% endif %}
+                                </td>
+
+                                {% if value.ip_limit == 0 %}
+                                    <td class="ipbox" dir="rtl"><p class="iplimit">∞</p></td>
+                                {% else %}
+                                    <td class="ipbox" dir="rtl"><p class="iplimit">{{ value.ip_limit }}</p></td>
+                                {% endif %}
+
+                                {% if value.usage_limit == 0 %}
+                                    <td class="type">نامحدود</td>
+                                {% else %}
+                                    <td class="type"> حجمی</td>
+                                {% endif %}
+
+                            </tr>
+
+                        {% endif %}
+                        {% endfor %}
+		    			</tbody>
+		    		</table>
+            </div>
+
+
+        </div>
+        <div id="list_action">
+            <div class="closebox" dir="rtl"><button onclick="show_main()" class="close_btn">✖️</button></div>
+            <h3 id="cooonf_name"></h3>
+            <div class="btn_boxx">
+                <a class="link_btns" id="info_link" href="">
+                    <img class="imgg" src="{% static "img/info.png" %}" alt="">
+                    <p class="ttt"> صفحه اطلاعات</p>
+                </a>
+                <a class="link_btns" id="tamdid_link" href="">
+                    <img class="imgg" src="{% static "img/icons8-restart-512.png" %}" alt="">
+                    <p class="ttt">تمدید</p>
+                </a>
+                <a class="link_btns" id="enable_link" href="">
+                    <img class="imgg" src="{% static "img/enable.png" %}" alt="">
+                    <p class="ttt">فعال کردن</p>
+                </a>
+                <a class="link_btns" id="disable_link" href="">
+                    <img class="imgg" src="{% static "img/disable.png" %}" alt="">
+                    <p class="ttt">غیرفعال کردن</p>
+                </a>
+                <a class="link_btns" id="change_link" href="">
+                    <img class="imgg" src="{% static "img/setting.png" %}" alt="">
+                    <p class="ttt">تغییر کانفیگ</p>
+                </a>
+                <a class="link_btns" id="location_link">
+                    <img class="imgg" src="{% static 'img/location.png' %}" alt="">
+                    <p class="ttt">تغییر لوکیشن</p>
+                </a>
+                <a class="link_btns" id="delete_link">
+                    <img class="imgg" src="{% static 'img/icons8-delete-64.png' %}" alt="">
+                    <p class="ttt">حذف</p>
+                </a>
+        </div>
+            <script>
+                function hidden_page(name, uuid, server_id, inbound_id, renew, enable, ip_limit) {
+                    document.getElementById("main").style.display = "none";
+                    document.getElementById("list_action").style.display = "block";
+                    document.getElementById("cooonf_name").innerHTML = `${name}`;
+                    document.getElementById("info_link").href = `/servers/config_page/${server_id}/${uuid}/${name}/`
+                    document.getElementById("delete_link").href = `/servers/delete_config/${server_id}/${uuid}/${name}/${inbound_id}/`
+                    document.getElementById("change_link").href = `/servers/change_config_page/${uuid}/${name}/${server_id}/`
+
+                    if (renew === true){
+                        document.getElementById("tamdid_link").style.display = "block";
+                        document.getElementById("tamdid_link").href=`/servers/renew_page/${uuid}/auto/`;
+                        document.getElementById("location_link").style.display = "block";
+                        document.getElementById("location_link").href = `/servers/change_location/${uuid}/${server_id}/`
+
+                    } else {
+                        document.getElementById("location_link").style.display = "none"
+                        document.getElementById("tamdid_link").style.display = "none";
+                    }
+                    if (enable) {
+                        document.getElementById("disable_link").style.display = "block";
+                        document.getElementById("disable_link").href =`/servers/disable_config/${server_id}/${uuid}/${inbound_id}/${name}/1/${ip_limit}/`;
+                        document.getElementById("enable_link").style.display = "none";
+                    } else {
+                        document.getElementById("enable_link").style.display = "block";
+                        document.getElementById("enable_link").href =`/servers/disable_config/${server_id}/${uuid}/${inbound_id}/${name}/0/${ip_limit}/`;
+                        document.getElementById("disable_link").style.display = "none";
+                    }
+                }
+            </script>
+            <script>
+                $(document).ready(show_main)
+                function show_main() {
+                    document.getElementById("main").style.display = "block";
+                    document.getElementById("list_action").style.display = "none";
+                }
+            </script>
+    </div>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script src={% static "js/list.js" %}></script>
+	</body>
+
+{% include "loading.html" %}
+{% include "list_servers.html" %}
+
+</html>

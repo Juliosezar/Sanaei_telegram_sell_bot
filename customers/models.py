@@ -9,3 +9,5 @@ class Customer(models.Model):
     test_config = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
     banned = models.BooleanField(default=False)
+
+

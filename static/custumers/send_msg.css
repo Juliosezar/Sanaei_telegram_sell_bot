@@ -1,0 +1,44 @@
+#main {
+    width: 100%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #000d3f;
+
+}
+.serverschecks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #d6d8e1;
+
+    text-align: center;
+    align-content: center;
+    justify-items: center;
+    padding: 1rem 0;
+}
+#Allusers{
+    color: white;
+    margin: 1rem 0;
+}
+hr {
+    color: white;
+     background-color: white;
+    margin: 0;
+}
+
+#id_message {
+    width: 90vw;
+    max-width: 30rem;
+    margin: 2rem 0 0;
+}
+
+#send {
+    padding: 0.5rem 3rem;
+    margin: 0.5rem 0 1rem;
+
+}

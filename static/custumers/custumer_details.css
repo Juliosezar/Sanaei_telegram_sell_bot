@@ -1,0 +1,136 @@
+#main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#title {
+    font-size: x-large;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.banned {
+    text-align: center;
+    font-size: x-large;
+}
+
+.infobox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    background-color: #000d3f;
+    color: white;
+    padding: 1rem;
+    flex-wrap: wrap;
+    border-radius: 10px;
+    margin: 0 1rem;
+}
+.info_item {
+    color: white;
+    margin: 0.5rem 3rem;
+    font-size: medium;
+}
+
+.refresh {
+    background-color: white;
+    color: #000d3f;
+    padding: 0.25rem 1rem;
+    border-radius: 10px;
+}
+
+/*.ban {*/
+/*    !*background-color: white;*!*/
+/*    padding: 0.25rem 1rem;*/
+/*    width: 0.5rem;*/
+/*    border-radius: 10px;*/
+/*}*/
+.imgc {
+    background-color: white;
+    border-radius: 15px;
+    padding: 0.1rem 1.2rem;
+    height: 2.5rem;
+}
+img {
+    /*width: 2.5rem;*/
+    height: inherit;
+}
+
+#btnaction {
+    width: 100%;
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: space-between;
+    justify-content: space-evenly;
+}
+
+.configs_list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    flex-flow: wrap;
+    justify-content: center;
+}
+
+.configbox {
+    background-color: #000d3f;
+    padding: 1rem 0;
+    box-shadow: black 0 0 10px 3px ;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    min-width: 20rem;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+    margin: 1rem 1rem;
+    color: white;
+
+}
+.conf_name {
+    color: #7cb8ff;
+    font-size: x-large;
+}
+
+
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 60px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, #a6c1ff 90%,#0000);
+  background:
+    var(--_g) 0%   50%,
+    var(--_g) 50%  50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100%/3) 50%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+    20%{background-position:0%   0%, 50%  50%,100%  50%}
+    40%{background-position:0% 100%, 50%   0%,100%  50%}
+    60%{background-position:0%  50%, 50% 100%,100%   0%}
+    80%{background-position:0%  50%, 50%  50%,100% 100%}
+}
+
+@media  (max-width: 850px) {
+    .info_item {
+        margin: 0.5rem 1rem;
+        font-size: medium;
+    }
+    .banned {
+    text-align: center;
+    font-size: larger;
+}
+
+}
+
+a:hover {
+    text-decoration: none;
+}
