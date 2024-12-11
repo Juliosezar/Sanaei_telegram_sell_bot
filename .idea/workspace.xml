@@ -5,36 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/configs/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customers/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customers/templates/Custumer_details.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customers/templates/change_wallet.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customers/templates/list_custumers.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customers/templates/register_conf_for_customer.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customers/templates/send_msg_to_all.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customers/templates/send_msg_to_custumer.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customers/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/base_head.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/loading.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/messages.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/navbar_bot.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/navbar_sellers.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/subsellers_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/highlightedFiles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/highlightedFiles.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SanaeiBot/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/SanaeiBot/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/templates/home_bot.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_bot.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/settings.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/commands.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bot/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customers/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/templates/AddPrice.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/AddPrice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/templates/add_off_code.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/add_off_code.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/templates/edit_price_payment.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/edit_price_payment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/templates/show_off_codes.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/show_off_codes.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/templates/show_prices.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/show_prices.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/finance/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sellers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sellers/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/templates/change_conf_location.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/templates/change_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/change_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/templates/change_unlimit_limit.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/change_unlimit_limit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/templates/config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/config_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/templates/create_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/create_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/templates/list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/templates/list_configs_searched.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs_searched.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/servers/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,24 +69,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Django Server.SanaeiBot.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "django.template.preview.state": "SHOW_EDITOR",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/sezar/projects/SanaeiBot/finance",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Django Server.SanaeiBot.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/sezar/projects/SanaeiBot/finance&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/finance" />
@@ -99,6 +97,7 @@
       <recent name="$PROJECT_DIR$/side_bot" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/configs/templates" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -132,8 +131,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-PY-242.20224.347" />
-        <option value="bundled-python-sdk-c2d6afa66fbe-39cff9de6eef-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.20224.347" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-PY-243.21565.199" />
+        <option value="bundled-python-sdk-cab1f2013843-4ae2d6a61b08-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.21565.199" />
       </set>
     </attachedChunks>
   </component>
@@ -153,6 +152,12 @@
       <workItem from="1733250898169" duration="4449000" />
       <workItem from="1733315323746" duration="3417000" />
       <workItem from="1733412473036" duration="10178000" />
+      <workItem from="1733482196288" duration="2840000" />
+      <workItem from="1733501072198" duration="258000" />
+      <workItem from="1733501613402" duration="842000" />
+      <workItem from="1733555286692" duration="3604000" />
+      <workItem from="1733682362296" duration="5963000" />
+      <workItem from="1733803075631" duration="3779000" />
     </task>
     <servers />
   </component>

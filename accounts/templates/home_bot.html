@@ -72,7 +72,7 @@
                 text-align: center
             }
         </style>
-        <li class="hidephone"><a class="www" href="" id="action_create_config">ساخت کانفیگ</a></li>
+        <li class="hidephone"><a class="www" href="{% url "configs:bot_create_config" "auto" %}" id="action_create_config">ساخت کانفیگ</a></li>
         <li class="hidephone"><a class="www" href="" id="action_list_config">لیست کانفیگ ها</a></li>
     </ul>
 </header>
@@ -94,7 +94,7 @@
                 </form>
             </div>
             <a href="{% url "finance:confirm_payments" 1 %}" class="links link2" id="pay_confirm">✅ تایید پرداخت 💳</a>
-            <a href="" class="links link2">➕ ساخت کانفیگ 🔗</a>
+            <a href="{% url "configs:bot_create_config" "auto" %}" class="links link2">➕ ساخت کانفیگ 🔗</a>
             <a href="" class="links link2">📋 لیست کانفیگ ها 🔗</a>
             <a href="{% url "servers:show_servers" %}" class="links" id="servers">🌐 سرور ها 📶</a>
             <a href="" class="links" id="setting">📑 Status 📶</a>
@@ -104,11 +104,11 @@
 {#            <a href="{% url "reports:celery_delete_conf_logs" %}" class="links" id="setting">🗃️ Celery Log 🗑</a>#}
 {#            <a href="{% url "reports:send_msgs_log" %}" class="links" id="setting">🗃️ MSG Log 📨</a>#}
             <a href="" class="links" id="message">️📝 پیام همگانی 📨</a>
-            <a href="" class="links" id="tarefeh">💰 تعرفه ها 🛒</a>
+            <a href="{% url "finance:show_prices" %}" class="links" id="tarefeh">💰 تعرفه ها 🛒</a>
 {#            <a href="{% url "reports:reports" %}" class="links" id="report">📊 گزارشات 📈</a>#}
-            <a href="" class="links" id="tarefeh">💲 کد تخفیف 🆓</a>
-            <a href="" class="links" id="setting">⚙️ تنظیمات 🛠️</a>
-            <a href="" class="links" id="setting">💻 Apps 📱️</a>
+            <a href="{% url "finance:show_off_codes" %}" class="links" id="tarefeh">💲 کد تخفیف 🆓</a>
+            <a href="{% url "accounts:settings" %}" class="links" id="setting">⚙️ تنظیمات 🛠️</a>
+            <a href="{% url 'accounts:vpn_apps' %}" class="links" id="setting">💻 Apps 📱️</a>
 {#            <a href="" class="links" id="setting">❗️ Errors ❗️</a>#}
         </div>
     </div>

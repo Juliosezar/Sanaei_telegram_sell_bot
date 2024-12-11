@@ -1,8 +1,21 @@
+import json
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Server
 from django.views import View
 from .forms import AddServerForm, EditServerForm
+from binary import BinaryUnits, convert_units
+import datetime
+import requests
+from .sanaie_api import ServerApi
+
+
+class Test(View):
+    def get(self, request):
+        x = ServerApi.get_list_configs(1)
+        print(x)
+        return HttpResponse()
 
 class ShowServers(LoginRequiredMixin, View):
     def get(self, request):
@@ -57,3 +70,5 @@ class EditServer(LoginRequiredMixin, View):
             obj.save()
             return redirect('servers:show_servers')
         return render(request, "add_server.html", {'form': form, "edit": True})
+
+

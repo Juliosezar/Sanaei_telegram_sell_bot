@@ -31,7 +31,7 @@
         toggleexpireField();
     });
 </script>
-    {% include "navbar.html" %}
+    {% include "navbar_bot.html" %}
     <div id="main">
         <form novalidate action="" method="post" dir="rtl">
             {% for field_errors in form.errors.values %}
@@ -54,7 +54,6 @@
         </form>
     </div>
 {% include "loading.html" %}
-{% include "list_servers.html" %}
     <style>
         #id_amount,#id_type_off, #id_curumer_count, #id_use_count, #id_end_time {
             width: 50%;

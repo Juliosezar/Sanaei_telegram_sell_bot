@@ -37,14 +37,14 @@
         toggleexpireField();
     });
 </script>
-{% include "navbar.html" %}
+{% include "navbar_bot.html" %}
 {% include 'messages.html' %}
 <div id="main">
     <div id="zx">
     {% if form_type == 'auto' %}
-        <a href="{% url 'servers:create_config_page' server.server_id 'manual' %}" class="change_form">کانفیگ دستی</a>
+        <a href="{% url 'configs:bot_create_config' 'manual' %}" class="change_form">کانفیگ دستی</a>
     {% else %}
-        <a href="{% url 'servers:create_config_page' server.server_id 'auto' %}" class="change_form">کانفیگ خودکار</a>
+        <a href="{% url 'configs:bot_create_config' 'auto' %}" class="change_form">کانفیگ خودکار</a>
     {% endif %}
     </div>
         <form novalidate action="" method="post" dir="rtl">
@@ -86,7 +86,7 @@
         subloader.style.display = 'block';
         priceloading.style.display = 'block';
         const otherField2Value = type.value;
-        const url = `{% url "servers:api_get_time_choices" %}?type=${otherField2Value}`;
+        const url = `{% url "configs:api_get_time_choices" %}?type=${otherField2Value}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -115,7 +115,7 @@
         priceloading.style.display = 'block';
         const otherField2Value = type.value;
         const otherField1Value = days_limit.value;
-        const url = `{% url "servers:api_get_usage_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
+        const url = `{% url "configs:api_get_usage_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -143,7 +143,7 @@
         priceloading.style.display = 'block';
         const otherField2Value = type.value;
         const otherField1Value = days_limit.value;
-        const url = `{% url "servers:api_get_iplimit_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
+        const url = `{% url "configs:api_get_iplimit_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -172,7 +172,7 @@
         const otherField2Value = type.value;
         const otherField3Value = days_limit.value;
         const otherField4Value = ip_limit.value;
-        const url = `{% url "servers:api_get_axact_price" %}?usage=${otherField1Value}&type=${otherField2Value}&time=${otherField3Value}&iplimit=${otherField4Value}`;
+        const url = `{% url "configs:api_get_axact_price" %}?usage=${otherField1Value}&type=${otherField2Value}&time=${otherField3Value}&iplimit=${otherField4Value}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
