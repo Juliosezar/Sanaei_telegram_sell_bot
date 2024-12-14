@@ -1,13 +1,59 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
-from .forms import CreateConfigForm, ManualCreateConfigForm
+from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm
 from finance.models import Prices
 from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Q
 from time import sleep
+from .models import ConfigJobsQueue, Service, Config
+import uuid
+import json
+from servers.models import Server
+from persiantools.jdatetime import JalaliDateTime
+from os import environ
+from django.http import HttpResponse
+from random import shuffle
+from celery import shared_task
+from datetime import datetime
+import urllib.parse
+
+
+class ConfigAction:
+    @staticmethod
+    def generate_config_name():
+        with open("settings.json", "r+") as f:
+            setting = json.load(f)
+            counter = setting["config_name_counter"]
+            setting["config_name_counter"] += 1
+            f.seek(0)
+            json.dump(setting, f)
+            f.truncate()
+            return str(counter)
+
+
+
+    @staticmethod
+    def create_config_db(service_uuid):
+        service = Service.objects.get(uuid=service_uuid)
+        for server in Server.objects.all():
+            Config.objects.create(
+                server=server,
+                service=service,
+                last_update=int(JalaliDateTime.now().timestamp())
+            ).save()
+
+
+    @staticmethod
+    def create_config_job_queue(service_uuid, job):
+        service = Service.objects.get(uuid=service_uuid)
+        for config in Config.objects.filter(service=service):
+            ConfigJobsQueue.objects.create(
+                config=config,
+                job=job,
+            ).save()
 
 
 
@@ -43,25 +89,92 @@ class BotCreateConfigView(LoginRequiredMixin, View):
             paid = cd["paid"]
             if form_type == 'auto':
                 time_limit = time_limit * 30
-            # create_config = Configs.create_config_by_admins(server_id, time_limit, usage, ip_limit, price, paid,
-            #                                                 request.user.username),
+            service_uuid = uuid.uuid4()
+            Service.objects.create(
+                uuid=service_uuid,
+                name=ConfigAction.generate_config_name(),
+                usage_limit=usage,
+                expire_time=time_limit,
+                user_limit=ip_limit,
+                paid=paid,
+            ).save()
 
+            ConfigAction.create_config_db(service_uuid)
+            ConfigAction.create_config_job_queue(service_uuid, 0)
+            # todo : do jobs
             # if create_config[0]:
-            #     return redirect('servers:conf_page', server_id, create_config[0]["config_uuid"],
-            #                     create_config[0]["config_name"])
+            return redirect('configs:conf_page', str(service_uuid))
 
-            messages.error(request, "اتصال به سرور برقرار نشد.")
+            # messages.error(request, "اتصال به سرور برقرار نشد.")
 
         return render(request, 'create_config.html', {'form': form, 'form_type': form_type})
 
 
 class BotListConfigView(LoginRequiredMixin, View):
-    def get(self, request):
-        pass
+    def get(self, request,*args, **kwargs):
+        data = Service.objects.filter(owner=None)
+        searchform = SearchConfigForm()
+        return render(request, "list_configs.html", {"data": data, 'searchform': searchform})
+
+    def post(self, request, *args, **kwargs):
+        searchform = SearchConfigForm(request.POST)
+        if searchform.is_valid():
+            word = searchform.cleaned_data["search_config"]
+            data = Service.objects.filter(Q(name__icontains=word) | Q(uuid__icontains=word),owner=None)
+            return render(request, "list_configs.html",
+                          {"data": data, "searchform": searchform, "searched": True})
+
+class ConfigPage(LoginRequiredMixin, View):
+    def get(self, request, config_uuid):
+        if Service.objects.filter(uuid=config_uuid).exists():
+            service = Service.objects.get(uuid=config_uuid)
+            # conf_log = reversed(ConfigLog.objects.filter(config=config_info))
+        else:
+            service = False
+        get_config_link = f"نام سرویس: {service.name}" "\n\n" "برای دریافت کانفیگ روی لینک زیر کلیک کنید 👇🏻" "\n"  f'tg://resolve?domain={environ.get('BOT_USERNAME')}&start=register_{config_uuid}'
+        vless = ""
+        return render(request, 'config_page.html', {'service': service, 'vless': vless})
+
+
+class ClientsConfigPage(View):
+    def get(self, request, config_uuid):
+        if Service.objects.filter(uuid=config_uuid).exists():
+            service = Service.objects.get(uuid=config_uuid)
+            sub_link_domain = environ.get("SUB_LINK_DOMAIN")
+            sub_link_domain = "https://" + sub_link_domain if not sub_link_domain.startswith("http") else sub_link_domain
+            sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
+        else:
+            service = False
+            sub_link = False
+        return render(request, 'client_config_page.html', {'service': service, 'sub_link': sub_link})
 
 
 
 
+class Sublink(APIView):
+    def get(self, request, config_uuid):
+        service = Service.objects.get(uuid=config_uuid)
+        content = []
+        for server in Server.objects.all():
+            content.append(f"vless://{config_uuid}@{server.fake_domain}:{server.inbound_port}?type=tcp&path=%2F&host=speedtest.net&headerType=http&security=none#Napsv_{service.name} / {server.name}")
+        shuffle(content)
+        content_str = ""
+        for i in content:
+            content_str += (i + "\n")
+        user_agent = request.headers.get('User-Agent', None)
+        is_v2ray_client = any(word in user_agent for word in ["hiddify", "v2ray"])
+        if is_v2ray_client:
+            service_obj = Service.objects.get(uuid=config_uuid)
+            if not service_obj.expire_time == 0 and service_obj.start_time == 0:
+                time_stamp = datetime.now().timestamp()
+                service_obj.start_time = time_stamp
+                service_obj.expire_time = time_stamp + (service_obj.expire_time * 86400)
+                service_obj.save()
+            response = HttpResponse(content_str)
+            response['Content-Disposition'] = f'attachment; filename="Napsv_{service.name}"'
+            return response
+        else:
+            return redirect("configs:client_config_page",config_uuid)
 
 
 

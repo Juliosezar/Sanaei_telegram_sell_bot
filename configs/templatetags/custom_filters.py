@@ -1,9 +1,11 @@
 from django import template
-# from servers.models import ConfigsInfo, InfinitCongisLimit
+# from .models import ConfigsInfo, InfinitCongisLimit
 from django.conf import settings
 import json
 from persiantools.jdatetime import JalaliDateTime
 import datetime, pytz
+# from servers.models import CreateConfigQueue
+# from finance.models import ConfirmPaymentQueue, ConfirmTamdidPaymentQueue
 
 register = template.Library()
 
@@ -27,7 +29,7 @@ def day_and_hour(value):
     day = abs(int(value))
     return f"{day}d  {hour}h"
 
-#
+
 # @register.filter(name="break_name")
 # def break_name(value):
 #     if ConfigsInfo.objects.filter(config_name=value).exists():
@@ -97,7 +99,7 @@ def status(value):
 #     else:
 #         obj = ConfirmTamdidPaymentQueue.objects.get(id=id["tamdid"])
 #         return f"Tamdid / {obj.config.config_name} / {price(obj.pay_price)}T / {status(obj.status)}"
-
+#
 #
 # @register.filter(name="get_user")
 # def get_user(id: dict):

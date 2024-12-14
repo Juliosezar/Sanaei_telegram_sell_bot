@@ -7,18 +7,20 @@ class Service(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
     uuid = models.UUIDField(unique=True)
     name = models.CharField(max_length=50, unique=True)
-    usage_limit = models.IntegerField(default=0)
+    usage_limit = models.FloatField(default=0)
+    usage = models.FloatField(default=0)
     expire_time = models.BigIntegerField(default=0)
+    start_time = models.BigIntegerField(default=0)
     user_limit = models.SmallIntegerField(default=0)
     paid = models.BooleanField(default=True)
-    status = models.SmallIntegerField(default=0) # -1 creating / 0 Active / 1 disable / 2 Ended / 4 deleting
+    status = models.SmallIntegerField(default=0, choices=[(0,'Active'), (1,'disable'), (2,'Ended'), (4,'deleting')])
     owner = models.ForeignKey(Seller, on_delete=models.DO_NOTHING, null=True) # null => main bot
 
 class Config(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    status = models.SmallIntegerField(default=0) # 0 => active / 1 => disable / 2 => deleted
-    usage = models.BigIntegerField(default=0)
+    status = models.SmallIntegerField(default=-1, choices=[(-1,'not_created'),(1,'active'),(2,'disable'),(3,'deleted')])
+    usage = models.FloatField(default=0)
     last_update = models.BigIntegerField(default=0)
 
 

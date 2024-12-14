@@ -9,12 +9,17 @@ from bot.commands import CommandRunner
 from persiantools.jdatetime import JalaliDateTime
 from .models import Prices
 import os
+from configs.views import ConfigAction
+from configs.models import Service
+import uuid
+from configs.tasks import run_jobs
 
 class FinanceAction:
     @staticmethod
     def change_wallet(amount, chat_id):
+        print(amount)
         customer = Customer.objects.get(chat_id=chat_id)
-        customer.wallet += amount
+        customer.wallet = amount + customer.wallet
         customer.save()
 
 
@@ -36,18 +41,38 @@ class ConfirmPaymentPage(LoginRequiredMixin, View):
 class FirstConfirmPayment(LoginRequiredMixin, View):
     def get(self, request, obj_id):
         pay_obj = BotPayment.objects.get(id=obj_id)
+        print(pay_obj.price)
         FinanceAction.change_wallet(pay_obj.price, pay_obj.customer.chat_id)
         if pay_obj.status == 0:
             if pay_obj.action == 0: # add to wallet
                 CommandRunner.send_msg(pay_obj.customer.chat_id, f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد.")
             elif pay_obj.action == 1: # buy service
-                if pay_obj.customer.wallet >= pay_obj.info["config_price"]:
-                    pass # TODO: create config and then change wallet
+                CommandRunner.send_msg(pay_obj.customer.chat_id, "پرداخت شما تایید شد. لینک سرویس برای شما ارسال میشود.")
+                if Customer.objects.get(chat_id=pay_obj.customer.chat_id).wallet >= pay_obj.info["config_price"]:
+
+                    service_uuid = uuid.uuid4()
+                    Service.objects.create(
+                        uuid=service_uuid,
+                        name=ConfigAction.generate_config_name(),
+                        usage_limit=pay_obj.info["usage_limit"],
+                        expire_time=pay_obj.info["expre_time"] * 30,
+                        user_limit=pay_obj.info["user_limit"],
+                        customer=pay_obj.customer,
+                    ).save()
+                    ConfigAction.create_config_db(service_uuid)
+                    ConfigAction.create_config_job_queue(service_uuid, 0)
+                    FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
+                    CommandRunner.send_sub_link(service_uuid)
+                    run_jobs.delay()
+                     # TODO: Trigger create config celery
                 else:
                     CommandRunner.send_msg(pay_obj.customer.chat_id,
                                            f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد. اما این مبلغ برای خرید کانفیگ انتخابی کافی نیست.")
             elif pay_obj.action == 2: # renew service
                 pass # TODO: renew and change wallet
+
+            # pay_obj.status = 1
+            # pay_obj.save()
         else:
             messages.error(request, "این پرداخت توسط ادمین دیگری تایید یا رد شده است.")
         return redirect('finance:confirm_payments', 1)
@@ -63,7 +88,18 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
                                        f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد.")
             elif pay_obj.action == 1:  # buy service
                 if pay_obj.customer.wallet >= pay_obj.info["config_price"]:
-                    pass  # TODO: create config and then change wallet
+                    service_uuid = uuid.uuid4()
+                    Service.objects.create(
+                        uuid=service_uuid,
+                        name=ConfigAction.generate_config_name(),
+                        usage_limit=pay_obj.info["price_obj"],
+                        expire_time=pay_obj.info["expre_time"] * 30,
+                        user_limit=pay_obj.info["user_limit"],
+                        customer=pay_obj.customer,
+                    ).save()
+                    ConfigAction.create_config_db(service_uuid)
+                    ConfigAction.create_config_job_queue(service_uuid, 0)
+                      # TODO: Trigger create config celery
                 else:
                     CommandRunner.send_msg(pay_obj.customer.chat_id,
                                            f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد. اما این مبلغ برای خرید کانفیگ انتخابی کافی نیست.")

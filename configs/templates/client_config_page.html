@@ -12,28 +12,10 @@
 </head>
 
 <body dir="">
-    {% include "navbar_bot.html" %}
     {% include 'messages.html' %}
 <div id="main">
 {#    {% if service %}#}
         <h3 id="conf_name">{{ service.name }}</h3>
-        <div id="box0" dir="rtl">
-            <h3 class="c_info">سرور: {{ config_info.server.server_name }}</h3>
-            {% if config_info.chat_id == none %}
-                <h3 class="c_info"> یوزر: ---- <a id="u_reg" href=""> Register 🆔</a></h3>
-{#                <h3 class="c_info"></h3>#}
-             {% else %}
-                <h3 class="c_info">یوزر: <a style="color: white" href="{% url 'customers:custumer_detail' config_info.chat_id.userid %}">{{ config_info.chat_id.userid }}</a></h3>
-            {% endif %}
-            <h3 class="c_info">ساخته توسط: {{ config_info.created_by }}</h3>
-            <h3 class="c_info">مبلغ: {{ config_info.price }} T</h3>
-            {% if config_info.paid %}
-            <h3 class="c_info">پرداخت شده: ✅</h3> {% else %} <h3 class="c_info">پرداخت شده: ❌</h3>
-            {% endif %}
-            <h3 class="c_info">تمدید: {{ config_info.renew_count }}</h3>
-{#            <h3 class="text_error">❗ کانفیگ در بات ثبت نشده است. ❗</h3>#}
-        </div>
-
         {% if service.status == 1 %}
             <h4 id="dis" dir="rtl">⛔ این کانفیگ غیرفعال است. ⛔</h4>
         {% endif %}
@@ -131,36 +113,12 @@
 
         <div id="box2">
             <div>
-
-                <div class="btnslist">
-                    <button dir="rtl" class="btn" onclick="copyToClipboard('#bot_link')">📋 لینک دریافت کانفیگ 📋</button>
-                </div>
-
                 <div class="btnslist">
                     <button class="btn" onclick="copyToClipboard('#vless')">📡 کپی کانفیگ 📡</button>
                 </div>
-
-
-
-                    <p hidden id="vless">{{ vless }}</p>
-                    <p hidden id="bot_link" style="white-space: pre-line;">{{ get_config_link }}</p>
+                    <p hidden id="vless">{{ sub_link }}</p>
                 <hr style="width: 100%; background-color: #d8d8d8">
-                <hr style="width: 100%; background-color: #d6d6d6">
-                <div class="conf_btnsbox">
-                {% if config_info %}
-                    <a class="conf_btnss tamdid_btn" href="{% url "servers:renew_page" service.uuid "auto" %}"><img class="restart" src="{% static "img/icons8-restart-512.png" %}" alt=""> تمدید </a>
-                {% endif %}
-                <a class="conf_btnss change_btn" href=""><img class="enable" src="{% static "img/setting.png" %}" alt=""> ویرایش </a>
-                {% if service.enable %}
-                    <a class="conf_btnss disable_btn" href=""><img class="enable" src="{% static "img/disable.png" %}" alt=""> غیرفعال </a>
-                {% else %}
-                    <a class="conf_btnss disable_btn" href=""><img class="disable" src="{% static "img/enable.png" %}" alt=""> فعال کردن </a>
-                {% endif %}
-                <a class="conf_btnss delete_btn" href=""><img class="del_img" src="{% static 'img/icons8-delete-64.png' %}" alt=""> حذف </a>
             </div>
-            </div>
-
-
         </div>
 
 <script>

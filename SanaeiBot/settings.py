@@ -20,6 +20,7 @@ if not DEBUG:
     ALLOWED_HOSTS = ["194.146.123.65", "admin-napsv.ir"]
 else:
     ALLOWED_HOSTS = ['127.0.0.1', "*"]
+    CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 LOGIN_URL = "/accounts/login/"
 
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'compressor',
+    'django_celery_beat',
     'accounts.apps.AccountsConfig',
     'configs.apps.ConfigsConfig',
     'customers.apps.CustomersConfig',

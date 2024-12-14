@@ -1,4 +1,5 @@
 from os import environ
+from configs.models import Service
 from customers.models import Customer
 import requests
 import json
@@ -6,7 +7,7 @@ from .models import CustomerTmpStatus
 from finance.models import BotPayment, Prices, UserActiveOffCodes
 from django.core.files.base import ContentFile
 from django.conf import settings
-
+import urllib.parse
 
 
 TOKEN = environ.get('TELEGRAM_TOKEN')
@@ -516,3 +517,15 @@ class CommandRunner:
         else:
             cls.send_msg(chat_id, "مشکل در دریافت تصویر")
             BotPayment.objects.get(customer=Customer.objects.get(chat_id=chat_id),status=-1).delete()
+
+    @classmethod
+    def send_sub_link(cls, config_uuid):
+        service = Service.objects.get(uuid=config_uuid)
+        sub_link_domain = environ.get("SUB_LINK_DOMAIN")
+        sub_link_domain = "https://" + sub_link_domain if not sub_link_domain.startswith("http") else sub_link_domain
+        sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
+        print(sub_link)
+        send_text = ('کانفیگ شما: \n\n  '+ sub_link + "")
+        cls.send_msg(service.customer.chat_id, send_text)
+
+

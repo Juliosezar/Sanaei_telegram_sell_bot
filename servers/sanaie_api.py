@@ -2,6 +2,8 @@ from binary import BinaryUnits, convert_units
 import datetime
 import requests
 import json
+
+from configs.models import Service
 from .models import Server
 
 
@@ -83,16 +85,14 @@ class ServerApi:
             return False
 
     @classmethod
-    def create_config(cls, server_id, config_name, uid, usage_limit_GB, expire_DAY, ip_limit, enable):
+    def create_config(cls, server_id, config_name, uid, enable=True):
         server_obj = Server.objects.get(ID=server_id)
         url = server_obj.url + "panel/api/inbounds/addClient"
-        expire_time = int(expire_DAY) * 24 * 60 * 60 * 1000 * -1
-        usage_limit = int(convert_units(usage_limit_GB, BinaryUnits.GB, BinaryUnits.BYTE)[0])
         setting = {
             'clients': [{
                 'id': str(uid), 'alterId': 0, 'email': config_name,
-                'limitIp': ip_limit, 'totalGB': usage_limit,
-                'expiryTime': expire_time, 'enable': enable,
+                'limitIp': 0, 'totalGB': 0,
+                'expiryTime': 0, 'enable': enable,
                 "tgId": '', 'subId': ''
             }]
         }
@@ -199,3 +199,63 @@ class ServerApi:
                     }
         session.close()
         return False
+
+
+    @classmethod
+    def delete_config(cls, server_id, config_uuid):
+        server_obj = Server.objects.get(ID=server_id)
+        url = server_obj.url + f"panel/api/inbounds/{server_obj.inbound_id}/delClient/{config_uuid}"
+        session = cls.create_session(server_id)
+        if not session:
+            return False
+        response = session.post(url)
+        if response.status_code == 200:
+            if response.json()['success']:
+                session.close()
+                return True
+        return False
+
+    @classmethod
+    def disable_config(cls, server_id, config_uuid, enable):
+        session = cls.create_session(server_id)
+        server_obj = Server.objects.get(ID=server_id)
+        service_obj = Service.objects.get(uuid=config_uuid)
+        url = server_obj.url + f"panel/api/inbounds/updateClient/{config_uuid}"
+
+        setting = {
+            'clients': [{
+                'id': str(config_uuid), 'alterId': 0, 'email': service_obj.name,
+                'limitIp': 0, 'totalGB': 0,
+                'expiryTime': 0, 'enable': enable,
+                "tgId": '', 'subId': ''
+            }]
+        }
+        data1 = {
+            "id": int(server_obj.inbound_id),
+            "settings": json.dumps(setting)
+        }
+        header = {"Accept": "application/json"}
+        try:
+            respons = session.post(url, headers=header, json=data1)
+            if respons.status_code == 200:
+                if respons.json()['success']:
+                    return True
+            return False
+        except Exception as e:
+            return False
+
+    @classmethod
+    def reset_usage(cls, server_id, config_name):
+        try:
+            server_obj = Server.objects.get(ID=server_id)
+            session = cls.create_session(server_id)
+            url = Server.url + "panel/api/inbounds"
+            response = session.post(url + f"/{server_obj.inbound_id}/resetClientTraffic/{config_name}/", headers={},
+                                    data={}, timeout=6)
+            if not response.status_code == 200:
+                if response.json()['success']:
+                    session.close()
+                    return True
+                return False
+        except Exception as e:
+            return False

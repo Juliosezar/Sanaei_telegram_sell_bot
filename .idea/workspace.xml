@@ -6,33 +6,34 @@
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SanaeiBot/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/SanaeiBot/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SanaeiBot/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/SanaeiBot/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/templates/home_bot.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_bot.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/settings.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bot/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/commands.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/celery/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/celery/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/celery/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/celery/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/celery/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/celery/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/celery/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/celery.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/config_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/list_configs_searched.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs_searched.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/templates/AddPrice.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/AddPrice.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/templates/add_off_code.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/add_off_code.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/templates/edit_price_payment.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/edit_price_payment.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/templates/show_off_codes.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/show_off_codes.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/templates/show_prices.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/show_prices.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/signals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templatetags/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templatetags/custom_filters.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/templates/confirm_payment.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/confirm_payment.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/finance/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sellers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sellers/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/templates/change_conf_location.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/templates/change_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/change_config.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/templates/change_unlimit_limit.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/change_unlimit_limit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/templates/config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/config_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/templates/create_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/create_config.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/templates/list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/templates/list_configs_searched.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs_searched.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/sanaie_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/sanaie_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/servers/config_page.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/configs/config_page.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/servers/create_config.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/configs/create_config.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/servers/list_configs.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/configs/list_configs.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +54,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///JetClient Request Console" root0="SKIP_INSPECTION" />
+    <setting file="mock:///JetClient Request Console" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/bot/commands.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bot/views.py" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -78,7 +81,7 @@
     &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
     &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/sezar/projects/SanaeiBot/finance&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/sezar/projects/SanaeiBot/configs&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -90,13 +93,15 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/configs" />
       <recent name="$PROJECT_DIR$/finance" />
       <recent name="$PROJECT_DIR$/servers" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/customers" />
-      <recent name="$PROJECT_DIR$/side_bot" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static/configs" />
+      <recent name="$PROJECT_DIR$/configs" />
       <recent name="$PROJECT_DIR$/configs/templates" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -158,10 +163,29 @@
       <workItem from="1733555286692" duration="3604000" />
       <workItem from="1733682362296" duration="5963000" />
       <workItem from="1733803075631" duration="3779000" />
+      <workItem from="1733907482738" duration="5657000" />
+      <workItem from="1733943654990" duration="8789000" />
+      <workItem from="1734016081140" duration="4345000" />
+      <workItem from="1734022235326" duration="11815000" />
+      <workItem from="1734094285475" duration="7414000" />
+      <workItem from="1734155626846" duration="729000" />
+      <workItem from="1734156371282" duration="5449000" />
+      <workItem from="1734179852099" duration="1096000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

@@ -121,8 +121,8 @@
                 <div class="paybox" >
                     <div class="pay_info">
                         <div class="infobox">
-                            <h3 class="info">userid:<a style="color: #98e2ff" href="{% url "customers:custumer_detail" i.custumer.userid %}"> {{ i.custumer.userid }}</a></h3>
-                            <h3 class="info">price : <span class="nspan">{{ i.pay_price|price }} T</span></h3>
+                            <h3 class="info">userid:<a style="color: #98e2ff" href=""> {{ i.custumer.userid }}</a></h3>
+                            <h3 class="info">price : <span class="nspan">{{ i.price|price }} T</span></h3>
 
                         </div>
                         <div class="conf_btns">
@@ -130,7 +130,7 @@
                                 <a href="{% url 'finance:second_confirm' i.id %}" class="sec_confirm c_btnd">تایید نهایی</a>
                             </div>
                             <div class="confirmbtn">
-                                <a href="{% url 'finance:deny_payments_after_first_confirm' i.id %}" class="deny c_btnd">عدم تایید</a>
+                                <a href="" class="deny c_btnd">عدم تایید</a>
                             </div>
                         </div>
                     </div>
