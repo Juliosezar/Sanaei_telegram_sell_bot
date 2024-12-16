@@ -8,6 +8,7 @@ urlpatterns = [
     path("bot_list_config/", views.BotListConfigView.as_view(), name="bot_list_config"),
     path("config_page/<str:config_uuid>/", views.ConfigPage.as_view(), name="conf_page"),
     path("client_config_page/<str:config_uuid>/", views.ClientsConfigPage.as_view(), name="client_config_page"),
+    path('delete_config/<str:config_uuid>/',views.DeleteConfig.as_view(), name="delete_config"),
 
     path("sublink/<uuid:config_uuid>/", views.Sublink.as_view(), name="sublink"),
 

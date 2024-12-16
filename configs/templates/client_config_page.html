@@ -80,15 +80,15 @@
                     <div class="time">
                         <h4 class="expire_text blue_infinite">⏳ ∞ day</h4>
                     </div>
-                {% elif service.expire_time > 0 and not service.started %}
+                {% elif service.start_time == 0 %}
                     <div class="time">
-                        <h4 class="expire_text green">⏳ {{ service.expire_time|dh }}</h4>
+                        <h4 class="expire_text green">⏳ {{ service.expire_time }} day</h4>
                     </div>
-                {% elif service.expire_time > 3 %}
+                {% elif service.expire_time|dh_int > 3 %}
                     <div class="time">
                         <h4 class="expire_text blue">⏳ {{ service.expire_time|dh }}</h4>
                     </div>
-                {% elif service.expire_time > 0 %}
+                {% elif service.expire_time|dh_int > 0 %}
                     <div class="time">
                         <h4 class="expire_text orange">⏳ {{ service.expire_time|dh }}</h4>
                     </div>

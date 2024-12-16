@@ -6,34 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SanaeiBot/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/SanaeiBot/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SanaeiBot/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/SanaeiBot/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/home_bot.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_bot.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot/commands.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/celery/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/celery/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/celery/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/celery/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/celery/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/celery/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/celery/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/celery.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/client_config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/client_config_page.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/templates/config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/config_page.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/templates/list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templates/list_configs_searched.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs_searched.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/list_configs_searched.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templatetags/custom_filters.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templatetags/custom_filters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customers/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/signals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customers/templatetags/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customers/templatetags/custom_filters.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/templates/confirm_payment.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/confirm_payment.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/finance/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/servers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/servers/sanaie_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/sanaie_api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/servers/config_page.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/configs/config_page.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/servers/create_config.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/configs/create_config.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/servers/list_configs.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/configs/list_configs.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,9 +85,9 @@
       <recent name="$PROJECT_DIR$/customers" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/configs/templates" />
       <recent name="$PROJECT_DIR$/static/configs" />
       <recent name="$PROJECT_DIR$/configs" />
-      <recent name="$PROJECT_DIR$/configs/templates" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -170,7 +155,8 @@
       <workItem from="1734094285475" duration="7414000" />
       <workItem from="1734155626846" duration="729000" />
       <workItem from="1734156371282" duration="5449000" />
-      <workItem from="1734179852099" duration="1096000" />
+      <workItem from="1734179852099" duration="24206000" />
+      <workItem from="1734263198981" duration="19500000" />
     </task>
     <servers />
   </component>
@@ -187,5 +173,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/servers/models.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

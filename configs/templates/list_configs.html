@@ -114,6 +114,8 @@
 		    					    <th style="background-color: #888888" class="fix_col name_red"><p onclick="hidden_page(`{{ service.name }}`, `{{ service.uuid }}`,false)" class="c_name" style="color: #000e47" href="{% url 'configs:conf_page' service.uuid  %}">🚫 {{ service.name }} 🚫</p></th>
                                 {% elif service.status == 2 %}
 		    					    <th class="fix_col name_red"><p onclick="hidden_page(`{{ service.name }}`, `{{ service.uuid }}`,true)" class="c_name" style="color: red" href="{% url 'configs:conf_page' service.uuid %}">{{ service.name }}</p></th>
+                                {% elif service.status == 4 %}
+		    					    <th class="fix_col name_red" style="background-color: red"><p class="c_name" style="color: #ffffff; background-color: red" href="{% url 'configs:conf_page' service.uuid %}">{{ service.name }} (deleting)</p></th>
                                 {% else %}
 		    					    <th class="fix_col"><p onclick="hidden_page(`{{ service.name }}`, `{{ service.uuid }}`,true)" class="c_name">{{ service.name }}</p></th>
                                 {% endif %}
@@ -122,10 +124,10 @@
                                         <div class="centering">
                                             <h4 class="usage_text">{{ service.usage}} GB / <span style="font-size: x-large">∞</span></h4>
                                             <div class="progress progressـusage_box">
-                                                {% if service.started %}
-                                                    <div class="progressـusage progress-bar bg-unlimit" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">∞</div>
-                                                {% else %}
+                                                {% if service.start_time == 0 %}
                                                     <div class="progressـusage progress-bar bg-success" role="progressbar" style="width:100%"  aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Not Started</div>
+                                                {% else %}
+                                                    <div class="progressـusage progress-bar bg-unlimit" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">∞</div>
                                                 {% endif %}
                                             </div>
 {#                                            {% if service.uuid|infinit_limit %}#}
@@ -158,10 +160,10 @@
                                         <div class="centering">
                                             <h4 class="usage_text">{{ service.usage }} GB / {{ service.usage_limit }} GB</h4>
                                             <div class="progress progressـusage_box">
-                                                {% if service.started  %}
-                                                    <div class="progressـusage progress-bar bg-info" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                                                {% else %}
+                                                {% if service.start_time == 0  %}
                                                     <div class="progressـusage progress-bar bg-success" role="progressbar" style="width:100%" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">Not Started</div>
+                                                {% else %}
+                                                    <div class="progressـusage progress-bar bg-info" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -180,12 +182,12 @@
                                         <div class="centering">
                                         <h4 class="expire_text green">{{ service.expire_time|floatformat:0 }} day</h4>
                                     </div>
-                                    {% elif service.expire_time > 3 %}
+                                    {% elif service.expire_time|dh_int > 3 %}
                                     <div class="centering">
                                         <h4 class="expire_text blue ">{{ service.expire_time|dh }}</h4>
                                     </div>
 
-                                    {% elif  service.expire_time > 0 %}
+                                    {% elif  service.expire_time|dh_int > 0 %}
                                     <div class="centering">
                                         <h4 class="expire_text orange">{{ service.expire_time|dh }}</h4>
                                     </div>
@@ -200,7 +202,7 @@
                                 {% if service.user_limit == 0 %}
                                     <td class="ipbox" dir="rtl"><p class="iplimit">∞</p></td>
                                 {% else %}
-                                    <td class="ipbox" dir="rtl"><p class="iplimit">{{ service.ip_limit }}</p></td>
+                                    <td class="ipbox" dir="rtl"><p class="iplimit">{{ service.user_limit }}</p></td>
                                 {% endif %}
 
                                 {% if service.usage_limit == 0 %}
@@ -253,7 +255,7 @@
                     document.getElementById("list_action").style.display = "block";
                     document.getElementById("cooonf_name").innerHTML = `${name}`;
                     document.getElementById("info_link").href = `/configs/config_page/${uuid}/`
-                    document.getElementById("delete_link").href = `/configs/delete_config/${uuid}/${name}/`
+                    document.getElementById("delete_link").href = `/configs/delete_config/${uuid}/`
                     document.getElementById("change_link").href = `/configs/change_config_page/${uuid}/${name}/`
                     document.getElementById("tamdid_link").style.display = "block";
                     document.getElementById("tamdid_link").href=`/servers/renew_page/${uuid}/auto/`;

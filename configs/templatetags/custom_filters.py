@@ -25,9 +25,18 @@ def percent_usage(value, arg):
 
 @register.filter(name="dh")
 def day_and_hour(value):
+    now = datetime.datetime.now().timestamp()
+    value = (value - now) / 86400
     hour = int((abs(value) % 1) * 24)
     day = abs(int(value))
     return f"{day}d  {hour}h"
+
+@register.filter(name="dh_int")
+def int_day_and_hour(value):
+    now = datetime.datetime.now().timestamp()
+    value = (value - now) / 86400
+    day = (value)
+    return day
 
 
 # @register.filter(name="break_name")

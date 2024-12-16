@@ -16,9 +16,9 @@ from persiantools.jdatetime import JalaliDateTime
 from os import environ
 from django.http import HttpResponse
 from random import shuffle
-from celery import shared_task
 from datetime import datetime
 import urllib.parse
+from configs.tasks import run_jobs
 
 
 class ConfigAction:
@@ -40,6 +40,7 @@ class ConfigAction:
         service = Service.objects.get(uuid=service_uuid)
         for server in Server.objects.all():
             Config.objects.create(
+                status=-1,
                 server=server,
                 service=service,
                 last_update=int(JalaliDateTime.now().timestamp())
@@ -97,16 +98,13 @@ class BotCreateConfigView(LoginRequiredMixin, View):
                 expire_time=time_limit,
                 user_limit=ip_limit,
                 paid=paid,
+                created_by=request.user,
             ).save()
 
             ConfigAction.create_config_db(service_uuid)
             ConfigAction.create_config_job_queue(service_uuid, 0)
-            # todo : do jobs
-            # if create_config[0]:
+            run_jobs.delay()
             return redirect('configs:conf_page', str(service_uuid))
-
-            # messages.error(request, "اتصال به سرور برقرار نشد.")
-
         return render(request, 'create_config.html', {'form': form, 'form_type': form_type})
 
 
@@ -135,6 +133,25 @@ class ConfigPage(LoginRequiredMixin, View):
         vless = ""
         return render(request, 'config_page.html', {'service': service, 'vless': vless})
 
+class DeleteConfig(LoginRequiredMixin, View):
+    def get(self, request, config_uuid):
+        service = Service.objects.get(uuid=config_uuid)
+        service.status = 4
+        service.save()
+        for config in Config.objects.filter(service=service):
+            ConfigJobsQueue.objects.create(
+                config=config,
+                job=2,
+            ).save()
+        run_jobs.delay()
+        messages.success(request, f"سرویس {service.name} با موفقیت حذف شد.")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+class DisableConfig(LoginRequiredMixin, View):
+    def get(self, request, config_uuid, enable):
+
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+        # return redirect('servers:list_configs', server_id)
 
 class ClientsConfigPage(View):
     def get(self, request, config_uuid):
@@ -153,31 +170,34 @@ class ClientsConfigPage(View):
 
 class Sublink(APIView):
     def get(self, request, config_uuid):
-        service = Service.objects.get(uuid=config_uuid)
-        content = []
-        for server in Server.objects.all():
-            content.append(f"vless://{config_uuid}@{server.fake_domain}:{server.inbound_port}?type=tcp&path=%2F&host=speedtest.net&headerType=http&security=none#Napsv_{service.name} / {server.name}")
-        shuffle(content)
-        content_str = ""
-        for i in content:
-            content_str += (i + "\n")
-        user_agent = request.headers.get('User-Agent', None)
-        is_v2ray_client = any(word in user_agent for word in ["hiddify", "v2ray"])
-        if is_v2ray_client:
-            service_obj = Service.objects.get(uuid=config_uuid)
-            if not service_obj.expire_time == 0 and service_obj.start_time == 0:
-                time_stamp = datetime.now().timestamp()
-                service_obj.start_time = time_stamp
-                service_obj.expire_time = time_stamp + (service_obj.expire_time * 86400)
-                service_obj.save()
-            response = HttpResponse(content_str)
-            response['Content-Disposition'] = f'attachment; filename="Napsv_{service.name}"'
-            return response
+        if Service.objects.filter(uuid=config_uuid).exists():
+            service = Service.objects.get(uuid=config_uuid)
+            content = []
+            for server in Server.objects.all():
+                content.append(f"vless://{config_uuid}@{server.fake_domain}:{server.inbound_port}?type=tcp&path=%2F&host=speedtest.net&headerType=http&security=none#Napsv_{service.name} / {server.name}")
+            shuffle(content)
+            content_str = ""
+            for i in content:
+                content_str += (i + "\n")
+            user_agent = request.headers.get('User-Agent', None)
+            is_v2ray_client = any(word in user_agent for word in ["hiddify", "v2ray"])
+            if is_v2ray_client:
+                service_obj = Service.objects.get(uuid=config_uuid)
+                if not service_obj.expire_time == 0 and service_obj.start_time == 0:
+                    time_stamp = datetime.now().timestamp()
+                    service_obj.start_time = time_stamp
+                    service_obj.expire_time = time_stamp + (service_obj.expire_time * 86400)
+                    service_obj.save()
+                response = HttpResponse(content_str)
+                response['Content-Disposition'] = f'attachment; filename="Napsv_{service.name}"'
+                return response
+            else:
+                return redirect("configs:client_config_page",config_uuid)
         else:
-            return redirect("configs:client_config_page",config_uuid)
+            return HttpResponse(status=404)
 
-
-
+    def post(self, request, config_uuid):
+        return HttpResponse(status=404)
 
 
 

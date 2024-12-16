@@ -15,23 +15,14 @@
     {% include "navbar_bot.html" %}
     {% include 'messages.html' %}
 <div id="main">
-{#    {% if service %}#}
         <h3 id="conf_name">{{ service.name }}</h3>
         <div id="box0" dir="rtl">
-            <h3 class="c_info">سرور: {{ config_info.server.server_name }}</h3>
-            {% if config_info.chat_id == none %}
+            {% if not service.customer.chat_id %}
                 <h3 class="c_info"> یوزر: ---- <a id="u_reg" href=""> Register 🆔</a></h3>
-{#                <h3 class="c_info"></h3>#}
              {% else %}
-                <h3 class="c_info">یوزر: <a style="color: white" href="{% url 'customers:custumer_detail' config_info.chat_id.userid %}">{{ config_info.chat_id.userid }}</a></h3>
+                <h3 class="c_info">یوزر: <a style="color: white" href="">{{ service.customer.chat_id }}</a></h3>
             {% endif %}
-            <h3 class="c_info">ساخته توسط: {{ config_info.created_by }}</h3>
-            <h3 class="c_info">مبلغ: {{ config_info.price }} T</h3>
-            {% if config_info.paid %}
-            <h3 class="c_info">پرداخت شده: ✅</h3> {% else %} <h3 class="c_info">پرداخت شده: ❌</h3>
-            {% endif %}
-            <h3 class="c_info">تمدید: {{ config_info.renew_count }}</h3>
-{#            <h3 class="text_error">❗ کانفیگ در بات ثبت نشده است. ❗</h3>#}
+            <h3 class="c_info">ساخته توسط: {{ service.created_by }}</h3>
         </div>
 
         {% if service.status == 1 %}
@@ -43,7 +34,7 @@
                     <div class="centering">
                         <h4 class="usage_text">{{ service.usage|floatformat:2 }}GB / <span style="font-size: x-large">∞</span></h4>
                         <div class="progress progressـusage_box">
-                            {% if service.usage == 0 %}
+                            {% if service.start_time == 0 %}
                                 <div class="progressـusage progress-bar bg-success" role="progressbar" style="width:100%" aria-confinfonow="100" aria-confinfomin="0" aria-confinfomax="100">Not Started</div>
                             {% else %}
                                 <div class="progressـusage progress-bar bg-unlimit" role="progressbar" style="width: 100%" aria-confinfonow="100" aria-confinfomin="0" aria-confinfomax="100">∞</div>
@@ -83,10 +74,10 @@
                         <div class="centering">
                             <h4 class="usage_text">{{ service.usage|floatformat:2 }}GB /{{ service.usage_limit }}GB</h4>
                             <div class="progress progressـusage_box">
-                                {% if service.started  %}
-                                    <div class="progressـusage progress-bar bg-info" role="progressbar" style="width:0%" aria-confinfonow="0" aria-confinfomin="0" aria-confinfomax="100">0%</div>
-                                {% else %}
+                                {% if service.start_time == 0  %}
                                     <div class="progressـusage progress-bar bg-success" role="progressbar" style="width:100%" aria-confinfonow="{{ service.3 }}" aria-confinfomin="0" aria-confinfomax="100">Not Started</div>
+                                {% else %}
+                                    <div class="progressـusage progress-bar bg-info" role="progressbar" style="width:0%" aria-confinfonow="0" aria-confinfomin="0" aria-confinfomax="100">0%</div>
                                 {% endif %}
                             </div>
                         </div>
@@ -98,15 +89,15 @@
                     <div class="time">
                         <h4 class="expire_text blue_infinite">⏳ ∞ day</h4>
                     </div>
-                {% elif service.expire_time > 0 and not service.started %}
+                {% elif service.start_time == 0 %}
                     <div class="time">
-                        <h4 class="expire_text green">⏳ {{ service.expire_time|dh }}</h4>
+                        <h4 class="expire_text green">⏳ {{ service.expire_time }} d</h4>
                     </div>
-                {% elif service.expire_time > 3 %}
+                {% elif service.expire_time|dh_int > 3 %}
                     <div class="time">
                         <h4 class="expire_text blue">⏳ {{ service.expire_time|dh }}</h4>
                     </div>
-                {% elif service.expire_time > 0 %}
+                {% elif service.expire_time|dh_int > 0 %}
                     <div class="time">
                         <h4 class="expire_text orange">⏳ {{ service.expire_time|dh }}</h4>
                     </div>

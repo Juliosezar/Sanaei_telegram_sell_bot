@@ -45,39 +45,12 @@ class ServerApi:
             for respons in list_configs.json()["obj"]:
                 if respons["id"] == server_obj.inbound_id:
                     for i in respons["clientStats"]:
-                        expired = False
-                        started = True
-                        presentDate = datetime.datetime.now()
-                        unix_timestamp = datetime.datetime.timestamp(presentDate) * 1000
-                        time_expire = i["expiryTime"]
-                        if time_expire > 0:
-                            time_expire = (time_expire - unix_timestamp) / 86400000
-                            if time_expire < 0:
-                                expired = True
-
-                        elif time_expire == 0:
-                            if i['down'] + i["up"] == 0:
-                                started = False
-                        else:
-                            time_expire = abs(int(time_expire / 86400000))
-                            started = False
-
                         usage = round(convert_units(i["up"] + i["down"], BinaryUnits.BYTE, BinaryUnits.GB)[0], 2)
-                        started = True if usage > 0 else False
-                        total_usage = int(convert_units(i['total'], BinaryUnits.BYTE, BinaryUnits.GB)[0])
-                        total_usage = 0 if total_usage < 0 else total_usage
                         joined_data[i["email"]] = {
-                            'ended': i["enable"],
                             'usage': usage,
-                            'started': started,
-                            'expire_time': time_expire,
-                            'usage_limit': total_usage,
-                            # 'inbound_id': i["inboundId"],
-                            "expired": expired
                         }
                     for i in json.loads(respons["settings"])["clients"]:
                         joined_data[i["email"]]['uuid'] = i["id"]
-                        joined_data[i["email"]]['ip_limit'] = i["limitIp"]
                         joined_data[i["email"]]['enable'] = i["enable"]
             session.close()
             return joined_data

@@ -99,7 +99,8 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
                     ).save()
                     ConfigAction.create_config_db(service_uuid)
                     ConfigAction.create_config_job_queue(service_uuid, 0)
-                      # TODO: Trigger create config celery
+                    CommandRunner.send_sub_link(service_uuid)
+                    run_jobs.delay()
                 else:
                     CommandRunner.send_msg(pay_obj.customer.chat_id,
                                            f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد. اما این مبلغ برای خرید کانفیگ انتخابی کافی نیست.")
