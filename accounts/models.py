@@ -1,6 +1,9 @@
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from .managers import UserManager
+from bot.models import SellerBots
+
+
 
 class User(AbstractBaseUser):
     username = models.CharField(unique=True, max_length=20)
@@ -11,7 +14,8 @@ class User(AbstractBaseUser):
     create_config_acc = models.BooleanField(default=True)
     list_configs_acc = models.BooleanField(default=True)
     delete_config_acc = models.BooleanField(default=True)
-    # bot = models.ForeignKey(Bots, on_delete=models.DO_NOTHING,default=1, null=True)
+    bot = models.ForeignKey(SellerBots, on_delete=models.DO_NOTHING, null=True)
+
 
     objects = UserManager()
 

@@ -65,7 +65,7 @@
     </script>
 
 
-        {% include "navbar_bot.html" %}
+        {% include "navbar_sellers.html" %}
         {% include 'messages.html' %}
         <div id="main">
 
@@ -76,7 +76,7 @@
                 <h3 id="textin" dir="rtl">{{ searchform.search_config }}</h3>
                 <input id="subbut" value="Search" class="submit_btn" type="submit">
                  {% if searched == True %}
-                    <a id="comeback" href="{% url 'configs:bot_list_config' %}">بازگشت</a>
+                    <a id="comeback" href="{% url 'configs:seller_list' username %}">بازگشت</a>
                  {% endif %}
              </div>
          </form>

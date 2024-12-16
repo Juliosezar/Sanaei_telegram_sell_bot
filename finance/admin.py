@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import SellersPrices, Prices
 
-# Register your models here.
+admin.site.register(SellersPrices)
+admin.site.register(Prices)

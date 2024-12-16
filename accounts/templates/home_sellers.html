@@ -7,40 +7,9 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="{% static 'home_page.css' %}">
-    <script>
-        $(document).ready(function() {
-            $('#create_config_box').hide()
-            $('#list_config_box').hide()
-            $('#prices_box').hide()
-            $('#create_config').click(function () {
-                $('#main').hide()
-                $('#create_config_box').show()
-                }
-            )
-            $('#list_config').click(function () {
-                $('#main').hide()
-                $('#list_config_box').show()
-                }
-            )
-            $('#select_prices').click(function () {
-                $('#main').hide()
-                $('#prices_box').show()
-                }
-            )
-            $('.close_btn').click(function () {
-                $('#create_config_box').hide()
-                $('#prices_box').hide()
-                $('#list_config_box').hide()
-                $('#main').show()
-            })
-
-        });
-    </script>
-
 </head>
 
 <body dir="rtl">
-
     <header dir="ltr" class="header">
     <h1 class="logo"><a id="logo" href="{% url 'accounts:home_bot' %}">NapsV Panel</a></h1>
     <ul class="main-nav">
@@ -87,7 +56,7 @@
     <div id="main">
         <div id="box1">
             <div id="searchbox">
-                <form novalidate action="" class="serch_box_inside" method="post">
+                <form novalidate action="{% url "configs:seller_list" "all" %}" class="serch_box_inside" method="post">
                     {% csrf_token %}
                     <img class="search_img" src="{% static 'img/search-config.png' %}" alt="search">
                     {{ search_config.search_config }}
@@ -95,20 +64,20 @@
                 </form>
             </div>
         {% if user.level_access == 0 %}
-            <a href="" class="links link2">➕ ساخت کانفیگ 🔗</a>
-            <a href="" class="links link2">📋 لیست کانفیگ ها 🔗</a>
+            <a href="{% url "configs:seller_create" user.username "auto" %}" class="links link2">➕ ساخت کانفیگ 🔗</a>
+            <a href="{% url "configs:seller_list" user.username %}" class="links link2">📋 لیست کانفیگ ها 🔗</a>
         {% else %}
-            <button class="links link2" id="create_config">➕ ساخت کانفیگ 🔗</button>
-            <button class="links link2" id="list_config">📋 لیست کانفیگ ها 🔗</button>
+            <a href="{% url "sellers:select_seller" "create" %}" class="links link2" id="create_config">➕ ساخت کانفیگ 🔗</a>
+            <a href="{% url "sellers:select_seller" "list" %}" class="links link2" id="list_config">📋 لیست کانفیگ ها 🔗</a>
         {% endif %}
         {% if not user.level_access == 10 %} {# and finance accsess #}
-            <a href="{% url "sellers_finance:seller_payment_page" user.id %}" class="links link2" id="customers">💵 صورت حساب 💳</a>
+            <a href="" class="links link2" id="customers">💵 صورت حساب 💳</a>
         {% else %}
             <a href="" class="links link2" id="customers">💵 صورت حساب 💳</a>
         {% endif %}
 
         {% if user.level_access == 0 %}
-            <a href="{% url "sellers_finance:sellers_show_prices" user.id %}" class="links">💰 تعرفه ها 🛒</a>
+            <a href="" class="links">💰 تعرفه ها 🛒</a>
         {% else %}
             <button id="select_prices" class="links">💰 تعرفه ها 🛒</button>
         {% endif %}
@@ -126,25 +95,8 @@
         {% endif %}
 
         </div>
-    </div>
-        <div class="servers" id="prices_box">
-        <div class="closebox"><button class="close_btn">✖️</button></div>
-        <h3>تعرفه ها</h3>
-            <div class="server_lists" >
-                {% if not user.level_access == 10 %}
-                <a class="server_name" href="{% url "sellers_finance:sellers_show_prices" user.id %}">{{ user.username }} 👤</a>
-                {% endif %}
-                {% for s in sellers_list %}
-                    <a class="server_name" href="{% url "sellers_finance:sellers_show_prices" s.id %}">{{ s.username }} 👤</a>
-                {% endfor %}
-        </div>
 
-    </div>
-    <style>
 
-    </style>
-
-{% include "subsellers_list.html" %}
 {% include "loading.html" %}
 </body>
 </html>

@@ -8,8 +8,8 @@ from .models import User
 import json
 from django.conf import settings
 from customers.forms import SearchCustomerForm
+from configs.forms import SearchConfigForm
 
-# Create your views here.
 class LoginView(View):
     formclass = LoginForm
 
@@ -64,20 +64,16 @@ class HomeBotView(LoginRequiredMixin, View):
 
     def get(self, request):
         search_user = SearchCustomerForm()
-        # search_config = SearchConfigForm()
-        # for i in Server.objects.all():
-        #     if ((now_timestamp() - i.last_update) // 60) > 30:
-        #         messages.error(request, f"مشکل اتصال به سرور {i.name}")
-        return render(request, "home_bot.html", {'search_customer':SearchCustomerForm})
+        search_config = SearchConfigForm()
+        return render(request, "home_bot.html", {'search_customer':search_user, 'search_config':search_config})
 
 
 class HomeSellersView(LoginRequiredMixin, View):
     def get(self, request):
-        # search_config = SearchConfigForm()
-        # for i in Server.objects.all():
-        #     if ((now_timestamp() - i.last_update) // 60) > 30:
-        #         messages.error(request, f"مشکل اتصال به سرور {i.name}")
-        return render(request, "home_sellers.html", )
+        search_config = SearchConfigForm()
+        return render(request, "home_sellers.html", {"search_config":search_config})
+
+
 
 
 class SettingsPage(LoginRequiredMixin, View):

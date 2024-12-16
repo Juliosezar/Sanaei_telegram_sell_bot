@@ -1,7 +1,7 @@
 from django.db import models
 from customers.models import Customer
 import uuid
-
+from accounts.models import User
 
 class BotPayment(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -38,3 +38,14 @@ class UserActiveOffCodes(models.Model):
     off_code = models.ForeignKey(OffCodes, on_delete=models.CASCADE)
     custumer = models.ForeignKey(Customer, on_delete=models.DO_NOTHING)
     used = models.BooleanField(default=False)
+
+
+######################################################  Sellers
+
+
+class SellersPrices(models.Model):
+    seller = models.ForeignKey(User, on_delete=models.CASCADE)
+    usage_limit = models.PositiveIntegerField()
+    expire_limit = models.PositiveIntegerField()
+    price = models.PositiveIntegerField()
+    user_limit = models.PositiveIntegerField(default=0)

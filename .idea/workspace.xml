@@ -5,20 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templates/client_config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/client_config_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templates/config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/config_page.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/templates/list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templates/list_configs_searched.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templatetags/custom_filters.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templatetags/custom_filters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/servers/sanaie_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/servers/sanaie_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templates/Custumer_details.html" beforeDir="false" afterPath="$PROJECT_DIR$/customers/templates/Custumer_details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templates/list_custumers.html" beforeDir="false" afterPath="$PROJECT_DIR$/customers/templates/list_custumers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,6 +151,7 @@
       <workItem from="1734156371282" duration="5449000" />
       <workItem from="1734179852099" duration="24206000" />
       <workItem from="1734263198981" duration="19500000" />
+      <workItem from="1734333743830" duration="4040000" />
     </task>
     <servers />
   </component>

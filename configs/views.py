@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm
-from finance.models import Prices
+from sellers.models import SubSellerSubset
+from accounts.models import User
+from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, SellersCreateConfigForm, ManualSellersCreateConfigForm
+from finance.models import Prices, SellersPrices
 from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -55,8 +57,6 @@ class ConfigAction:
                 config=config,
                 job=job,
             ).save()
-
-
 
 
 class BotCreateConfigView(LoginRequiredMixin, View):
@@ -144,14 +144,26 @@ class DeleteConfig(LoginRequiredMixin, View):
                 job=2,
             ).save()
         run_jobs.delay()
-        messages.success(request, f"سرویس {service.name} با موفقیت حذف شد.")
+        messages.success(request, f"سرویس {service.name} در صف حذف قرار گرفت.")
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
 class DisableConfig(LoginRequiredMixin, View):
     def get(self, request, config_uuid, enable):
+        service = Service.objects.get(uuid=config_uuid)
+        service.status = 0 if enable else 1
+        service.save()
+        for config in Config.objects.filter(service=service):
+            ConfigJobsQueue.objects.create(
+                config=config,
+                job=3 if enable else 1,
+            ).save()
+            config.status = 2
+            config.save()
+
+            run_jobs.delay()
 
         return redirect(request.META.get('HTTP_REFERER', '/'))
-        # return redirect('servers:list_configs', server_id)
+
 
 class ClientsConfigPage(View):
     def get(self, request, config_uuid):
@@ -164,8 +176,6 @@ class ClientsConfigPage(View):
             service = False
             sub_link = False
         return render(request, 'client_config_page.html', {'service': service, 'sub_link': sub_link})
-
-
 
 
 class Sublink(APIView):
@@ -199,12 +209,7 @@ class Sublink(APIView):
     def post(self, request, config_uuid):
         return HttpResponse(status=404)
 
-
-
-
-
-
-
+# Api
 
 
 class ApiGetConfigTimeChoices(APIView):
@@ -282,3 +287,194 @@ class ApiGetConfigPriceChoices(APIView):
         obj = Prices.objects.get(usage_limit=usage, expire_limit=time, user_limit=iplimit).price
         return Response({'price': f'{obj:,}'})
 
+
+
+#####################################################################
+
+
+#####################       Sellers View      #######################
+
+
+#####################################################################
+
+
+
+
+
+class SellersCreateConfigView(LoginRequiredMixin, View):
+    def get(self, request, username, form_type):
+        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        return render(request, 'sellers_create_config.html',
+                      {'form': forms[form_type], 'form_type': form_type, "seller_username": username})
+
+    def post(self, request, username, form_type):
+        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        form = forms[form_type](request.POST)
+        if form.is_valid():
+            ip_limit = 0
+            time_limit = 0
+            usage = 0
+            cd = form.cleaned_data
+
+            if cd['type'] == "limited":
+                usage = int(cd["usage_limit"])
+                time_limit = int(cd['days_limit'])
+            elif cd['type'] == 'usage_unlimit':
+                time_limit = int(cd['days_limit'])
+                ip_limit = int(cd['ip_limit'])
+            elif cd['type'] == 'time_unlimit':
+                usage = int(cd["usage_limit"])
+
+            if form_type == 'auto':
+                price = SellersPrices.objects.get(seller__username=username,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
+            else:
+                price = cd['price']
+
+            if form_type == 'auto':
+                time_limit = time_limit * 30
+            service_uuid = uuid.uuid4()
+            Service.objects.create(
+                uuid=service_uuid,
+                name=ConfigAction.generate_config_name(),
+                usage_limit=usage,
+                expire_time=time_limit,
+                user_limit=ip_limit,
+                created_by=request.user,
+                owner=User.objects.get(username=username),
+            ).save()
+
+            ConfigAction.create_config_db(service_uuid)
+            ConfigAction.create_config_job_queue(service_uuid, 0)
+            run_jobs.delay()
+            return redirect('configs:conf_page', str(service_uuid))
+        return render(request, 'sellers_create_config.html', {'form': form, 'form_type': form_type})
+
+
+class SellersListConfigView(LoginRequiredMixin, View):
+    def get(self, request,username,*args, **kwargs):
+        if request.user.level_access == 10:
+            if username == "all":
+                data = Service.objects.filter(~Q(owner=None))
+            else:
+                data = Service.objects.filter(owner__username=username)
+        elif request.user.level_access == 1:
+            if username == "all":
+                sub_list = [seller.sub for seller in SubSellerSubset.objects.filter(head=request.user)]
+                sub_list.append(request.user)
+                data = Service.objects.filter(Q(owner__in=sub_list))
+            else:
+                data = Service.objects.filter(owner__username=username)
+        else:
+            data = Service.objects.filter(owner=request.user)
+
+        searchform = SearchConfigForm()
+        return render(request, "sellers_list_configs.html", {"data": data, 'searchform': searchform, "username":username})
+
+    def post(self, request, username ,*args, **kwargs):
+        searchform = SearchConfigForm(request.POST)
+        if searchform.is_valid():
+            word = searchform.cleaned_data["search_config"]
+
+            if request.user.level_access == 10:
+                if username == "all":
+                    data = Service.objects.filter(Q(name__icontains=word) | Q(uuid__icontains=word),~Q(owner=None))
+                else:
+                    data = Service.objects.filter(Q(name__icontains=word) | Q(uuid__icontains=word),owner__username=username)
+            elif request.user.level_access == 1:
+                if username == "all":
+                    sub_list = [seller.sub for seller in SubSellerSubset.objects.filter(head=request.user)]
+                    sub_list.append(request.user)
+                    data = Service.objects.filter(Q(name__icontains=word) | Q(uuid__icontains=word),Q(owner__in=sub_list))
+                else:
+                    data = Service.objects.filter(Q(name__icontains=word) | Q(uuid__icontains=word),owner__username=username)
+            else:
+                data = Service.objects.filter(Q(name__icontains=word) | Q(uuid__icontains=word),owner=request.user)
+
+            return render(request, "sellers_list_configs.html",
+                          {"data": data, "searchform": searchform, "searched": True, "username":username})
+
+
+
+
+####### sellers api
+
+
+class ApiSellersGetConfigTimeChoices(APIView):
+    def get(self, request):
+        sleep(0.25)
+        seller_username = request.GET.get('username')
+        print(seller_username)
+        type = request.GET.get('type')
+        choices = []
+        if type == 'limited':
+            obj = SellersPrices.objects.filter(~Q(usage_limit=0) & ~Q(expire_limit=0),seller__username=seller_username)
+            for i in obj:
+                if not (i.expire_limit, f"{i.expire_limit} ماه") in choices:
+                    choices.append((i.expire_limit, f"{i.expire_limit} ماه"))
+        elif type == 'usage_unlimit':
+            obj = SellersPrices.objects.filter(Q(usage_limit=0) & ~Q(expire_limit=0),seller__username=seller_username)
+            for i in obj:
+                if not (i.expire_limit, f"{i.expire_limit} ماه") in choices:
+                    choices.append((i.expire_limit, f"{i.expire_limit} ماه"))
+        elif type == 'time_unlimit':
+            choices.append((0, '∞'))
+
+        choices = sorted(choices, key=lambda x: x[0])
+        return Response({'choices': choices})
+
+
+class ApiSellersGetConfigUsageChoices(APIView):
+    def get(self, request):
+        seller_username = request.GET.get('username')
+        type = request.GET.get('type')
+        time = int(request.GET.get('time'))
+        choices = []
+        if type == 'limited':
+            time = time
+            obj = SellersPrices.objects.filter(~Q(usage_limit=0) & Q(expire_limit=time),seller__username=seller_username)
+            for i in obj:
+                if not (i.usage_limit, f"{i.usage_limit} GB") in choices:
+                    choices.append((i.usage_limit, f"{i.usage_limit} GB"))
+
+        elif type == 'usage_unlimit':
+            choices.append((0, '∞'))
+
+        elif type == 'time_unlimit':
+            obj = SellersPrices.objects.filter(~Q(usage_limit=0) & Q(expire_limit=0),seller__username=seller_username)
+            for i in obj:
+                if not (i.usage_limit, f"{i.usage_limit} GB") in choices:
+                    choices.append((i.usage_limit, f"{i.usage_limit} GB"))
+
+        choices = sorted(choices, key=lambda x: x[0])
+        return Response({'choices': choices})
+
+
+class ApiSellersGetConfigIPLimitChoices(APIView):
+    def get(self, request):
+        seller_username = request.GET.get('username')
+        type = request.GET.get('type')
+        time = int(request.GET.get('time'))
+
+        choices = []
+        if type == 'limited' or type == 'time_unlimit':
+            choices.append((0, '∞'))
+
+        elif type == 'usage_unlimit':
+            time = time
+            obj = SellersPrices.objects.filter(Q(usage_limit=0) & Q(expire_limit=time),seller__username=seller_username)
+            for i in obj:
+                if not (i.user_limit, f"{i.user_limit} کاربره") in choices:
+                    choices.append((i.user_limit, f"{i.user_limit} کاربره"))
+
+        choices = sorted(choices, key=lambda x: x[0])
+        return Response({'choices': choices})
+
+
+class ApiSellersGetConfigPriceChoices(APIView):
+    def get(self, request):
+        seller_username = request.GET.get('username')
+        time = int(request.GET.get('time'))
+        iplimit = int(request.GET.get('iplimit'))
+        usage = int(request.GET.get('usage'))
+        obj = SellersPrices.objects.get(usage_limit=usage, expire_limit=time, user_limit=iplimit,seller__username=seller_username   ).price
+        return Response({'price': f'{obj:,}'})

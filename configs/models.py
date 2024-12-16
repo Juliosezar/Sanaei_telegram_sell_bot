@@ -2,7 +2,6 @@ from django.db import models
 from accounts.models import User
 from customers.models import Customer
 from servers.models import Server
-from sellers.models import Seller
 
 class Service(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
@@ -15,8 +14,8 @@ class Service(models.Model):
     user_limit = models.SmallIntegerField(default=0)
     paid = models.BooleanField(default=True)
     status = models.SmallIntegerField(default=0, choices=[(0,'Active'), (1,'disable'), (2,'Ended'), (4,'deleting')])
-    owner = models.ForeignKey(Seller, on_delete=models.DO_NOTHING, null=True) # null => main bot
-    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+    owner = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True) # null => main bot
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, related_name='created_by')
 
 
 class Config(models.Model):

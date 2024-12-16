@@ -1,27 +1,33 @@
+{% load static %}
+<head>
+{% include "base_head.html" %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'home_page.css' %}">
+</head>
+<body>
+    {% include "navbar_sellers.html" %}
 
     <div class="servers" id="list_config_box">
-        <div class="closebox"><button class="close_btn">✖️</button></div>
-        <h3>لیست کانفیگ ها</h3>
+        <div class="closebox"><a href="{% url "accounts:home_sellers" %}" class="close_btn">✖️</a></div>
+        {% if action == "create" %}
+            <h2>ساخت کانفیگ</h2>
+        {% elif action == "list" %}
+            <h2>لیست کانفیگ ها</h2>
+        {% elif action == "prices" %}
+            <h2>تعرفه ها</h2>
+        {% endif %}
     <div class="server_lists" >
-        <a class="server_name" href='{% url "sellers_config:list_configs" 0 %}'>🔰 All Users 🔰</a>
-        {% if not user.level_access == 10 %}
-        <a class="server_name" href='{% url "sellers_config:list_configs" user.id %}'>{{ user.username }} 👤</a>
+        {% if action == "list"  %}
+        <a class="server_name" href='/configs/sellers/{% if action == "create" %}create{% elif action == "list" %}list{% endif %}/all/{% if action == "create" %}auto/{% endif %}'>🔰 All Users 🔰</a>
+        {% endif %}
+        {% if user.level_access == 1 %}
+        <a class="server_name" href='/configs/sellers/{% if action == "create" %}create{% elif action == "list" %}list{% endif %}/{{ user.username }}{% if action == "create" %}/auto/{% endif %}'>{{ user.username }} 👤</a>
         {% endif %}
         {% for s in sellers_list %}
-                <a class="server_name" href='{% url "sellers_config:list_configs" s.id %}'>{{ s.username }} 👤</a>
+                <a class="server_name" href='/configs/sellers/{% if action == "create" %}create{% elif action == "list" %}list{% endif %}/{{ s.username }}{% if action == "create" %}/auto/{% endif %}'>{{ s.username }} 👤</a>
             {% endfor %}
         </div>
     </div>
-    <div class="servers" id="create_config_box">
-        <div class="closebox"><button class="close_btn">✖️</button></div>
-        <h3>ساخت کانفیگ</h3>
-        <div class="server_lists" >
-        {% if not user.level_access == 10 %}
-            <a class="server_name" href="{% url "sellers_config:create_config" user.id %}">{{ user.username }} 👤</a>
-        {% endif %}
-            {% for s in sellers_list %}
-                <a class="server_name" href="{% url "sellers_config:create_config" s.id %}">{{ s.username }} 👤</a>
-            {% endfor %}
-        </div>
 
-    </div>
+</body>

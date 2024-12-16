@@ -15,42 +15,13 @@
             </div>
         </div>
         <li class="hidephone"><a class="www" id="home" href='{% url 'accounts:home_sellers' %}'>صفحه اصلی</a></li>
-        <li class="hidephone"><button class="www" href="{% url "bot_config:bot_create_config" "auto" %}" id="action_create_config">ساخت کانفیگ</button></li>
-        <li class="hidephone"><button class="www" href="{% url "bot_configs:list_configs" %}" id="action_list_config">لیست کانفیگ ها</button></li>
+    {% if user.level_access == 0 %}
+        <li class="hidephone"><a class="www" href="{% url  "configs:seller_create" user.username "auto" %}" id="action_create_config">ساخت کانفیگ</a></li>
+        <li class="hidephone"><a class="www" href="" id="action_list_config">لیست کانفیگ ها</a></li>
+    {% else %}
+        <li class="hidephone"><a class="www" href="{% url "sellers:select_seller" "create" %}" id="action_create_config">ساخت کانفیگ</a></li>
+        <li class="hidephone"><a class="www" href="{% url "sellers:select_seller" "list" %}" id="action_list_config">لیست کانفیگ ها</a></li>
+    {% endif %}    
+        
     </ul>
 </header>
-{% include "subsellers_list.html" %}
-    <script>
-        $(document).ready(function() {
-            $('#create_config_box').hide()
-            $('#list_config_box').hide()
-            $('#create_config').click(function () {
-                $('#main').hide()
-                $('#create_config_box').show()
-                }
-            )
-            $('#list_config').click(function () {
-                $('#main').hide()
-                $('#list_config_box').show()
-                }
-            )
-            $('.close_btn').click(function () {
-                $('#create_config_box').hide()
-                $('#list_config_box').hide()
-                $('#main').show()
-            })
-            $('#action_create_config').click(function () {
-                $('#main').hide()
-                $('#create_config_box').show()
-                $('#list_config_box').hide()    
-            }
-            )
-            $('#action_list_config').click(function () {
-                $('#main').hide()
-                $('#list_config_box').show()
-                $('#create_config_box').hide()
-                }
-            )
-
-        });
-    </script>

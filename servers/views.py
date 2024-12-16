@@ -11,11 +11,6 @@ import requests
 from .sanaie_api import ServerApi
 
 
-class Test(View):
-    def get(self, request):
-        x = ServerApi.get_list_configs(1)
-        print(x)
-        return HttpResponse()
 
 class ShowServers(LoginRequiredMixin, View):
     def get(self, request):

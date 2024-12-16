@@ -43,7 +43,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="">{{ cus.chat_id }}</a>
+                                    <a href="{% url "customers:custumer_detail" cus.chat_id %}">{{ cus.chat_id }}</a>
                                 </td>
                                 <td>
                                     {% if cus.username == none %}
