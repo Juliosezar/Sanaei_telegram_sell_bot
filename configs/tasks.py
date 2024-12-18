@@ -1,7 +1,7 @@
 from celery import shared_task
-
+from bot.commands import CommandRunner
 from servers.models import Server
-from .models import ConfigJobsQueue, Config, Service
+from .models import ConfigJobsQueue, Config, Service, EndNotif
 from servers.sanaie_api import ServerApi
 from datetime import datetime
 
@@ -65,20 +65,28 @@ def update_usage():
                         config_obj.save()
                 server.last_update = datetime.now().timestamp()
                 server.save()
+            else:
+                pass  # Todo: send not working notif
         except Exception as e:
             print(e) # TODO: log error
 
-        else:
-            pass # Todo: send not working notif
+        response2 = ServerApi.get_online_users(server.ID)
+        if response2:
+            server.online_users = response2
+            server.save()
+
+
 
     # sum usages and ended configs
     for service in Service.objects.all():
         service.usage = sum([config.usage for config in Config.objects.filter(service=service)])
-        if not service.status in [2,4]:
+        if not service.status == 4:
             if service.usage >= service.usage_limit and not service.usage_limit == 0:
                 service.status = 2
-            if not service.expire_time == 0 and service.expire_time < datetime.now().timestamp() and not service.start_time == 0:
+            elif not service.expire_time == 0 and service.expire_time < datetime.now().timestamp() and not service.start_time == 0:
                 service.status = 2
+            else:
+                service.status = 0
             service.save()
 
 
@@ -118,10 +126,32 @@ def create_recorded_configs():
                     ServerApi.create_config(server.ID, config.service.name, config.service.uuid)
 
 
+
 @shared_task
-def check_servers():
-    for server in Server.objects.all():
-        response = ServerApi.get_online_users(server.ID)
-        if response:
-            server.online_users = response
-            server.save()
+def send_end_service_notif():
+    for service in Service.objects.filter(owner=None, status__in=[0,1,2]):
+        if service.customer:
+            if service.status == 2:
+                if not EndNotif.objects.filter(service=service, type=0).exists():
+                    CommandRunner.send_end_of_config_notif(service.uuid, 0)
+                    EndNotif.objects.create(service=service, type=0, timestamp=datetime.now().timestamp()).save()
+
+
+            elif service.status in [0,1]:
+                if service.start_time != 0 and (service.expire_time - datetime.now().timestamp()) < 43400:
+                    if not EndNotif.objects.filter(service=service, type=1).exists():
+                        CommandRunner.send_end_of_config_notif(service.uuid, 1)
+                        EndNotif.objects.create(service=service, type=1, timestamp=datetime.now().timestamp()).save()
+
+                if (service.usage_limit - service.usage) < 0.6:
+                    if not EndNotif.objects.filter(service=service, type=2).exists():
+                        CommandRunner.send_end_of_config_notif(service.uuid, 2)
+                        EndNotif.objects.create(service=service, type=2, timestamp=datetime.now().timestamp()).save()
+
+
+@shared_task
+def delete_notif():
+    for notif in EndNotif.objects.all():
+        if (datetime.now().timestamp() - notif.timestamp) > 302000:
+            notif.delete()
+

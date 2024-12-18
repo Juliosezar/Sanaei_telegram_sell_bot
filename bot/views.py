@@ -33,11 +33,12 @@ COMMANDS = {
     'waiting_for_wallet_pic': CommandRunner.get_add_to_wallet_pic,
     "waiting_for_pic_for_buy_config":CommandRunner.get_pic_for_buy_config,
     'service_status': CommandRunner.get_service,
-    # 'tamdid': CommandRunner.tamdid_select_config_expire_time,
-    # 'tamdid_expire_time': CommandRunner.tamdid_select_config_usage,
-    # 'tam_usage': CommandRunner.tamdid_confirm_config_buying,
+    'renew': CommandRunner.renew_select_config_expire_time,
+    'renew2': CommandRunner.renew_select_config_usage,
+    'renew3': CommandRunner.renew_confirm_config_buying,
     # 'tam_wallet': CommandRunner.tamdid_config_from_wallet,
-    # "tam_pay": CommandRunner.tamdid_pay_for_config,
+    "renew_pay": CommandRunner.Renew_pay_for_config,
+    "waiting_for_pic_for_renew_config": CommandRunner.get_pic_for_renew_config,
 
     # "QRcode": CommandRunner.Qrcode
 }

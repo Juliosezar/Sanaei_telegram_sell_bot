@@ -1,6 +1,8 @@
 from django.db import models
 from customers.models import Customer
 
+
+
 class CustomerTmpStatus(models.Model):
     customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
     status = models.CharField(max_length=30, default="normal")
@@ -9,3 +11,5 @@ class CustomerTmpStatus(models.Model):
 
 class SellerBots(models.Model):
     name = models.CharField(max_length=30)
+
+

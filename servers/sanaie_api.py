@@ -242,14 +242,11 @@ class ServerApi:
             server_obj = Server.objects.get(ID=server_id)
             session = cls.create_session(server_id)
             url = server_obj.url + "panel/api/inbounds"
-            response = session.post(url + f"/onlines", headers={},
-                                    data={}, timeout=6)
-
+            response = session.post(url + f"/onlines", headers={},data={}, timeout=6)
             if response.status_code == 200:
                 if response.json()['success']:
                     session.close()
                     return len(response.json()["obj"])
                 return False
         except Exception as e:
-            print(e)
             return False

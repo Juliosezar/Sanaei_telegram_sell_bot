@@ -1,9 +1,14 @@
+import uuid
+
 from django import template
 # from .models import ConfigsInfo, InfinitCongisLimit
 from django.conf import settings
 import json
 from persiantools.jdatetime import JalaliDateTime
 import datetime, pytz
+
+from configs.models import Service
+
 # from servers.models import CreateConfigQueue
 # from finance.models import ConfirmPaymentQueue, ConfirmTamdidPaymentQueue
 
@@ -89,12 +94,12 @@ def status(value):
     else:
         return "Denyed ❌"
 
-
-# def config_name(uuidd):
-#     if ConfigsInfo.objects.filter(config_uuid=uuidd).exists():
-#         return ConfigsInfo.objects.get(config_uuid=uuidd).config_name
-#     else:
-#         return "----"
+@register.filter(name="get_conf_name")
+def config_name(uuidd):
+    if Service.objects.filter(uuid=uuidd).exists():
+        return Service.objects.get(uuid=uuidd).name
+    else:
+        return "----"
 
 
 # @register.filter(name="paylog")

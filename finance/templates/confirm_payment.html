@@ -89,7 +89,7 @@
                             {% elif i.action == 0 %}
                                 <h4 class="info">Add to Wallet</h4>
                             {% else %}
-                            <h4 class="info">Renew: <a style="color: #98e2ff" href="">{{ i.config.name }}</a></h4>
+                            <h4 class="info">Renew: <a style="color: #98e2ff" href="">{{ i.info.service_uuid|get_conf_name }}</a></h4>
                             {% endif %}
                             <h3 class="info">userid: <a href="" style="color: #98e2ff">{{ i.customer.chat_id }}</a></h3>
                             <h3 class="info">price : <span class="nspan">{{ i.price }} T</span></h3>

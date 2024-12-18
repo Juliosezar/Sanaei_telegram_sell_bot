@@ -70,7 +70,7 @@ class FirstConfirmPayment(LoginRequiredMixin, View):
                         uuid=service_uuid,
                         name=service_name,
                         usage_limit=pay_obj.info["usage_limit"],
-                        expire_time=pay_obj.info["expre_time"] * 30,
+                        expire_time=pay_obj.info["expire_time"] * 30,
                         user_limit=pay_obj.info["user_limit"],
                         customer=pay_obj.customer,
                     ).save()
@@ -79,15 +79,30 @@ class FirstConfirmPayment(LoginRequiredMixin, View):
                     FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
                     CommandRunner.send_sub_link(service_uuid)
                     run_jobs.delay()
-                    FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 0,f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expre_time"] * 30}d / {pay_obj.info["user_limit"]}u", service_name)
+                    FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 0,f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expire_time"] * 30}d / {pay_obj.info["user_limit"]}u", service_name)
                 else:
                     CommandRunner.send_msg(pay_obj.customer.chat_id,
                                            f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد. اما این مبلغ برای خرید کانفیگ انتخابی کافی نیست.")
             elif pay_obj.action == 2: # renew service
-                pass # TODO: renew and change wallet
+                if Customer.objects.get(chat_id=pay_obj.customer.chat_id).wallet >= pay_obj.info["config_price"]:
+                    service = Service.objects.get(uuid=pay_obj.info["service_uuid"])
+                    service.usage_limit = pay_obj.info["usage_limit"]
+                    service.expire_time = (datetime.now().timestamp() + (pay_obj.info["expire_time"] * 86400)) if service.start_time != 0 else pay_obj.info["expire_time"]
+                    service.user_limit = pay_obj.info["user_limit"]
+                    service.save()
+                    ConfigAction.create_config_job_queue(service.uuid, 4)
+                    FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
+                    ConfigAction.reset_config_db(service.uuid)
+                    run_jobs.delay()
+                    CommandRunner.send_msg(service.customer.chat_id, f"پرداخت شما تایید و سرویس {service.name} تمدید شد. ✅ ")
+                    FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 1,
+                                                         f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expire_time"] * 30}d / {pay_obj.info["user_limit"]}u",service.name)
+                else:
+                    CommandRunner.send_msg(pay_obj.customer.chat_id,
+                                           f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد. اما این مبلغ برای تمدید سرویس مورد نظر کافی نیست.")
 
-            # pay_obj.status = 1
-            # pay_obj.save()
+            pay_obj.status = 1
+            pay_obj.save()
         else:
             messages.error(request, "این پرداخت توسط ادمین دیگری تایید یا رد شده است.")
         return redirect('finance:confirm_payments', 1)
@@ -109,7 +124,7 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
                         uuid=service_uuid,
                         name=service_name,
                         usage_limit=pay_obj.info["config_price"],
-                        expire_time=pay_obj.info["expre_time"] * 30,
+                        expire_time=pay_obj.info["expire_time"] * 30,
                         user_limit=pay_obj.info["user_limit"],
                         customer=pay_obj.customer,
                     ).save()
@@ -118,12 +133,28 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
                     FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
                     CommandRunner.send_sub_link(service_uuid)
                     run_jobs.delay()
-                    FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 0,f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expre_time"] * 30}d / {pay_obj.info["user_limit"]}u", service_name)
+                    FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 0,f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expire_time"] * 30}d / {pay_obj.info["user_limit"]}u", service_name)
                 else:
                     CommandRunner.send_msg(pay_obj.customer.chat_id,
                                            f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد. اما این مبلغ برای خرید کانفیگ انتخابی کافی نیست.")
             elif pay_obj.action == 2:  # renew service
-                pass  # TODO: renew and change wallet
+                if Customer.objects.get(chat_id=pay_obj.customer.chat_id).wallet >= pay_obj.info["config_price"]:
+                    service = Service.objects.get(uuid=pay_obj.info["service_uuid"])
+                    service.usage_limit = pay_obj.info["usage_limit"]
+                    service.expire_time = (datetime.now().timestamp() + (pay_obj.info["expire_time"] * 86400)) if service.start_time != 0 else pay_obj.info["expire_time"]
+                    service.user_limit = pay_obj.info["user_limit"]
+                    service.save()
+                    ConfigAction.create_config_job_queue(service.uuid, 4)
+                    FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
+                    ConfigAction.reset_config_db(service.uuid)
+                    run_jobs.delay()
+                    CommandRunner.send_msg(service.customer.chat_id, f"پرداخت شما تایید و سرویس {service.name} تمدید شد. ✅ ")
+                    FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 1,
+                                                         f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expire_time"] * 30}d / {pay_obj.info["user_limit"]}u",service.name)
+                else:
+                    CommandRunner.send_msg(pay_obj.customer.chat_id,
+                                           f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد. اما این مبلغ برای تمدید سرویس مورد نظر کافی نیست.")
+
 
             pay_obj.status = 2
             pay_obj.save()

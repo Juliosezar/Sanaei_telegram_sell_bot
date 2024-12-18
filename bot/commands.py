@@ -516,7 +516,7 @@ class CommandRunner:
             customer=customer,
             price=price_obj.price - customer.wallet,
             action=1,
-            info={"config_price":price_obj.price, "usage_limit":price_obj.usage_limit, "expre_time":price_obj.expire_limit, "user_limit":price_obj.user_limit},
+            info={"config_price":price_obj.price, "usage_limit":price_obj.usage_limit, "expire_time":price_obj.expire_limit, "user_limit":price_obj.user_limit},
             status=-1
         ).save()
         if cls.download_photo(file_id, chat_id):
@@ -584,7 +584,8 @@ class CommandRunner:
             sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{conf_uuid}/")
 
             kind = "حجمی"
-            if service.usage_limit == 0:
+            usage_limit = service.usage_limit
+            if usage_limit == 0:
                 kind = "حجم نامحدود"
                 usage_limit = "♾"
             elif service.expire_time == 0:
@@ -612,7 +613,7 @@ class CommandRunner:
             else:
                 status = "تماما شده 🔴"
                 keybord.append([{'text': '♻️ تمدید ♻️', 'callback_data': f'tamdid<~>{conf_uuid}'}])
-            text += '\n' "📥 حجم مصرفی: " f'{service.usage}GB از {service.usage_limit}' '\n' '⏳ روز های باقی مانده: ' f'{expire_days}' '\n' '📶 وضعیت: ' f'{status}' '\n' f'⚙️ نوع: ' f'{kind}'
+            text += '\n' "📥 حجم مصرفی: " f'{service.usage}GB از {usage_limit}' '\n' '⏳ روز های باقی مانده: ' f'{expire_days}' '\n' '📶 وضعیت: ' f'{status}' '\n' f'⚙️ نوع: ' f'{kind}'
             text = text.replace('_', "\\_")
             text += ("\n"'📡 کانفیگ شما:' '\n'f"```\n{sub_link}\n```")
             text += "\n" " برای آپدیت اطلاعات بالا بر روی دکمه (Refresh) کلیک کنید 👇"
@@ -701,3 +702,303 @@ class CommandRunner:
                 cls.send_msg(chat_id, "🔴 کد تخفیفی با این مشخصات یافت نشد.")
         else:
             cls.send_msg(chat_id, "🔴 لینک کد تخفیف اشتباه است.")
+
+
+    @classmethod
+    def send_end_of_config_notif(cls, service_uuid, type_, *args):
+        service = Service.objects.get(uuid=service_uuid)
+        if type_ == 0:
+            text = "‼️ مشتری گرامی، اشتراک سرویس زیر به اتمام رسیده است.🔔 \n\n"
+
+        elif type_ == 1:
+            text = "🔶 مشتری گرامی، کمتر از 12 ساعت تا اتمام سرویس شما باقی مانده است، برای جلوگیری از قطع شدن سرویس خود آنرا تمدید کنید.🔔 \n\n"
+        else:
+            text = "🔶 مشتری گرامی، کمتر از 0.5 گیگ (500مگابایت) از سرویس شما باقی مانده است، برای جلوگیری از قطع شدن سرویس خود آنرا تمدید کنید.🔔 \n\n"
+
+        text += '🔰 نام سرویس: ' + f'{service.name}' '\n'
+        kind = "حجمی"
+        usage_limit = service.usage_limit
+        if usage_limit == 0:
+            kind = "حجم نامحدود"
+            usage_limit = "♾"
+        elif service.expire_time == 0:
+            usage_limit = str(service.usage_limit) + "GB"
+            kind = "حجمی / زمان نامحدود"
+        if service.expire_time == 0:
+            expire_days = "♾"
+        elif service.status == 2:
+            expire_days = "اتمام اشتراک ❌"
+        else:
+            if service.start_time == 0:
+                expire_days = f" {service.expire_time} روز"
+            else:
+                now = datetime.now().timestamp()
+                value = (service.expire_time - now) / 86400
+                hour = int((abs(value) % 1) * 24)
+                day = abs(int(value))
+                expire_days = f" {day} روز" f' و {hour} ساعت '
+        if service.start_time == 0:
+            status = "استارت نشده 🔵"
+
+        elif service.status == 0:
+            status = "فعال 🟢"
+
+        else:
+            status = "تماما شده 🔴"
+
+        text += '\n' "📥 حجم مصرفی: " f'{service.usage}GB از {usage_limit}' '\n' '⏳ روز های باقی مانده: ' f'{expire_days}' '\n' '📶 وضعیت: ' f'{status}' '\n' f'⚙️ نوع: ' f'{kind}'
+        text += "\n\n" "✅ برای تمدید سرویس بر روی دکمه (تمدید) کلیک کنید 👇"
+        text = text.replace('_', "\\_")
+
+        text = text.replace('_', "\\_")
+        data = {
+            'chat_id': service.customer.chat_id,
+            'text': text,
+            'parse_mode': 'Markdown',
+            'reply_markup': {
+                'inline_keyboard': [
+                    [{'text': '♻️ تمدید ♻️', 'callback_data': f'renew<~>{service_uuid}'}], ]
+            },
+        }
+        cls.send_api("sendMessage", data)
+
+
+
+    @classmethod
+    def renew_select_config_expire_time(cls, chat_id, *args):
+        msg_id = int(args[0])
+        arg_splited = Action.args_spliter(args[1])
+        config_uuid = arg_splited[0]
+        if Service.objects.filter(uuid=config_uuid).exists():
+            service_name = Service.objects.get(uuid=config_uuid).name
+            price_obj = Prices.objects.all()
+            months = list(set([m.expire_limit for m in price_obj]))
+            month_list = []
+            for m in months:
+                if m == 0:
+                    m_text = " ♾ " + "زمان نامحدود"
+                else:
+                    m_text = " 🔘 " + f"{m} ماهه"
+                month_list.append([{'text': f"{m_text}", 'callback_data': f"renew2<~>{config_uuid}<%>{m}"}])
+            print(month_list)
+            data = {
+                'chat_id': chat_id,
+                'message_id': msg_id,
+                'text': '🔰 تمدید سرویس: ' f'{service_name}' '\n' '⏱ مدت زمان سرویس خود را انتخاب کنید 👇🏻',
+                'reply_markup': {
+                    'inline_keyboard': month_list
+                },
+            }
+        else:
+            data = {
+                'chat_id': chat_id,
+                'message_id': msg_id,
+                'text': 'این سرویس لغو گردیده است.',
+            }
+        cls.send_api("editMessageText", data)
+
+
+
+    @classmethod
+    def renew_select_config_usage(cls, chat_id, *args):
+        msg_id = int(args[0])
+        arg_splited = Action.args_spliter(args[1])
+        config_uuid = arg_splited[0]
+        expire_month = int(arg_splited[1])
+        if Service.objects.filter(uuid=config_uuid).exists():
+            service_name = Service.objects.get(uuid=config_uuid).name
+            price_obj = Prices.objects.filter(expire_limit=expire_month)
+            usage_list = []
+            for u in price_obj:
+                if u.usage_limit == 0:
+                    u_text = " ♾ " + "نامحدود" + " - " + f"{u.user_limit} کاربره" + " - " + f"{u.price} تومان "
+                else:
+                    u_text = " 🔘 " + f"{u.usage_limit} گیگ" + " - " + f"{u.price} تومان "
+                usage_list.append([{'text': u_text,
+                                    'callback_data': f"renew3<~>{config_uuid}<%>{expire_month}<%>{u.usage_limit}<%>{u.user_limit}"}])
+            usage_list.append([{'text': '🔙 بازگشت', 'callback_data': f"renew<~>{config_uuid}"}])
+
+            if expire_month == 0:
+                choosen = " زمان نامحدود ♾ "
+            else:
+                choosen = f" {expire_month} ماهه"
+
+            text =  f' ⏱ انقضا: {choosen}\n\n' + '🔃 حجم کانفیگ خود را انتخاب کنید 👇🏻'
+            data = {
+                'chat_id': chat_id,
+                'message_id': msg_id,
+                'text': text,
+                'reply_markup': {
+                    'inline_keyboard': usage_list
+                },
+            }
+        else:
+            data = {
+                'chat_id': chat_id,
+                'message_id': msg_id,
+                'text': 'این سرویس لغو گردیده است.',
+            }
+        cls.send_api("editMessageText", data)
+
+
+    @classmethod
+    def renew_confirm_config_buying(cls, chat_id, *args):
+        msg_id = int(args[0])
+        arg_splited = Action.args_spliter(args[1])
+        config_uuid = arg_splited[0]
+        expire_month = int(arg_splited[1])
+        usage_limit = int(arg_splited[2])
+        user_limit = int(arg_splited[3])
+        if Service.objects.filter(uuid=config_uuid).exists():
+            custumer_obj = Customer.objects.get(chat_id=chat_id)
+            wallet_amount = custumer_obj.wallet
+            price = Prices.objects.get(expire_limit=expire_month, user_limit=user_limit, usage_limit=usage_limit).price
+            wallet_amount_text = f"{wallet_amount:,}"
+            have_off_code = False
+            text = ""
+            if expire_month == 0:
+                expire_month_text = " زمان نامحدود ♾"
+                if UserActiveOffCodes.objects.filter(custumer__chat_id=chat_id, used=False, off_code__for_infinit_times=True).exists():
+                    have_off_code = True
+            else:
+                expire_month_text = f" {expire_month} ماهه"
+            if usage_limit == 0:
+                usage_limit_text = ' نامحدود ♾'
+                if UserActiveOffCodes.objects.filter(custumer__chat_id=chat_id, used=False,off_code__for_infinit_usages=True).exists():
+                    have_off_code = True
+            else:
+                usage_limit_text = f'{usage_limit} GB'
+
+            if usage_limit != 0 and expire_month != 0 and UserActiveOffCodes.objects.filter(custumer__chat_id=chat_id,
+                                                                        used=False, off_code__for_not_infinity=True).exists():
+                have_off_code = True
+
+            if user_limit == 0:
+                user_limit_text = ' بدون محدودیت ♾'
+            else:
+                user_limit_text = user_limit
+
+            if have_off_code:
+                text = "🟢 کد تخفیف شما صورت گرفت و از هزینه سرویس کم گردید." "\n\n"
+                off_model = UserActiveOffCodes.objects.get(custumer__chat_id=chat_id, used=False)
+                if off_model.off_code.type_off:
+                    price = price - int(off_model.off_code.amount * price / 100)
+                else:
+                    price = price - (off_model.off_code.amount * 1000)
+            price_text = f"{price:,}"
+            pay_amount = price - wallet_amount
+            pay_amount_text = f"{pay_amount:,}"
+            if wallet_amount >= price:
+
+                data = {
+                    'chat_id': chat_id,
+                    'message_id': msg_id,
+                    'text':text  + f' ⏱ انقضا: {expire_month_text}\n'
+                            f' 🔃 حجم : {usage_limit_text} \n' + f' 👤 محدودیت کاربر: {user_limit_text}\n\n' + f' 💵 هزینه سرویس: {price_text} تومان \n\n'
+                            f'کاربر گرامی، موجودی کیف پول شما {wallet_amount_text} تومان است، برای فعال سازی این سرویس مبلغ {price_text}'
+                            + f' تومان از کیف پول شما کسر خواهد شد.\n تایید خرید 👇🏻',
+                    'reply_markup': {
+                        'inline_keyboard': [[{'text': '✅ تایید خرید 💳',
+                                              'callback_data': f'renew_wallet<~>{config_uuid}<%>{expire_month}<%>{usage_limit}<%>{user_limit}'}],
+                                            [{"text": '🔙 بازگشت',
+                                              'callback_data': f"renew<~>{config_uuid}<%>{expire_month}"}],
+                                            [{'text': 'انصراف ❌', 'callback_data': 'abort_buying'}]]
+                    },
+                }
+            else:
+                if wallet_amount == 0:
+                    text_pay = f'کاربر گرامی، برای فعال سازی این سرویس مبلغ {pay_amount_text}'
+                else:
+                    text_pay = f'کاربر گرامی، موجودی کیف پول شما {wallet_amount_text} تومان است، برای فعال سازی این سرویس مبلغ {pay_amount_text}'
+                data = {
+                    'chat_id': chat_id,
+                    'message_id': msg_id,
+                    'text': text + f' ⏱ انقضا: {expire_month_text}\n'
+                                                                   f' 🔃 حجم : {usage_limit_text} \n' + f' 👤 محدودیت کاربر: {user_limit_text}\n\n' + f' 💵 هزینه سرویس: {price_text} تومان \n\n'
+                            + text_pay + f' تومان را پرداخت کنید 👇🏻',
+                    'reply_markup': {
+                        'inline_keyboard': [[{'text': '✅ پرداخت / کارت به کارت 💳',
+                                              'callback_data': f'renew_pay<~>{config_uuid}<%>{expire_month}<%>{usage_limit}<%>{user_limit}'}],
+                                            [{"text": '🔙 بازگشت',
+                                              'callback_data': f"renew2<~>{config_uuid}<%>{expire_month}"}],
+                                            [{'text': 'انصراف ❌', 'callback_data': 'abort_buying'}]]
+                    },
+                }
+        else:
+            data = {
+                'chat_id': chat_id,
+                'message_id': msg_id,
+                'text': 'این سرویس لغو گردیده است.',
+            }
+        cls.send_api("editMessageText", data)
+
+
+    @classmethod
+    def Renew_pay_for_config(cls, chat_id, *args):
+        msg_id = int(args[0])
+        arg_splited = Action.args_spliter(args[1])
+        config_uuid = arg_splited[0]
+        expire_limit = int(arg_splited[1])
+        usage_limit = int(arg_splited[2])
+        user_limit = int(arg_splited[3])
+        if Service.objects.filter(uuid=config_uuid).exists():
+            price_obj = Prices.objects.get(usage_limit=usage_limit, expire_limit=expire_limit, user_limit=user_limit)
+            price = price_obj.price
+            have_off_code = False
+            if usage_limit != 0 and expire_limit != 0 and UserActiveOffCodes.objects.filter(custumer__chat_id=chat_id, used=False, off_code__for_not_infinity=True).exists():
+                have_off_code = True
+            elif usage_limit == 0 and UserActiveOffCodes.objects.filter(custumer__chat_id=chat_id, used=False, off_code__for_infinit_usages=True).exists():
+                have_off_code = True
+            elif expire_limit == 0 and UserActiveOffCodes.objects.filter(custumer__chat_id=chat_id, used=False, off_code__for_infinit_times=True).exists():
+                have_off_code = True
+            if have_off_code:
+                off_model = UserActiveOffCodes.objects.get(custumer__chat_id=chat_id, used=False)
+                if off_model.off_code.type_off:
+                    price = price - int(off_model.off_code.amount * price / 100)
+                else:
+                    price = price - (off_model.off_code.amount * 1000)
+            wallet = Customer.objects.get(chat_id=chat_id).wallet
+            with open(settings.BASE_DIR / 'settings.json', 'r') as f:
+                data = json.load(f)
+                card_num = data["pay_card_number"]
+                card_name = data["pay_card_name"]
+            data = {
+                'message_id': msg_id,
+                'chat_id': chat_id,
+                'text': f" مبلغ {price - wallet} تومان را به شماره کارت زیر انتقال دهید، سپس عکس آنرا بعد از همین پیام ارسال نمایید : " + f'\n\n`{card_num}`\n {card_name}',
+                'parse_mode': 'Markdown',
+            }
+            data2 = {
+                'chat_id': chat_id,
+                "text": "تصویر پرداختی خود را ارسال کنید :",
+                'resize_keyboard': True,
+                'one_time_keyboard': True,
+                'reply_markup': {
+                    'keyboard': [
+                        [{'text': '❌ لغو پرداخت 💳'}]]
+                },
+            }
+            Action.change_customer_bot_tmp_stat(chat_id, "waiting_for_pic_for_renew_config", {"price_obj_id": price_obj.id, "service_uuid":config_uuid})
+
+            # expire limit * 30
+            cls.send_api("sendMessage", data2)
+            cls.send_api("editMessageText", data)
+
+    @classmethod
+    def get_pic_for_renew_config(cls, chat_id, file_id,*args):
+        customer_temp = CustomerTmpStatus.objects.get(customer__chat_id=chat_id, status="waiting_for_pic_for_renew_config")
+        price_obj = Prices.objects.get(id=customer_temp.values["price_obj_id"])
+        service = Service.objects.get(uuid=customer_temp.values["service_uuid"])
+        BotPayment.objects.create(
+            customer=service.customer,
+            price=price_obj.price - service.customer.wallet,
+            action=2,
+            info={"config_price":price_obj.price, "usage_limit":price_obj.usage_limit, "expire_time":price_obj.expire_limit * 30, "user_limit":price_obj.user_limit, "service_uuid":str(service.uuid)},
+            status=-1
+        ).save()
+        if cls.download_photo(file_id, chat_id):
+            cls.send_msg(chat_id,"پرداخت شما ثبت شد. \n لطفا منتظر باشید تا پرداخت شما توسط ادمین تایید شود.")
+            cls.main_menu(chat_id)
+        else:
+            cls.send_msg(chat_id, "مشکل در دریافت تصویر")
+            BotPayment.objects.get(customer=Customer.objects.get(chat_id=chat_id),status=-1).delete()
