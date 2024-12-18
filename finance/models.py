@@ -3,6 +3,18 @@ from customers.models import Customer
 import uuid
 from accounts.models import User
 
+
+class PurchaseRecord(models.Model):
+    created_for = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="P_created_for") # null => bot
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="P_created_by") # null => bot
+    service_name = models.CharField(max_length=30, null=True)
+    price = models.IntegerField(default=0)
+    type = models.SmallIntegerField(default=0, choices=[(0,"buy"), (1,"renew"), (2,"pay")])
+    description = models.CharField(max_length=120)
+    date_time = models.BigIntegerField(default=0)
+
+
+
 class BotPayment(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     price = models.IntegerField()

@@ -13,6 +13,7 @@ class Server(models.Model):
     inbound_port = models.PositiveIntegerField()
     active = models.BooleanField(default=True)
     maximum_connection = PositiveIntegerField(default=0)
+    online_users = PositiveIntegerField(default=0)
     last_update = models.BigIntegerField(default=0)
 
 

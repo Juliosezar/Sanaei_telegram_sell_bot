@@ -1,13 +1,15 @@
+from datetime import datetime
 from os import environ
 from configs.models import Service
 from customers.models import Customer
 import requests
 import json
 from .models import CustomerTmpStatus
-from finance.models import BotPayment, Prices, UserActiveOffCodes
+from finance.models import BotPayment, Prices, UserActiveOffCodes, OffCodes
 from django.core.files.base import ContentFile
 from django.conf import settings
 import urllib.parse
+from uuid import UUID
 
 
 TOKEN = environ.get('TELEGRAM_TOKEN')
@@ -28,7 +30,13 @@ class Action:
     def args_spliter(text):
         return text.split("<%>")
 
-
+    @staticmethod
+    def is_valid_uuid(uuid_to_test):
+        try:
+            uuid_obj = UUID(uuid_to_test, version=4)
+        except ValueError:
+            return False
+        return str(uuid_obj) == uuid_to_test
 
 class CommandRunner:
 
@@ -522,10 +530,174 @@ class CommandRunner:
     def send_sub_link(cls, config_uuid):
         service = Service.objects.get(uuid=config_uuid)
         sub_link_domain = environ.get("SUB_LINK_DOMAIN")
-        sub_link_domain = "https://" + sub_link_domain if not sub_link_domain.startswith("http") else sub_link_domain
+        sub_link_domain = "https://" + sub_link_domain.replace("https://","").replace("http://","")
         sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
-        print(sub_link)
-        send_text = ('کانفیگ شما: \n\n  '+ sub_link + "")
+        send_text = ('کانفیگ شما: \n\n  '+ sub_link + "\n" + "لینک بالا را کپی کرده و در برنامه مورد نظر اضافه کنید.")
         cls.send_msg(service.customer.chat_id, send_text)
 
 
+
+    @classmethod
+    def my_services(cls, chat_id, *args):
+        services = Service.objects.filter(customer__chat_id=chat_id)
+        opts = []
+        for service in services:
+            opts.append([{'text': " 🔗 " + service.name ,'callback_data': f'service_status<~>{service.uuid}'}])
+        data = {
+            'chat_id': chat_id,
+            'text': '🌐 سرویس های شما 👇🏻',
+            'parse_mode': 'Markdown',
+            'reply_markup': {
+                'inline_keyboard': opts
+
+            },
+        }
+        if services.count() == 0:
+            data = {
+                'chat_id': chat_id,
+                'text': 'شما سرویس ثبت شده ای ندارید.',
+                'parse_mode': 'Markdown',
+            }
+
+        if args:
+            msg_id = int(args[0])
+            data["message_id"] = msg_id
+            cls.send_api("editMessageText", data)
+        else:
+            cls.send_api("sendMessage", data)
+
+
+
+    @classmethod
+    def get_service(cls, chat_id, *args):
+        msg_id = int(args[0])
+        arg_splited = Action.args_spliter(args[1])
+        conf_uuid = arg_splited[0]
+        keybord = []
+        if Service.objects.filter(uuid=conf_uuid).exists():
+            keybord.append([{'text': '🔄 Refresh 🔄', 'callback_data': f'service_status<~>{conf_uuid}'}])
+            service = Service.objects.get(uuid=conf_uuid, status__in=[0,1,2
+                                                                      ])
+            text = '🔰 نام سرویس: ' + f'{service.name}' '\n'
+            sub_link_domain = environ.get("SUB_LINK_DOMAIN")
+            sub_link_domain = "https://" + sub_link_domain.replace("https://", "").replace("http://", "")
+            sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{conf_uuid}/")
+
+            kind = "حجمی"
+            if service.usage_limit == 0:
+                kind = "حجم نامحدود"
+                usage_limit = "♾"
+            elif service.expire_time == 0:
+                usage_limit = str(service.usage_limit) + "GB"
+                kind = "حجمی / زمان نامحدود"
+            if service.expire_time == 0:
+                expire_days = "♾"
+            elif service.status == 2:
+                expire_days = "اتمام اشتراک ❌"
+            else:
+                if service.start_time == 0:
+                    expire_days = f" {service.expire_time} روز"
+                else:
+                    now = datetime.now().timestamp()
+                    value = (service.expire_time - now) / 86400
+                    hour = int((abs(value) % 1) * 24)
+                    day = abs(int(value))
+                    expire_days = f" {day} روز" f' و {hour} ساعت '
+            if service.start_time == 0:
+                status = "استارت نشده 🔵"
+
+            elif service.status == 0:
+                status = "فعال 🟢"
+
+            else:
+                status = "تماما شده 🔴"
+                keybord.append([{'text': '♻️ تمدید ♻️', 'callback_data': f'tamdid<~>{conf_uuid}'}])
+            text += '\n' "📥 حجم مصرفی: " f'{service.usage}GB از {service.usage_limit}' '\n' '⏳ روز های باقی مانده: ' f'{expire_days}' '\n' '📶 وضعیت: ' f'{status}' '\n' f'⚙️ نوع: ' f'{kind}'
+            text = text.replace('_', "\\_")
+            text += ("\n"'📡 کانفیگ شما:' '\n'f"```\n{sub_link}\n```")
+            text += "\n" " برای آپدیت اطلاعات بالا بر روی دکمه (Refresh) کلیک کنید 👇"
+        else:
+            text = '❌ این سرویس دیگر فعال نیست.'
+
+        keybord.append([{'text': 'دریافت QRCode', 'callback_data': f"QRcode<~>{conf_uuid}"}])
+        keybord.append([{'text': '🔙 بازگشت', 'callback_data': f"سرویس های من 🧑‍💻"}])
+        data = {
+            'chat_id': chat_id,
+            'message_id': msg_id,
+            'text': text,
+            'parse_mode': 'Markdown',
+            'reply_markup': {
+                'inline_keyboard': keybord
+            },
+        }
+        cls.send_api("editMessageText", data)
+
+    @classmethod
+    def register_config(cls, chat_id, msg):
+        if Action.is_valid_uuid(msg):
+            if Service.objects.filter(uuid=msg).exists():
+                custumer = Customer.objects.get(chat_id=chat_id)
+                obj = Service.objects.get(uuid=msg)
+                obj.customer = custumer
+                obj.save()
+                sub_link_domain = environ.get("SUB_LINK_DOMAIN")
+                sub_link_domain = "https://" + sub_link_domain.replace("https://", "").replace("http://", "")
+                sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{msg}/")
+                text = f"نام سرویس: {obj.name}" + "\n\n" + sub_link
+                cls.send_msg(chat_id, "🟢 سرویس شما ثبت شد.")
+                data = {
+                    'chat_id': chat_id,
+                    'text': text,
+                    'parse_mode': 'Markdown',
+                    'reply_markup': {
+                        'inline_keyboard': [[{'text': 'دریافت QRcode',
+                                              'callback_data': f'QRcode<~>{msg}'}],
+                                            ]
+
+                    },
+                }
+                cls.send_api("sendMessage", data)
+            else:
+                cls.send_msg(chat_id, "سرویسی با این مشخصات ثبت نشده است.")
+        else:
+            cls.send_msg(chat_id, 'لینک نامعتبر است.')
+    @classmethod
+    def active_off_code(cls, chat_id, *args):
+        off_uuid = args[0]
+        if Action.is_valid_uuid(off_uuid):
+            if OffCodes.objects.filter(uid=off_uuid).exists():
+                off_model = OffCodes.objects.get(uid=off_uuid)
+                if off_model.end_timestamp > int(datetime.now().timestamp()):
+                    if UserActiveOffCodes.objects.filter(off_code=off_model, custumer__chat_id=chat_id).exists():
+                        active_code_model = UserActiveOffCodes.objects.get(off_code=off_model, custumer__chat_id=chat_id)
+                        if active_code_model.used and active_code_model.off_code.use_count == 1:
+                            cls.send_msg(chat_id, "🔴 شما فقط یکبار میتوانید این کد تخفیف را فعال کنید.")
+                        elif not active_code_model.used and active_code_model.off_code.use_count == 1:
+                            cls.send_msg(chat_id,
+                                                 "🟠 این کدتخفیف قبلا برای شما فعال شده است. دربخش پرداخت هزینه (خرید یا تمدید سرویس) بصورت خودکار برایتان محاسبه میگردد.")
+                        elif active_code_model.used and active_code_model.off_code.use_count == 0:
+                            if UserActiveOffCodes.objects.filter(custumer__chat_id=chat_id, used=False).exists():
+                                obj = UserActiveOffCodes.objects.get(custumer__chat_id=chat_id, used=False)
+                                obj.used = True
+                                obj.save()
+                            active_code_model.used = False
+                            active_code_model.save()
+
+                            cls.send_msg(chat_id, "🟢 این کدتخفیف دوباره برای شما فعال گردید.")
+                        elif not active_code_model.used and active_code_model.off_code.use_count == 0:
+                            cls.send_msg(chat_id,
+                                                 "🟠 این کد از قبل برای شما فعال است.  دربخش پرداخت هزینه (خرید یا تمدید سرویس) بصورت خودکار برایتان محاسبه میگردد.")
+                    else:
+                        if UserActiveOffCodes.objects.filter(custumer__chat_id=chat_id, used=False).exists():
+                            UserActiveOffCodes.objects.get(custumer__chat_id=chat_id, used=False).delete()
+                        UserActiveOffCodes.objects.create(off_code=off_model,
+                                                          custumer=Customer.objects.get(chat_id=chat_id)).save()
+                        cls.send_msg(chat_id,
+                                             "🟢 کد تخفیف برای شما فعال گردید. هنگام خرید یا تمدید سرویس به صورت خودکار (در مرحله پرداخت) برای شما محاسبه میگردد.")
+
+                else:
+                    cls.send_msg(chat_id, "🔴 مهلت فعال کردن این کد تخفیف گذشته است.")
+            else:
+                cls.send_msg(chat_id, "🔴 کد تخفیفی با این مشخصات یافت نشد.")
+        else:
+            cls.send_msg(chat_id, "🔴 لینک کد تخفیف اشتباه است.")

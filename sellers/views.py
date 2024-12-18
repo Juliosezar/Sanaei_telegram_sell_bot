@@ -12,6 +12,6 @@ class SelectSeller(LoginRequiredMixin, View):
             sellers_list = [row.sub for row in SubSellerSubset.objects.filter(head=request.user)]
         else:
             sellers_list = [row for row in User.objects.filter(level_access__in=[0,1])]
-        return render(request, "subsellers_list.html", {"sellers_list": sellers_list, "action": action})
+        return render(request, "subsellers_list_configs.html", {"sellers_list": sellers_list, "action": action})
 
 

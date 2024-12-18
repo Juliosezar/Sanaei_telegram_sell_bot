@@ -1,0 +1,65 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fa" class="no-js">
+	<head>
+		<title>List Configs</title>
+        {% include "base_head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'finance/surathesab_page.css' %}"/>
+    </head>
+	<body dir="ltr">
+        {% include "navbar_sellers.html" %}
+        {% include 'messages.html' %}
+        <div id="main">
+            <h3 id="counter">{{ username }}</h3>
+            <h3 id="counter"> T صورتحساب کل: {{ sum_bills|price }}</h3>
+		    <div class="xcontainer">
+		    		<table class="overflow-y">
+		    			<thead>
+		    				<tr>
+                                <th>SERVICE</th>
+                                <th>PRICE</th>
+                                <th>TYPE</th>
+                                <th>DESCRIPTION</th>
+                                <th>DATE/TIME</th>
+                                <th>CREATE BY</th>
+                                <th>CREATE FOR</th>
+
+                            </tr>
+		    			</thead>
+		    			<tbody>
+                        {% for value in purchases %}
+                            <tr>
+                                <td>{{ value.service_name }}</td>
+                                <td>{{ value.price|price }} T</td>
+                                {% if value.type == 0 %}
+                                    <td>خرید</td>
+                                {% elif value.type == 1 %}
+                                    <td>تمدید</td>
+                                {% elif value.type == 2 %}
+                                    <td>پرداخت</td>
+                                {% endif %}
+                                <td>{{ value.description }}</td>
+                                <td>{{ value.date_time|timestamp }}</td>
+                                <td>{{ value.created_by }}</td>
+                                <td>{{ value.created_for }}</td>
+
+                            </tr>
+                        {% endfor %}
+		    			</tbody>
+		    		</table>
+            </div>
+
+
+        </div>
+
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script src={% static "js/list.js" %}></script>
+	</body>
+
+{% include "loading.html" %}
+
+</html>

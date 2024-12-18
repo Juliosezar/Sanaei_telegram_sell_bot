@@ -222,13 +222,34 @@ class ServerApi:
         try:
             server_obj = Server.objects.get(ID=server_id)
             session = cls.create_session(server_id)
-            url = Server.url + "panel/api/inbounds"
+            url = server_obj.url + "panel/api/inbounds"
             response = session.post(url + f"/{server_obj.inbound_id}/resetClientTraffic/{config_name}/", headers={},
                                     data={}, timeout=6)
-            if not response.status_code == 200:
+            print(response.status_code)
+            print(response.json())
+            if response.status_code == 200:
                 if response.json()['success']:
                     session.close()
                     return True
                 return False
         except Exception as e:
+            print(e)
+            return False
+
+    @classmethod
+    def get_online_users(cls, server_id):
+        try:
+            server_obj = Server.objects.get(ID=server_id)
+            session = cls.create_session(server_id)
+            url = server_obj.url + "panel/api/inbounds"
+            response = session.post(url + f"/onlines", headers={},
+                                    data={}, timeout=6)
+
+            if response.status_code == 200:
+                if response.json()['success']:
+                    session.close()
+                    return len(response.json()["obj"])
+                return False
+        except Exception as e:
+            print(e)
             return False

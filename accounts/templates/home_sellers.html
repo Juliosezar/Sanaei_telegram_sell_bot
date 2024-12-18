@@ -70,16 +70,16 @@
             <a href="{% url "sellers:select_seller" "create" %}" class="links link2" id="create_config">➕ ساخت کانفیگ 🔗</a>
             <a href="{% url "sellers:select_seller" "list" %}" class="links link2" id="list_config">📋 لیست کانفیگ ها 🔗</a>
         {% endif %}
-        {% if not user.level_access == 10 %} {# and finance accsess #}
-            <a href="" class="links link2" id="customers">💵 صورت حساب 💳</a>
+        {% if user.level_access == 10 %} {# and finance accsess #}
+            <a href="{% url "finance:sellers_sum_bils" %}" class="links link2" id="customers">💵 صورت حساب 💳</a>
         {% else %}
-            <a href="" class="links link2" id="customers">💵 صورت حساب 💳</a>
+            <a href="{% url "finance:sellers_pay_bill" user.username %}" class="links link2" id="customers">💵 صورت حساب 💳</a>
         {% endif %}
 
-        {% if user.level_access == 0 %}
-            <a href="" class="links">💰 تعرفه ها 🛒</a>
+        {% if user.level_access == 10 %}
+            <a href="{% url 'finance:select_seller' "sellers_show_prices" %}" id="select_prices" class="links">💰 تعرفه ها 🛒</a>
         {% else %}
-            <button id="select_prices" class="links">💰 تعرفه ها 🛒</button>
+            <a href="{% url 'finance:sellers_show_prices' user.username %}" class="links">💰 تعرفه ها 🛒</a>
         {% endif %}
             <a href="" class="links" id="setting">🗃️  Logs 👨🏻‍🔧</a>
             <a href="" class="links" id="setting">👤 فروشنده ها 🛠️</a>

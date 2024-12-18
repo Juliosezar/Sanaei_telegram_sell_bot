@@ -15,6 +15,13 @@ urlpatterns = [
          name='delete_or_edit_price'),
     path('add_price/', views.AddPrice.as_view(), name='add_price'),
 
+    path("sellers_sum_bils/", views.SellersSumBills.as_view(), name='sellers_sum_bils'),
+    path("sellers_pay_bill/<str:username>/", views.SellerPayBills.as_view(), name='sellers_pay_bill'),
+    path("select_seller/<str:action>/", views.SelectSeller.as_view(), name='select_seller'),
+    path("sellers_show_prices/<str:username>/",views.SellersShowPrices.as_view(), name='sellers_show_prices' ),
+    path('seller_delete/<int:obj_id>/', views.SellersDeletePrice.as_view(), name='seller_delete_price'),
+    path('seller_add_price/<str:username>/', views.SellersAddPrice.as_view(), name='seller_add_price'),
+
     path("show_off_codes/", views.ShowOffCodes.as_view(), name='show_off_codes'),
     path("add_off_codes/", views.AddOffCode.as_view(), name='add_off_codes'),
     path("delete_off_code/<str:uuid>/", views.DeleteOffCode.as_view(), name='delete_off_code'),

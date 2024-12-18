@@ -19,7 +19,7 @@ COMMANDS = {
     # 'abort_buying': CommandRunner.abort_buying,
     'کیف پول 💰': CommandRunner.show_wallet_status,
     # 'تست رایگان 🔥': CommandRunner.test_conf,
-    # 'سرویس های من 🧑‍💻': CommandRunner.my_services,
+    'سرویس های من 🧑‍💻': CommandRunner.my_services,
     'تعرفه ها 💳': CommandRunner.send_prices,
     'ارتباط با ادمین 👤': CommandRunner.contact_us,
     'آیدی من 🆔': CommandRunner.myid,
@@ -31,16 +31,14 @@ COMMANDS = {
     'set_wallet_pay_amount': CommandRunner.send_pay_card_info,
     '❌ لغو پرداخت 💳': CommandRunner.abort,
     'waiting_for_wallet_pic': CommandRunner.get_add_to_wallet_pic,
-    "waiting_for_pic_for_buy_config":CommandRunner.get_pic_for_buy_config
-    # 'service_status': CommandRunner.get_service,
+    "waiting_for_pic_for_buy_config":CommandRunner.get_pic_for_buy_config,
+    'service_status': CommandRunner.get_service,
     # 'tamdid': CommandRunner.tamdid_select_config_expire_time,
     # 'tamdid_expire_time': CommandRunner.tamdid_select_config_usage,
     # 'tam_usage': CommandRunner.tamdid_confirm_config_buying,
     # 'tam_wallet': CommandRunner.tamdid_config_from_wallet,
     # "tam_pay": CommandRunner.tamdid_pay_for_config,
-    # "choose_location": CommandRunner.choose_location,
-    # "change_location": CommandRunner.change_location,
-    # "confirm_change": CommandRunner.confirm_change,
+
     # "QRcode": CommandRunner.Qrcode
 }
 
@@ -72,6 +70,10 @@ def webhook(request):
                         COMMANDS[text](chat_id)
                     elif  CustomerTmpStatus.objects.get(customer__chat_id=chat_id).status != "normal":
                         COMMANDS[CustomerTmpStatus.objects.get(customer__chat_id=chat_id).status](chat_id, text)
+                    elif "/start register_" in text:
+                        CommandRunner.register_config(chat_id, text.replace("/start register_", ""))
+                    elif "/start off_code_" in text:
+                        CommandRunner.active_off_code(chat_id, text.replace("/start off_code_", ""))
                     else:
                         CommandRunner.send_msg(chat_id, "ورودی نامعتبر")
                         CommandRunner.main_menu(chat_id)

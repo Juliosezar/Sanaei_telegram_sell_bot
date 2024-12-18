@@ -13,12 +13,12 @@ def run_jobs():
         response = False
         if job_queue.job == 0: # create
             response = ServerApi.create_config(job_queue.config.server.ID, job_queue.config.service.name, job_queue.config.service.uuid)
-            status = Config.objects.get(configjobsqueue=job_queue)
-            status.status = 1
-            status.save()
+            if response:
+                status = Config.objects.get(configjobsqueue=job_queue)
+                status.status = 1
+                status.save()
         elif job_queue.job == 1: # disable
             response = ServerApi.disable_config(job_queue.config.server.ID, job_queue.config.service.uuid, False)
-            print(response)
         elif job_queue.job == 2: # delete
             response = ServerApi.delete_config(job_queue.config.server.ID, job_queue.config.service.uuid)
             if response:
@@ -26,17 +26,17 @@ def run_jobs():
                 job_queue.config.save()
         elif job_queue.job == 3: # enable
             response = ServerApi.disable_config(job_queue.config.server.ID, job_queue.config.service.uuid, True)
-            print(response)
         elif job_queue.job == 4: # reset
             response = ServerApi.reset_usage(job_queue.config.server.ID, job_queue.config.service.name)
+            print(response)
 
 
         if response:
-            job_queue.try_count += 1
-            job_queue.last_try = datetime.now().timestamp()
             job_queue.done = True
-            job_queue.save()
 
+        job_queue.last_try = datetime.now().timestamp()
+        job_queue.try_count += 1
+        job_queue.save()
 
 @shared_task
 def update_usage():
@@ -116,3 +116,12 @@ def create_recorded_configs():
             for config in Config.objects.filter(server=server, status__in=[1,2]):
                 if not config.service.uuid in list_uuid and not config.service.status == 4:
                     ServerApi.create_config(server.ID, config.service.name, config.service.uuid)
+
+
+@shared_task
+def check_servers():
+    for server in Server.objects.all():
+        response = ServerApi.get_online_users(server.ID)
+        if response:
+            server.online_users = response
+            server.save()

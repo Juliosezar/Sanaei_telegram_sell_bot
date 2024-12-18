@@ -1,0 +1,26 @@
+{% load static %}
+<head>
+{% include "base_head.html" %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'home_page.css' %}">
+</head>
+<body>
+    {% include "navbar_sellers.html" %}
+
+    <div class="servers" id="list_config_box">
+        <div class="closebox"><a href="{% url "accounts:home_sellers" %}" class="close_btn">✖️</a></div>
+        {% if action == "show_prices" %}
+            <h2>تعرفه ها</h2>
+        {% endif %}
+    <div class="server_lists" >
+        {% if user.level_access == 1 %}
+        <a class="server_name" href='/finance/{{ action }}/{{ user.username }}'>{{ user.username }} 👤</a>
+        {% endif %}
+        {% for s in sellers_list %}
+            <a class="server_name" href='/finance/{{ action }}/{{ s.username }}'>{{ s.username }} 👤</a>
+        {% endfor %}
+        </div>
+    </div>
+
+</body>

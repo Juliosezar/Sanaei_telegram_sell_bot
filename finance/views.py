@@ -2,17 +2,21 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import EditPayPriceForm, AddPriceForm, AddOffForm
+from django.db.models import Sum
+from accounts.models import User
+from sellers.models import SubSellerSubset
+from .forms import EditPayPriceForm, AddPriceForm, AddOffForm, SellersAddPriceForm
 from customers.models import Customer
-from .models import BotPayment, OffCodes
+from .models import BotPayment, OffCodes, SellersPrices,Prices, PurchaseRecord
 from bot.commands import CommandRunner
 from persiantools.jdatetime import JalaliDateTime
-from .models import Prices
 import os
 from configs.views import ConfigAction
 from configs.models import Service
 import uuid
 from configs.tasks import run_jobs
+from datetime import datetime
+
 
 class FinanceAction:
     @staticmethod
@@ -22,6 +26,17 @@ class FinanceAction:
         customer.wallet = amount + customer.wallet
         customer.save()
 
+    @staticmethod
+    def create_purchase_record(created_for, created_by, price, type_pay, description, service_name):
+        PurchaseRecord.objects.create(
+            created_for=created_for,
+            created_by=created_by,
+            price=price,
+            type=type_pay,
+            description=description,
+            date_time=datetime.now().timestamp(),
+            service_name=service_name,
+        ).save()
 
 
 class ConfirmPaymentPage(LoginRequiredMixin, View):
@@ -41,7 +56,6 @@ class ConfirmPaymentPage(LoginRequiredMixin, View):
 class FirstConfirmPayment(LoginRequiredMixin, View):
     def get(self, request, obj_id):
         pay_obj = BotPayment.objects.get(id=obj_id)
-        print(pay_obj.price)
         FinanceAction.change_wallet(pay_obj.price, pay_obj.customer.chat_id)
         if pay_obj.status == 0:
             if pay_obj.action == 0: # add to wallet
@@ -51,9 +65,10 @@ class FirstConfirmPayment(LoginRequiredMixin, View):
                 if Customer.objects.get(chat_id=pay_obj.customer.chat_id).wallet >= pay_obj.info["config_price"]:
 
                     service_uuid = uuid.uuid4()
+                    service_name = ConfigAction.generate_config_name()
                     Service.objects.create(
                         uuid=service_uuid,
-                        name=ConfigAction.generate_config_name(),
+                        name=service_name,
                         usage_limit=pay_obj.info["usage_limit"],
                         expire_time=pay_obj.info["expre_time"] * 30,
                         user_limit=pay_obj.info["user_limit"],
@@ -64,7 +79,7 @@ class FirstConfirmPayment(LoginRequiredMixin, View):
                     FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
                     CommandRunner.send_sub_link(service_uuid)
                     run_jobs.delay()
-                     # TODO: Trigger create config celery
+                    FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 0,f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expre_time"] * 30}d / {pay_obj.info["user_limit"]}u", service_name)
                 else:
                     CommandRunner.send_msg(pay_obj.customer.chat_id,
                                            f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد. اما این مبلغ برای خرید کانفیگ انتخابی کافی نیست.")
@@ -87,20 +102,23 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
                 CommandRunner.send_msg(pay_obj.customer.chat_id,
                                        f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد.")
             elif pay_obj.action == 1:  # buy service
-                if pay_obj.customer.wallet >= pay_obj.info["config_price"]:
+                if Customer.objects.get(chat_id=pay_obj.customer.chat_id).wallet >= pay_obj.info["config_price"]:
                     service_uuid = uuid.uuid4()
+                    service_name = ConfigAction.generate_config_name()
                     Service.objects.create(
                         uuid=service_uuid,
-                        name=ConfigAction.generate_config_name(),
-                        usage_limit=pay_obj.info["price_obj"],
+                        name=service_name,
+                        usage_limit=pay_obj.info["config_price"],
                         expire_time=pay_obj.info["expre_time"] * 30,
                         user_limit=pay_obj.info["user_limit"],
                         customer=pay_obj.customer,
                     ).save()
                     ConfigAction.create_config_db(service_uuid)
                     ConfigAction.create_config_job_queue(service_uuid, 0)
+                    FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
                     CommandRunner.send_sub_link(service_uuid)
                     run_jobs.delay()
+                    FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 0,f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expre_time"] * 30}d / {pay_obj.info["user_limit"]}u", service_name)
                 else:
                     CommandRunner.send_msg(pay_obj.customer.chat_id,
                                            f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد. اما این مبلغ برای خرید کانفیگ انتخابی کافی نیست.")
@@ -247,3 +265,90 @@ class DeleteOffCode(LoginRequiredMixin, View):
     def get(self, request, uuid):
         OffCodes.objects.get(uid=uuid).delete()
         return redirect("finance:show_off_codes")
+
+
+class SellersSumBills(LoginRequiredMixin, View):
+    def get(self, request):
+        sub_list = {sub.sub: sub.head for sub in SubSellerSubset.objects.all()}
+        sellers_list = {}
+        for seller in User.objects.filter(level_access__in=[0,1]):
+            sum_prices = PurchaseRecord.objects.filter(created_for=seller).aggregate(sum=Sum('price'))['sum'] or 0
+            if seller in sub_list.keys():
+                seller = sub_list[seller]
+            if seller in sellers_list.keys():
+                sellers_list[seller] += sum_prices
+            else:
+                sellers_list[seller] = sum_prices
+        sum_bills = sum(sellers_list.values())
+        return render(request, 'sellers_sum_bills.html', {"sellers": sellers_list, "sum_bills": sum_bills})
+
+
+class SellerPayBills(LoginRequiredMixin, View):
+    def get(self, request, username):
+        list_of_subs = [sub.sub for sub in SubSellerSubset.objects.filter(head__username=username)]
+        list_of_subs.append(User.objects.get(username=username))
+        purchases = PurchaseRecord.objects.filter(created_for__in=list_of_subs)
+        sum_bills = purchases.aggregate(sum=Sum('price'))['sum'] or 0
+        return render(request, 'seller_pay_page.html', {"purchases": purchases, "sum_bills": sum_bills, "username":username})
+
+
+class SelectSeller(LoginRequiredMixin, View):
+    def get(self, request, action):
+        if request.user.level_access == 1:
+            sellers_list = [row.sub for row in SubSellerSubset.objects.filter(head=request.user)]
+        else:
+            sellers_list = [row for row in User.objects.filter(level_access__in=[0,1])]
+        return render(request, "subsellers_list_finance.html", {"sellers_list": sellers_list, "action": action})
+
+
+
+class SellersShowPrices(LoginRequiredMixin, View):
+    def get(self, request, username):
+        list_of_subs = [sub.sub for sub in SubSellerSubset.objects.filter(head__username=username)]
+        list_of_subs.append(User.objects.get(username=username))
+        price_model = SellersPrices.objects.filter(seller__in=list_of_subs).order_by("seller_id",'expire_limit', 'usage_limit')
+        return render(request, 'sellers_show_prices.html', {'price_model': price_model, "username":username})
+
+
+
+class SellersDeletePrice(LoginRequiredMixin, View):
+    def get(self, request, obj_id):
+        model_obj = SellersPrices.objects.get(id=obj_id)
+        model_obj.delete()
+        messages.success(request, "تعرفه با موفقیت حذف شد.")
+        return redirect('finance:sellers_show_prices', model_obj.seller.username)
+
+
+
+class SellersAddPrice(LoginRequiredMixin, View):
+    def get(self, request, username):
+        form = SellersAddPriceForm(username=username)
+        return render(request, 'seller_add_price.html', {'form': form, "username":username})
+
+    def post(self, request, username):
+        form = SellersAddPriceForm(request.POST, username=username)
+        if form.is_valid():
+            cd = form.cleaned_data
+            if cd["type_conf"] == "limited":
+                usage = cd["usage"]
+                month = cd["month"]
+                ip_limit = 0
+            elif cd["type_conf"] == "inf_usage":
+                usage = 0
+                month = cd['month']
+                ip_limit = cd["ip_limit"]
+            elif cd["type_conf"] == "inf_time":
+                usage = cd["usage"]
+                month = 0
+                ip_limit = 0
+            price = cd["price"] * 1000
+
+            SellersPrices.objects.create(
+                seller=User.objects.get(username=username),
+                price=price,
+                expire_limit=int(month),
+                user_limit=int(ip_limit),
+                usage_limit=int(usage),
+            ).save()
+            return redirect('finance:sellers_show_prices', username)
+        return render(request, 'seller_add_price.html', {'form': form, "username":username})

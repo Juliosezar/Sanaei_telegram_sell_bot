@@ -14,8 +14,6 @@
             <h2>ساخت کانفیگ</h2>
         {% elif action == "list" %}
             <h2>لیست کانفیگ ها</h2>
-        {% elif action == "prices" %}
-            <h2>تعرفه ها</h2>
         {% endif %}
     <div class="server_lists" >
         {% if action == "list"  %}
@@ -25,8 +23,8 @@
         <a class="server_name" href='/configs/sellers/{% if action == "create" %}create{% elif action == "list" %}list{% endif %}/{{ user.username }}{% if action == "create" %}/auto/{% endif %}'>{{ user.username }} 👤</a>
         {% endif %}
         {% for s in sellers_list %}
-                <a class="server_name" href='/configs/sellers/{% if action == "create" %}create{% elif action == "list" %}list{% endif %}/{{ s.username }}{% if action == "create" %}/auto/{% endif %}'>{{ s.username }} 👤</a>
-            {% endfor %}
+            <a class="server_name" href='/configs/sellers/{% if action == "create" %}create{% elif action == "list" %}list{% endif %}/{{ s.username }}{% if action == "create" %}/auto/{% endif %}'>{{ s.username }} 👤</a>
+        {% endfor %}
         </div>
     </div>
 

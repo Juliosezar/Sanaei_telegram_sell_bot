@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
+
+from bot.commands import CommandRunner
 from sellers.models import SubSellerSubset
 from accounts.models import User
 from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, SellersCreateConfigForm, ManualSellersCreateConfigForm
@@ -58,6 +60,14 @@ class ConfigAction:
                 job=job,
             ).save()
 
+    @staticmethod
+    def reset_config_db(service_uuid):
+        configs = Config.objects.filter(service__uuid=service_uuid)
+        for config in configs:
+            config.usage = 0
+            config.save()
+
+
 
 class BotCreateConfigView(LoginRequiredMixin, View):
     def get(self, request, form_type):
@@ -66,6 +76,7 @@ class BotCreateConfigView(LoginRequiredMixin, View):
                       {'form': forms[form_type], 'form_type': form_type})
 
     def post(self, request, form_type):
+        from finance.views import FinanceAction
         forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
         form = forms[form_type](request.POST)
         if form.is_valid():
@@ -91,21 +102,73 @@ class BotCreateConfigView(LoginRequiredMixin, View):
             if form_type == 'auto':
                 time_limit = time_limit * 30
             service_uuid = uuid.uuid4()
+            service_name = ConfigAction.generate_config_name()
             Service.objects.create(
                 uuid=service_uuid,
-                name=ConfigAction.generate_config_name(),
+                name=service_name,
                 usage_limit=usage,
                 expire_time=time_limit,
                 user_limit=ip_limit,
                 paid=paid,
                 created_by=request.user,
             ).save()
-
             ConfigAction.create_config_db(service_uuid)
             ConfigAction.create_config_job_queue(service_uuid, 0)
             run_jobs.delay()
+            FinanceAction.create_purchase_record(None, request.user, price, 0, f"{usage}GB / {time_limit}d / {ip_limit}u", service_name)
             return redirect('configs:conf_page', str(service_uuid))
         return render(request, 'create_config.html', {'form': form, 'form_type': form_type})
+
+class BotRenewConfigView(LoginRequiredMixin, View):
+    def get(self, request, config_uuid, form_type):
+        service = Service.objects.get(uuid=config_uuid)
+        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        return render(request, 'renew_config.html',
+                      {'form': forms[form_type], 'form_type': form_type, "service": service})
+
+    def post(self, request, config_uuid, form_type):
+        from finance.views import FinanceAction
+        service = Service.objects.get(uuid=config_uuid)
+        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        form = forms[form_type](request.POST)
+        if form.is_valid():
+            ip_limit = 0
+            time_limit = 0
+            usage = 0
+            cd = form.cleaned_data
+
+            if cd['type'] == "limited":
+                usage = int(cd["usage_limit"])
+                time_limit = int(cd['days_limit'])
+            elif cd['type'] == 'usage_unlimit':
+                time_limit = int(cd['days_limit'])
+                ip_limit = int(cd['ip_limit'])
+            elif cd['type'] == 'time_unlimit':
+                usage = int(cd["usage_limit"])
+
+            if form_type == 'auto':
+                price = Prices.objects.get(usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
+            else:
+                price = cd['price']
+            paid = cd["paid"]
+            if form_type == 'auto':
+                time_limit = time_limit * 30
+
+            service.usage_limit = usage
+            service.expire_time = (datetime.now().timestamp() + (time_limit * 86400)) if service.start_time != 0 else time_limit
+            service.user_limit = ip_limit
+            service.paid = paid
+            service.save()
+            ConfigAction.create_config_job_queue(service.uuid, 4)
+            ConfigAction.reset_config_db(service.uuid)
+            run_jobs.delay()
+            if service.customer:
+                CommandRunner.send_msg(service.customer.chat_id, f"سرویس {service.name} تمدید شد.")
+            FinanceAction.create_purchase_record(None, request.user, price, 1, f"{usage}GB / {time_limit}d / {ip_limit}u", service.name)
+            return redirect('configs:conf_page', str(service.uuid))
+        return render(request, 'renew_config.html', {'form': form, 'form_type': form_type, "service": service})
+
+
 
 
 class BotListConfigView(LoginRequiredMixin, View):
@@ -131,7 +194,7 @@ class ConfigPage(LoginRequiredMixin, View):
             service = False
         get_config_link = f"نام سرویس: {service.name}" "\n\n" "برای دریافت کانفیگ روی لینک زیر کلیک کنید 👇🏻" "\n"  f'tg://resolve?domain={environ.get('BOT_USERNAME')}&start=register_{config_uuid}'
         vless = ""
-        return render(request, 'config_page.html', {'service': service, 'vless': vless})
+        return render(request, 'config_page.html', {'service': service, 'vless': vless, "get_config_link":get_config_link})
 
 class DeleteConfig(LoginRequiredMixin, View):
     def get(self, request, config_uuid):
@@ -170,7 +233,7 @@ class ClientsConfigPage(View):
         if Service.objects.filter(uuid=config_uuid).exists():
             service = Service.objects.get(uuid=config_uuid)
             sub_link_domain = environ.get("SUB_LINK_DOMAIN")
-            sub_link_domain = "https://" + sub_link_domain if not sub_link_domain.startswith("http") else sub_link_domain
+            sub_link_domain = "https://" + sub_link_domain.replace("https://", "").replace("http://", "")
             sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
         else:
             service = False
@@ -308,7 +371,9 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
                       {'form': forms[form_type], 'form_type': form_type, "seller_username": username})
 
     def post(self, request, username, form_type):
+        from finance.views import FinanceAction
         forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        owner = User.objects.get(username=username)
         form = forms[form_type](request.POST)
         if form.is_valid():
             ip_limit = 0
@@ -326,28 +391,79 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
                 usage = int(cd["usage_limit"])
 
             if form_type == 'auto':
-                price = SellersPrices.objects.get(seller__username=username,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
+                price = SellersPrices.objects.get(seller=owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
             else:
                 price = cd['price']
-
+            price *= 1000
             if form_type == 'auto':
                 time_limit = time_limit * 30
             service_uuid = uuid.uuid4()
+            service_name = ConfigAction.generate_config_name()
             Service.objects.create(
                 uuid=service_uuid,
-                name=ConfigAction.generate_config_name(),
+                name=service_name,
                 usage_limit=usage,
                 expire_time=time_limit,
                 user_limit=ip_limit,
                 created_by=request.user,
-                owner=User.objects.get(username=username),
+                owner=owner,
             ).save()
-
             ConfigAction.create_config_db(service_uuid)
             ConfigAction.create_config_job_queue(service_uuid, 0)
             run_jobs.delay()
-            return redirect('configs:conf_page', str(service_uuid))
+            FinanceAction.create_purchase_record(owner, request.user, price, 0, f"{usage}GB / {time_limit}d / {ip_limit}u", service_name)
+            return redirect('configs:sellers_conf_page', str(service_uuid))
         return render(request, 'sellers_create_config.html', {'form': form, 'form_type': form_type})
+
+
+
+class SellersRenewConfigView(LoginRequiredMixin, View):
+    def get(self, request, config_uuid, username, form_type):
+        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        service = Service.objects.get(uuid=config_uuid)
+        return render(request, 'sellers_create_config.html',
+                      {'form': forms[form_type], 'form_type': form_type, "seller_username": username})
+
+    def post(self, request, config_uuid, username, form_type):
+        from finance.views import FinanceAction
+        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        service = Service.objects.get(uuid=config_uuid)
+        owner = User.objects.get(username=username)
+        form = forms[form_type](request.POST)
+        if form.is_valid():
+            ip_limit = 0
+            time_limit = 0
+            usage = 0
+            cd = form.cleaned_data
+            if cd['type'] == "limited":
+                usage = int(cd["usage_limit"])
+                time_limit = int(cd['days_limit'])
+            elif cd['type'] == 'usage_unlimit':
+                time_limit = int(cd['days_limit'])
+                ip_limit = int(cd['ip_limit'])
+            elif cd['type'] == 'time_unlimit':
+                usage = int(cd["usage_limit"])
+
+            if form_type == 'auto':
+                price = SellersPrices.objects.get(seller=owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
+            else:
+                price = cd['price']
+            price *= 1000
+            if form_type == 'auto':
+                time_limit = time_limit * 30
+
+            service.usage_limit = usage
+            service.expire_time = (datetime.now().timestamp() + (time_limit * 86400)) if service.start_time != 0 else time_limit
+            service.user_limit = ip_limit
+            service.save()
+            ConfigAction.create_config_job_queue(service.uuid, 4)
+            ConfigAction.reset_config_db(service.uuid)
+            run_jobs.delay()
+
+            FinanceAction.create_purchase_record(owner, request.user, price, 1, f"{usage}GB / {time_limit}d / {ip_limit}u", service.name)
+            return redirect('configs:sellers_conf_page', str(service.uuid))
+        return render(request, 'sellers_create_config.html', {'form': form, 'form_type': form_type})
+
 
 
 class SellersListConfigView(LoginRequiredMixin, View):
@@ -394,7 +510,20 @@ class SellersListConfigView(LoginRequiredMixin, View):
                           {"data": data, "searchform": searchform, "searched": True, "username":username})
 
 
+class SellersConfigPage(LoginRequiredMixin, View):
+    def get(self, request, config_uuid):
+        if Service.objects.filter(uuid=config_uuid).exists():
+            service = Service.objects.get(uuid=config_uuid)
+            get_config_link = f"نام سرویس: {service.name}" "\n\n" "برای دریافت کانفیگ روی لینک زیر کلیک کنید 👇🏻" "\n"  f'tg://resolve?domain={environ.get('BOT_USERNAME')}&start=register_{config_uuid}'
+            sub_link_domain = environ.get("SUB_LINK_DOMAIN")
+            sub_link_domain = "https://" + sub_link_domain.replace("https://","").replace("http://","")
+            sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
+            sub_link = ('کانفیگ شما: \n\n  ' + sub_link + "")
+        else:
+            service = False
+            sub_link = False
 
+        return render(request, 'sellers_config_page.html', {'service': service, 'sub_link': sub_link})
 
 ####### sellers api
 

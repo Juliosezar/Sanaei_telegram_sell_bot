@@ -1,0 +1,48 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fa" class="no-js">
+	<head>
+		<title>List Configs</title>
+        {% include "base_head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'finance/surathesab_page.css' %}"/>
+    </head>
+	<body dir="ltr">
+        {% include "navbar_sellers.html" %}
+        {% include 'messages.html' %}
+        <div id="main">
+
+            <h3 id="counter"> T صورتحساب کل: {{ sum_bills|price }}</h3>
+		    <div class="xcontainer">
+		    		<table class="overflow-y">
+		    			<thead>
+		    				<tr>
+                                <th>کاربر</th>
+                                <th>صورتحساب</th>
+
+                            </tr>
+		    			</thead>
+		    			<tbody>
+                        {% for key ,value in sellers.items %}
+                            <tr>
+                                <td><a href="{% url 'finance:sellers_pay_bill' key.username %}">{{ key }}</a></td>
+                                <td>{{ value|price }} T</td>
+                            </tr>
+                        {% endfor %}
+		    			</tbody>
+		    		</table>
+            </div>
+
+
+        </div>
+
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script src={% static "js/list.js" %}></script>
+	</body>
+
+{% include "loading.html" %}
+
+</html>
