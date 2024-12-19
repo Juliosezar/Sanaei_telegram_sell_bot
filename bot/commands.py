@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from os import environ
 from configs.models import Service
@@ -430,7 +431,7 @@ class CommandRunner:
                         + f' تومان از کیف پول شما کسر خواهد شد.\n تایید خرید 👇🏻',
                 'reply_markup': {
                     'inline_keyboard': [[{'text': '✅ تایید خرید 💳',
-                                          'callback_data': f'buy_config_from_wallet<~>{expire_month}<%>{usage_limit}<%>{user_limit}'}],
+                                          'callback_data': f'buy_from_wallet<~>{expire_month}<%>{usage_limit}<%>{user_limit}'}],
                                         [{"text": '🔙 بازگشت',
                                           'callback_data': f"expire_time<~>{expire_month}"}],
                                         [{'text': 'انصراف ❌', 'callback_data': 'abort_buying'}]]
@@ -532,7 +533,7 @@ class CommandRunner:
         sub_link_domain = environ.get("SUB_LINK_DOMAIN")
         sub_link_domain = "https://" + sub_link_domain.replace("https://","").replace("http://","")
         sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
-        send_text = ('کانفیگ شما: \n\n  '+ sub_link + "\n" + "لینک بالا را کپی کرده و در برنامه مورد نظر اضافه کنید.")
+        send_text = (f" 🔰 سرویس: {service.name}"  "\n\n" ' 🌐 لینک سرویس: \n\n  '+ sub_link + "\n" + "لینک بالا را کپی کرده و در برنامه مورد نظر اضافه کنید.")
         cls.send_msg(service.customer.chat_id, send_text)
 
 
@@ -983,6 +984,14 @@ class CommandRunner:
             # expire limit * 30
             cls.send_api("sendMessage", data2)
             cls.send_api("editMessageText", data)
+        else:
+            data = {
+                'chat_id': chat_id,
+                'message_id': msg_id,
+                'text': 'این سرویس لغو گردیده است.',
+            }
+            cls.send_api("editMessageText", data)
+
 
     @classmethod
     def get_pic_for_renew_config(cls, chat_id, file_id,*args):
@@ -1002,3 +1011,83 @@ class CommandRunner:
         else:
             cls.send_msg(chat_id, "مشکل در دریافت تصویر")
             BotPayment.objects.get(customer=Customer.objects.get(chat_id=chat_id),status=-1).delete()
+
+
+    @classmethod
+    def renew_config_from_wallet(cls, chat_id, *args):
+        msg_id = int(args[0])
+        arg_splited = Action.args_spliter(args[1])
+        config_uuid = arg_splited[0]
+        expire_limit = int(arg_splited[1])
+        usage_limit = int(arg_splited[2])
+        user_limit = int(arg_splited[3])
+        if Service.objects.filter(uuid=config_uuid).exists():
+            from finance.views import FinanceAction
+            from configs.views import ConfigAction
+            from configs.tasks import run_jobs
+            service = Service.objects.get(uuid=config_uuid)
+            price = Prices.objects.get(usage_limit=usage_limit, expire_limit=expire_limit, user_limit=user_limit).price
+            service.usage_limit = usage_limit
+            service.expire_time = (datetime.now().timestamp() + (expire_limit * 30 * 86400)) if service.start_time != 0 else expire_limit * 30
+            service.user_limit = user_limit
+            service.save()
+            ConfigAction.create_config_job_queue(service.uuid, 4)
+            FinanceAction.change_wallet(price * -1, service.customer.chat_id)
+            ConfigAction.reset_config_db(service.uuid)
+            run_jobs.delay()
+            CommandRunner.send_msg(service.customer.chat_id, f"پرداخت شما تایید و سرویس {service.name} تمدید شد. ✅ ")
+            FinanceAction.create_purchase_record(None, None, price, 1,
+                                                 f"{usage_limit}GB / {expire_limit * 30}d / {user_limit}u",service.name)
+
+            data = {
+                'message_id': msg_id,
+                'chat_id': chat_id,
+                'text': f"سرویس {service.name} شما تمدید شد و مبلغ {price} تومان از کیف پول شما کسر شد.",
+                'parse_mode': 'Markdown',
+            }
+        else:
+            data = {
+                'chat_id': chat_id,
+                'message_id': msg_id,
+                'text': 'این سرویس لغو گردیده است.',
+            }
+        cls.send_api("editMessageText", data)
+
+
+    @classmethod
+    def buy_config_from_wallet(cls, chat_id, *args):
+        from configs.views import ConfigAction
+        from finance.views import FinanceAction
+        from configs.tasks import run_jobs
+        customer = Customer.objects.get(chat_id=chat_id)
+        msg_id = int(args[0])
+        arg_splited = Action.args_spliter(args[1])
+        expire_limit = int(arg_splited[0])
+        usage_limit = int(arg_splited[1])
+        user_limit = int(arg_splited[2])
+        price = Prices.objects.get(usage_limit=usage_limit, expire_limit=expire_limit, user_limit=user_limit).price
+        service_uuid = uuid.uuid4()
+        service_name = ConfigAction.generate_config_name()
+        Service.objects.create(
+            uuid=service_uuid,
+            name=service_name,
+            usage_limit=usage_limit,
+            expire_time=expire_limit * 30,
+            user_limit=user_limit,
+            customer=customer,
+        ).save()
+        ConfigAction.create_config_db(service_uuid)
+        ConfigAction.create_config_job_queue(service_uuid, 0)
+        FinanceAction.change_wallet(price * -1, customer.chat_id)
+        CommandRunner.send_sub_link(service_uuid)
+        run_jobs.delay()
+        FinanceAction.create_purchase_record(None, None, price, 0,
+                                f"{usage_limit}GB / {expire_limit * 30}d / {user_limit}u",service_name)
+
+        data = {
+                'message_id': msg_id,
+                'chat_id': chat_id,
+                'text': f" مبلغ {price} تومان از کیف پول شما کسر شد.",
+                'parse_mode': 'Markdown',
+            }
+        cls.send_api("editMessageText", data)

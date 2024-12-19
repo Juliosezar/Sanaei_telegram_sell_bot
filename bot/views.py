@@ -15,7 +15,7 @@ COMMANDS = {
     'usage_limit': CommandRunner.confirm_config_buying,
     'pay_for_config': CommandRunner.pay_for_config,
     "back_to_select_config_expire_time":CommandRunner.back_to_select_config_expire_time,
-    # 'buy_config_from_wallet': CommandRunner.buy_config_from_wallet,
+    'buy_from_wallet': CommandRunner.buy_config_from_wallet,
     # 'abort_buying': CommandRunner.abort_buying,
     'کیف پول 💰': CommandRunner.show_wallet_status,
     # 'تست رایگان 🔥': CommandRunner.test_conf,
@@ -36,7 +36,7 @@ COMMANDS = {
     'renew': CommandRunner.renew_select_config_expire_time,
     'renew2': CommandRunner.renew_select_config_usage,
     'renew3': CommandRunner.renew_confirm_config_buying,
-    # 'tam_wallet': CommandRunner.tamdid_config_from_wallet,
+    'renew_wallet': CommandRunner.renew_config_from_wallet,
     "renew_pay": CommandRunner.Renew_pay_for_config,
     "waiting_for_pic_for_renew_config": CommandRunner.get_pic_for_renew_config,
 

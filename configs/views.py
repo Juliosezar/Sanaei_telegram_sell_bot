@@ -165,6 +165,8 @@ class BotRenewConfigView(LoginRequiredMixin, View):
             if service.customer:
                 CommandRunner.send_msg(service.customer.chat_id, f"سرویس {service.name} تمدید شد.")
             FinanceAction.create_purchase_record(None, request.user, price, 1, f"{usage}GB / {time_limit}d / {ip_limit}u", service.name)
+            messages.success(request, f'سروریس {service.name} در صف تمدید قرار گرفت. این فرایند ممکن است چندین دقیقه طول بکشد.')
+
             return redirect('configs:conf_page', str(service.uuid))
         return render(request, 'renew_config.html', {'form': form, 'form_type': form_type, "service": service})
 
@@ -189,12 +191,14 @@ class ConfigPage(LoginRequiredMixin, View):
     def get(self, request, config_uuid):
         if Service.objects.filter(uuid=config_uuid).exists():
             service = Service.objects.get(uuid=config_uuid)
-            # conf_log = reversed(ConfigLog.objects.filter(config=config_info))
+            sub_link_domain = environ.get("SUB_LINK_DOMAIN")
+            sub_link_domain = "https://" + sub_link_domain.replace("https://", "").replace("http://", "")
+            sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
+            sub_link = ('کانفیگ شما: \n\n  ' + sub_link + "")
         else:
             service = False
         get_config_link = f"نام سرویس: {service.name}" "\n\n" "برای دریافت کانفیگ روی لینک زیر کلیک کنید 👇🏻" "\n"  f'tg://resolve?domain={environ.get('BOT_USERNAME')}&start=register_{config_uuid}'
-        vless = ""
-        return render(request, 'config_page.html', {'service': service, 'vless': vless, "get_config_link":get_config_link})
+        return render(request, 'config_page.html', {'service': service, 'sub_link': sub_link, "get_config_link":get_config_link})
 
 class DeleteConfig(LoginRequiredMixin, View):
     def get(self, request, config_uuid):
@@ -461,6 +465,7 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
             run_jobs.delay()
 
             FinanceAction.create_purchase_record(owner, request.user, price, 1, f"{usage}GB / {time_limit}d / {ip_limit}u", service.name)
+            messages.success(request, f'سروریس {service.name} در صف تمدید قرار گرفت. این فرایند ممکن است چندین دقیقه طول بکشد.')
             return redirect('configs:sellers_conf_page', str(service.uuid))
         return render(request, 'sellers_create_config.html', {'form': form, 'form_type': form_type})
 

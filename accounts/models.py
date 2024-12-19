@@ -10,10 +10,11 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     level_access = models.PositiveIntegerField(default=0, choices=[(0, 'Seller'), (1, 'SubSeller'), (10, 'Admin')])
     payment_limit = models.PositiveIntegerField(default=0)
-    finanace_access = models.BooleanField(default=True)
+    finance_access = models.BooleanField(default=True)
     create_config_acc = models.BooleanField(default=True)
     list_configs_acc = models.BooleanField(default=True)
     delete_config_acc = models.BooleanField(default=True)
+    disable_config_acc = models.BooleanField(default=True)
     bot = models.ForeignKey(SellerBots, on_delete=models.DO_NOTHING, null=True)
 
 

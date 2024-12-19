@@ -11,7 +11,7 @@
 
 <body dir="rtl">
     <header dir="ltr" class="header">
-    <h1 class="logo"><a id="logo" href="{% url 'accounts:home_bot' %}">NapsV Panel</a></h1>
+    <h1 class="logo"><a id="logo" href="{% url 'accounts:home_sellers' %}">NapsV Panel</a></h1>
     <ul class="main-nav">
         <div class="dropdown www">
             <h3 dir="rtl" class="dropbtn" id="user boxx" >
@@ -63,26 +63,49 @@
                     <input class="input_btn submit_btn" type="submit" value="🔍">
                 </form>
             </div>
-        {% if user.level_access == 0 %}
-            <a href="{% url "configs:seller_create" user.username "auto" %}" class="links link2">➕ ساخت کانفیگ 🔗</a>
-            <a href="{% url "configs:seller_list" user.username %}" class="links link2">📋 لیست کانفیگ ها 🔗</a>
-        {% else %}
-            <a href="{% url "sellers:select_seller" "create" %}" class="links link2" id="create_config">➕ ساخت کانفیگ 🔗</a>
-            <a href="{% url "sellers:select_seller" "list" %}" class="links link2" id="list_config">📋 لیست کانفیگ ها 🔗</a>
-        {% endif %}
+
+            {% if user.level_access == 0 %}
+                {% if user.create_config_acc %}
+                    <a href="{% url "configs:seller_create" user.username "auto" %}" class="links link2">➕ ساخت کانفیگ 🔗</a>
+                {% else %}
+                    <p class="links link2 no_access">➕ ساخت کانفیگ 🔗</p>
+                {% endif %}
+                {% if user.list_configs_acc %}
+                    <a href="{% url "configs:seller_list" user.username %}" class="links link2">📋 لیست کانفیگ ها 🔗</a>
+                {% else %}
+                    <p class="links link2 no_access">📋 لیست کانفیگ ها 🔗</p>
+                {% endif %}
+            {% else %}
+                {% if user.create_config_acc %}
+                    <a href="{% url "sellers:select_seller" "create" %}" class="links link2" id="create_config">➕ ساخت کانفیگ 🔗</a>
+                {% else %}
+                    <p class="links link2 no_access">➕ ساخت کانفیگ 🔗</p>
+                {% endif %}
+                {% if user.list_configs_acc %}
+                    <a href="{% url "sellers:select_seller" "list" %}" class="links link2" id="list_config">📋 لیست کانفیگ ها 🔗</a>
+                {% else %}
+                    <p class="links link2 no_access">📋 لیست کانفیگ ها 🔗</p>
+                {% endif %}
+                
+            {% endif %}
+
+
+
         {% if user.level_access == 10 %} {# and finance accsess #}
             <a href="{% url "finance:sellers_sum_bils" %}" class="links link2" id="customers">💵 صورت حساب 💳</a>
-        {% else %}
-            <a href="{% url "finance:sellers_pay_bill" user.username %}" class="links link2" id="customers">💵 صورت حساب 💳</a>
-        {% endif %}
-
-        {% if user.level_access == 10 %}
             <a href="{% url 'finance:select_seller' "sellers_show_prices" %}" id="select_prices" class="links">💰 تعرفه ها 🛒</a>
         {% else %}
-            <a href="{% url 'finance:sellers_show_prices' user.username %}" class="links">💰 تعرفه ها 🛒</a>
+            {% if user.finance_access %}
+                <a href="{% url "finance:sellers_pay_bill" user.username %}" class="links link2" id="customers">💵 صورت حساب 💳</a>
+                <a href="{% url 'finance:sellers_show_prices' user.username %}" class="links">💰 تعرفه ها 🛒</a>
+            {% else %}
+                <p class="links link2 no_access">💵 صورت حساب 💳</p>
+                <p class="links  no_access">💰 تعرفه ها 🛒</p>
+            {% endif %}
         {% endif %}
+
             <a href="" class="links" id="setting">🗃️  Logs 👨🏻‍🔧</a>
-            <a href="" class="links" id="setting">👤 فروشنده ها 🛠️</a>
+
             <a href="" class="links" id="setting">📶 Status 📑</a>
             {% if not user.level_access == 0 %}
                 <a href="" class="links" id="message">️📝 پیام همگانی 📨</a>
@@ -90,13 +113,15 @@
             {% endif %}
 
         {% if user.level_access == 10 %}
+            <a href="" class="links" id="setting">👤 فروشنده ها 🛠️</a>
             <a href="" class="links" id="setting">⚙️ بات تلگرام 🤖️</a>
             <a href="" class="links" id="setting">⚙️ تنظیمات 🛠️</a>
         {% endif %}
 
         </div>
-
-
+    </div>
+{% include "no_access_popup.html" %}
 {% include "loading.html" %}
 </body>
+
 </html>
