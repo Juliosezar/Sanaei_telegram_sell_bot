@@ -86,7 +86,26 @@ class ManualCreateConfigForm(forms.Form):
                 raise ValidationError('حجم کانفیگ باید بین 1 تا 1000 گیگ باشد.')
 
 
+class ChangeConfigSettingForm(forms.Form):
 
+    usage_limit = forms.IntegerField(required=False)
+    days_limit = forms.IntegerField(required=False)
+    ip_limit = forms.IntegerField(required=False)
+
+    def clean(self):
+        usage_limit = self.cleaned_data.get('usage_limit')
+        days_limit = self.cleaned_data.get('days_limit')
+        ip_limit = self.cleaned_data.get("ip_limit")
+        if usage_limit is None:
+            raise ValidationError('حجم کانفیگ را وارد کنید.')
+        elif not 0 <= usage_limit < 1000:
+            raise ValidationError('حجم کانفیگ باید بین 1 تا 1000 گیگ باشد.')
+        if days_limit is None:
+            raise ValidationError('مدت زمان کانفیگ را وارد کنید.')
+        elif not 0 <= days_limit < 181:
+            raise ValidationError('مدت زمان کانفیگ باید بین 1 تا 180 روز باشد.')
+        if not 0 <= ip_limit <= 4:
+            raise ValidationError('محدودیت آی پی باید بین 0 تا 4 باشد.')
 
 
 

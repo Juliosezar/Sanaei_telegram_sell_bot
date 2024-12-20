@@ -106,6 +106,14 @@ class CommandRunner:
         img = requests.get(file_url)
         if img.status_code == 200:
             img_data = img.content
+            count = BotPayment.objects.filter(customer__chat_id=chat_id, status=-1)
+            if count.count() > 1:
+                counter = 0
+                for obj in count:
+                    counter += 1
+                    if counter == count.count():
+                        break
+                    obj.delete()
             cpq_obj = BotPayment.objects.get(customer__chat_id=chat_id, status=-1)
             cpq_obj.image.save(file_id + ".jpg", ContentFile(img_data), save=False)
             cpq_obj.status = 0
@@ -117,6 +125,7 @@ class CommandRunner:
     @classmethod
     def main_menu(cls, chat_id, *args):
         Action.change_customer_bot_tmp_stat(chat_id, "normal")
+
         data = {
             'chat_id': chat_id,
             'text': '🏠 منوی اصلی 🏠',

@@ -80,7 +80,7 @@
     <div id="main">
         <div id="box1">
             <div id="searchbox">
-                <form novalidate action="" class="serch_box_inside" method="post">
+                <form novalidate action="{% url "configs:bot_list_config" %}" class="serch_box_inside" method="post">
                     {% csrf_token %}
                     <img class="search_img" src="{% static 'img/search-config.png' %}" alt="search">
                     {{ search_config.search_config }}

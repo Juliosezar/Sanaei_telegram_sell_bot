@@ -55,7 +55,7 @@ COMMANDS = {
 @csrf_exempt
 def webhook(request):
     if request.method == 'POST':
-        try:
+        # try:
             update = json.loads(request.body)
             print(update)
             if 'message' in update:
@@ -108,9 +108,9 @@ def webhook(request):
                     CommandRunner.send_msg(chat_id, "ورودی نامعتبر")
                     COMMANDS["/start"](chat_id)
             return JsonResponse({'status': 'ok'})
-        except Exception as e:
-            print(e)
-            error_str = traceback.format_exc()
+        # except Exception as e:
+        #     print(e)
+        #     error_str = traceback.format_exc()
             # ErrorLog.objects.create(error=str(error_str), timestamp=int(JalaliDateTime.now().timestamp())).save()
-            return JsonResponse({'status': 'Connection refused'})
+            # return JsonResponse({'status': 'Connection refused'})
     return JsonResponse({'status': 'not a POST request'})

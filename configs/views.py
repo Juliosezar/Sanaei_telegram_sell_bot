@@ -5,7 +5,8 @@ from django.views import View
 from bot.commands import CommandRunner
 from sellers.models import SubSellerSubset
 from accounts.models import User
-from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, SellersCreateConfigForm, ManualSellersCreateConfigForm
+from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, SellersCreateConfigForm, \
+    ManualSellersCreateConfigForm, ChangeConfigSettingForm
 from finance.models import Prices, SellersPrices
 from django.contrib import messages
 from rest_framework.views import APIView
@@ -171,6 +172,25 @@ class BotRenewConfigView(LoginRequiredMixin, View):
         return render(request, 'renew_config.html', {'form': form, 'form_type': form_type, "service": service})
 
 
+class BotChangeConfigPage(LoginRequiredMixin, View):
+    def get(self, request, config_uuid):
+        service = Service.objects.get(uuid=config_uuid)
+        form = ChangeConfigSettingForm()
+        return render(request, "change_config.html",{"form": form, "service": service})
+
+    def post(self, request, config_uuid):
+        form = ChangeConfigSettingForm(request.POST)
+        service = Service.objects.get(uuid=config_uuid)
+        if form.is_valid():
+            cd = form.cleaned_data
+            service.usage_limit = cd["usage_limit"]
+            service.expire_time = cd["days_limit"] if service.start_time == 0 else ((cd["days_limit"] * 86400) + datetime.now().timestamp())
+            service.user_limit = cd["ip_limit"]
+            service.save()
+
+            messages.success(request, "کانفیگ با موفقیت آپدیت شد.")
+            return redirect("configs:conf_page", service.uuid)
+        return render(request, "change_config.html",{"form": form, "service": service})
 
 
 class BotListConfigView(LoginRequiredMixin, View):
@@ -257,7 +277,8 @@ class Sublink(APIView):
             for i in content:
                 content_str += (i + "\n")
             user_agent = request.headers.get('User-Agent', None)
-            is_v2ray_client = any(word in user_agent for word in ["hiddify", "v2ray"])
+            print(user_agent)
+            is_v2ray_client = any(word in user_agent for word in ["hiddify", "v2ray", "Streisand"])
             if is_v2ray_client:
                 service_obj = Service.objects.get(uuid=config_uuid)
                 if not service_obj.expire_time == 0 and service_obj.start_time == 0:
@@ -422,17 +443,16 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
 
 
 class SellersRenewConfigView(LoginRequiredMixin, View):
-    def get(self, request, config_uuid, username, form_type):
+    def get(self, request, config_uuid, form_type):
         forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
         service = Service.objects.get(uuid=config_uuid)
-        return render(request, 'sellers_create_config.html',
-                      {'form': forms[form_type], 'form_type': form_type, "seller_username": username})
+        return render(request, 'sellers_renew_config.html',
+                      {'form': forms[form_type], 'form_type': form_type, "service": service})
 
-    def post(self, request, config_uuid, username, form_type):
+    def post(self, request, config_uuid, form_type):
         from finance.views import FinanceAction
         forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
         service = Service.objects.get(uuid=config_uuid)
-        owner = User.objects.get(username=username)
         form = forms[form_type](request.POST)
         if form.is_valid():
             ip_limit = 0
@@ -449,7 +469,7 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
                 usage = int(cd["usage_limit"])
 
             if form_type == 'auto':
-                price = SellersPrices.objects.get(seller=owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
+                price = SellersPrices.objects.get(seller=service.owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
             else:
                 price = cd['price']
             price *= 1000
@@ -464,11 +484,31 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
             ConfigAction.reset_config_db(service.uuid)
             run_jobs.delay()
 
-            FinanceAction.create_purchase_record(owner, request.user, price, 1, f"{usage}GB / {time_limit}d / {ip_limit}u", service.name)
+            FinanceAction.create_purchase_record(service.owner, request.user, price, 1, f"{usage}GB / {time_limit}d / {ip_limit}u", service.name)
             messages.success(request, f'سروریس {service.name} در صف تمدید قرار گرفت. این فرایند ممکن است چندین دقیقه طول بکشد.')
             return redirect('configs:sellers_conf_page', str(service.uuid))
-        return render(request, 'sellers_create_config.html', {'form': form, 'form_type': form_type})
+        return render(request, 'sellers_renew_config.html', {'form': form, 'form_type': form_type, "service": service})
 
+
+class SellersChangeConfigPage(LoginRequiredMixin, View):
+    def get(self, request, config_uuid):
+        service = Service.objects.get(uuid=config_uuid)
+        form = ChangeConfigSettingForm()
+        return render(request, "change_config.html",{"form": form, "service": service})
+
+    def post(self, request, config_uuid):
+        form = ChangeConfigSettingForm(request.POST)
+        service = Service.objects.get(uuid=config_uuid)
+        if form.is_valid():
+            cd = form.cleaned_data
+            service.usage_limit = cd["usage_limit"]
+            service.expire_time = cd["days_limit"] if service.start_time == 0 else ((cd["days_limit"] * 86400) + datetime.now().timestamp())
+            service.user_limit = cd["ip_limit"]
+            service.save()
+
+            messages.success(request, "کانفیگ با موفقیت آپدیت شد.")
+            return redirect("configs:sellers_conf_page", service.uuid)
+        return render(request, "change_config.html",{"form": form, "service": service})
 
 
 class SellersListConfigView(LoginRequiredMixin, View):

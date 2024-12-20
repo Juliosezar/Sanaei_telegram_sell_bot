@@ -46,10 +46,16 @@ class ServerApi:
                 if respons["id"] == server_obj.inbound_id:
                     for i in respons["clientStats"]:
                         usage = round(convert_units(i["up"] + i["down"], BinaryUnits.BYTE, BinaryUnits.GB)[0], 2)
+                        total_usage = int(convert_units(i['total'], BinaryUnits.BYTE, BinaryUnits.GB)[0])
+                        total_usage = 0 if total_usage < 0 else total_usage
+                        time_expire = i["expiryTime"]
                         joined_data[i["email"]] = {
                             'usage': usage,
+                            'usage_limit': total_usage,
+                            'expire_time': time_expire,
                         }
                     for i in json.loads(respons["settings"])["clients"]:
+
                         joined_data[i["email"]]['uuid'] = i["id"]
                         joined_data[i["email"]]['enable'] = i["enable"]
             session.close()

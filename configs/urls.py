@@ -3,9 +3,11 @@ from . import views
 
 app_name = "configs"
 
+
 urlpatterns = [
     path("bot_create_config/<str:form_type>/", views.BotCreateConfigView.as_view(), name="bot_create_config"),
     path("bot_renew_config/<uuid:config_uuid>/<str:form_type>/", views.BotRenewConfigView.as_view(), name="bot_renew_config"),
+    path("bot_change_config/<uuid:config_uuid>/", views.BotChangeConfigPage.as_view(), name="bot_change_config"),
     path("bot_list_config/", views.BotListConfigView.as_view(), name="bot_list_config"),
     path("config_page/<str:config_uuid>/", views.ConfigPage.as_view(), name="conf_page"),
     path("client_config_page/<str:config_uuid>/", views.ClientsConfigPage.as_view(), name="client_config_page"),
@@ -22,12 +24,17 @@ urlpatterns = [
 
     path("sellers/create/<str:username>/<str:form_type>/", views.SellersCreateConfigView.as_view(),name="seller_create"),
     path("sellers/list/<str:username>/", views.SellersListConfigView.as_view(),name="seller_list"),
+    path("sellers/change_config/<uuid:config_uuid>/", views.SellersChangeConfigPage.as_view(), name="sellers_change_config"),
+    path("sellers_config_page/<str:config_uuid>/", views.SellersConfigPage.as_view(), name="sellers_conf_page"),
+    path("sellers_renew_page/<str:config_uuid>/<str:form_type>/", views.SellersRenewConfigView.as_view(), name="sellers_renew"),
 
     path("sellers_api_get_config_time_chices/", views.ApiSellersGetConfigTimeChoices.as_view(), name="seller_api_get_time_choices"),
     path("sellers_api_get_config_usage_chices/", views.ApiSellersGetConfigUsageChoices.as_view(), name="seller_api_get_usage_choices"),
     path("sellers_api_get_config_ip_limit_chices/", views.ApiSellersGetConfigIPLimitChoices.as_view(), name="seller_api_get_iplimit_choices"),
     path("sellers_api_get_axact_price/", views.ApiSellersGetConfigPriceChoices.as_view(), name="seller_api_get_axact_price"),
-    path("sellers_config_page/<str:config_uuid>/", views.SellersConfigPage.as_view(), name="sellers_conf_page"),
 
 ]
+
+
+
 

@@ -1,5 +1,8 @@
 from celery import shared_task
+
+from accounts.models import User
 from bot.commands import CommandRunner
+from customers.models import Customer
 from servers.models import Server
 from .models import ConfigJobsQueue, Config, Service, EndNotif
 from servers.sanaie_api import ServerApi
@@ -156,3 +159,67 @@ def delete_notif():
         if (datetime.now().timestamp() - notif.timestamp) > 302000:
             notif.delete()
 
+
+
+# @shared_task
+# def xx():
+#     import json
+#     with open('/home/sezar/projects/SanaeiBot/x.json', 'r') as file:
+#         data = json.load(file)
+#     list_db = {}
+#     for i in data:
+#         list_db[i["config_uuid"]] = i["chat_id_id"]
+#
+#
+#     for server in Server.objects.all():
+#         print(server.fake_domain)
+#         x = ServerApi.get_list_configs(server.ID)
+#         for config in x:
+#             # print(config, x[config])
+#             uuuid = x[config]["uuid"].replace("-","")
+#             # print(uuuid)
+#             customer = None
+#             if uuuid in list_db:
+#                 if Customer.objects.filter(chat_id=list_db[uuuid]).exists():
+#                     customer = Customer.objects.get(chat_id=list_db[uuuid])
+#             owner = None
+#             if "@" in config:
+#                 if User.objects.filter(username=config.split("@")[0]).exists():
+#                     owner = User.objects.get(username=config.split("@")[0])
+#             if Service.objects.filter(name=config).exists():
+#                 print(config)
+#             elif Service.objects.filter(uuid=x[config]["uuid"]).exists():
+#                 print(config)
+#             else:
+#                 Service.objects.create(
+#                     customer=customer,
+#                     uuid=x[config]["uuid"],
+#                     name=config,
+#                     usage_limit=x[config]["usage_limit"],
+#                     start_time=datetime.now().timestamp(),
+#                     expire_time=x[config]["expire_time"],
+#                     status=0 if x[config]["enable"] else 1,
+#                     owner=owner,
+#                     created_by=User.objects.get(username="Sezar"),
+#                 ).save()
+
+
+#
+# @shared_task
+# def xx():
+#     for service in Service.objects.all():
+#         for server in Server.objects.all():
+#             Config.objects.create(
+#                 service=service,
+#                 server=server,
+#                 status=1,
+#             ).save()
+#             print(service.name, server.name)
+from bot.models import CustomerTmpStatus
+@shared_task
+def xx():
+    for i in Customer.objects.all():
+        CustomerTmpStatus.objects.create(
+            customer=i,
+
+        ).save()

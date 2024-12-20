@@ -320,7 +320,7 @@ class SellerPayBills(LoginRequiredMixin, View):
         list_of_subs.append(User.objects.get(username=username))
         purchases = PurchaseRecord.objects.filter(created_for__in=list_of_subs)
         sum_bills = purchases.aggregate(sum=Sum('price'))['sum'] or 0
-        return render(request, 'seller_pay_page.html', {"purchases": purchases, "sum_bills": sum_bills, "username":username})
+        return render(request, 'seller_pay_page.html', {"purchases": reversed(purchases), "sum_bills": sum_bills, "username":username})
 
 
 class SelectSeller(LoginRequiredMixin, View):

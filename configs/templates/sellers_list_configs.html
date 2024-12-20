@@ -228,10 +228,13 @@
                     <img class="imgg" src="{% static "img/info.png" %}" alt="">
                     <p class="ttt"> صفحه اطلاعات</p>
                 </a>
+                {% if user.create_config_acc %}
                 <a class="link_btns" id="tamdid_link" href="">
                     <img class="imgg" src="{% static "img/icons8-restart-512.png" %}" alt="">
                     <p class="ttt">تمدید</p>
                 </a>
+                {% endif %}
+                {% if user.disable_config_acc %}
                 <a class="link_btns" id="enable_link" href="">
                     <img class="imgg" src="{% static "img/enable.png" %}" alt="">
                     <p class="ttt">فعال کردن</p>
@@ -240,14 +243,19 @@
                     <img class="imgg" src="{% static "img/disable.png" %}" alt="">
                     <p class="ttt">غیرفعال کردن</p>
                 </a>
+                {% endif %}
+                {% if user.level_access == 10 %}
                 <a class="link_btns" id="change_link" href="">
                     <img class="imgg" src="{% static "img/setting.png" %}" alt="">
                     <p class="ttt">تغییر کانفیگ</p>
                 </a>
+                {% endif %}
+                {% if user.delete_config_acc %}
                 <a class="link_btns" id="delete_link">
                     <img class="imgg" src="{% static 'img/icons8-delete-64.png' %}" alt="">
                     <p class="ttt">حذف</p>
                 </a>
+                {% endif %}
         </div>
             <script>
                 function hidden_page(name ,uuid, enable) {
@@ -256,9 +264,9 @@
                     document.getElementById("cooonf_name").innerHTML = `${name}`;
                     document.getElementById("info_link").href = `/configs/sellers_config_page/${uuid}/`
                     document.getElementById("delete_link").href = `/configs/delete_config/${uuid}/`
-                    document.getElementById("change_link").href = `/configs/change_config_page/${uuid}/${name}/`
+                    document.getElementById("change_link").href = `/configs/sellers/change_config/${uuid}/`
                     document.getElementById("tamdid_link").style.display = "block";
-                    document.getElementById("tamdid_link").href=`/configs/renew_page/${uuid}/auto/`;
+                    document.getElementById("tamdid_link").href=`/configs/sellers_renew_page/${uuid}/auto/`;
                     if (enable) {
                         document.getElementById("disable_link").style.display = "block";
                         document.getElementById("disable_link").href =`/configs/disable_config/${uuid}/0/`;

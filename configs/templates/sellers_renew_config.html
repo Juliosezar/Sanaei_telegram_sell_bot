@@ -6,7 +6,7 @@
 {% include "base_head.html" %}
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'servers/create_config.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'configs/create_config.css' %}">
 </head>
 <body>
 <script>
@@ -37,16 +37,18 @@
         toggleexpireField();
     });
 </script>
-{% include "navbar.html" %}
+{% include "navbar_bot.html" %}
 {% include 'messages.html' %}
 <div id="main">
-    <div id="zx">
-    {% if form_type == 'auto' %}
-        <a href="{% url 'servers:renew_page' config.config_uuid 'manual' %}" class="change_form">کانفیگ دستی</a>
-    {% else %}
-        <a href="{% url 'servers:renew_page' config.config_uuid 'auto' %}" class="change_form">کانفیگ خودکار</a>
+    {% if user.level_access == 10 %}
+        <div id="zx">
+            {% if form_type == 'auto' %}
+                <a href="{% url 'configs:bot_create_config' 'manual' %}" class="change_form">کانفیگ دستی</a>
+            {% else %}
+                <a href="{% url 'configs:bot_create_config' 'auto' %}" class="change_form">کانفیگ خودکار</a>
+            {% endif %}
+        </div>
     {% endif %}
-    </div>
         <form novalidate action="" method="post" dir="rtl">
             {% for field_errors in form.errors.values %}
               {% for error in field_errors %}
@@ -54,11 +56,11 @@
               {% endfor %}
             {% endfor %}
             <h3 id="title">تمدید سرویس</h3>
-            <a href="{% url "servers:conf_page" config.server.server_id config.config_uuid config.config_name %}" id="title" class="tamdid_conf">{{ config.config_name }}</a>
+            <h3 id="title">{{ service.name }}</h3>
             {% csrf_token %}
             <div class="textinput item"><h3 class="item_text">نوع کانفیگ : </h3>{{ form.type }}</div>
-            <div id="time_limit" class="textinput item"><h3 class="item_text">مدت زمان کانفیگ : </h3>{{ form.days_limit }} {% if form_type == "manual" %}🔺 روز{% endif %}</div>
-            <div id="usage" class="textinput item"><h3 class="item_text">حجم کانفیگ : </h3>{{ form.usage_limit }} {% if form_type == "manual" %}GB{% endif %}</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">مدت زمان کانفیگ : </h3>{{ form.days_limit }}{% if form_type == 'manual' %}🔺 روز{% endif %}</div>
+            <div id="usage" class="textinput item"><h3 class="item_text">حجم کانفیگ : </h3>{{ form.usage_limit }}{% if form_type == 'manual' %}GB{% endif %}</div>
             <div id="ip_limit" class="textinput item"><h3 class="item_text">تعداد کاربر : </h3>{{ form.ip_limit }}</div>
             {% if form_type == 'auto' %}
             <h3 class="item_text" dir="ltr" style="display:inline-block; ">: قیمت<div class="loader2" dir="ltr" id="price_loading"></div><h4 id="pricespan"> </h4></h3>
@@ -67,7 +69,7 @@
             <div id="price" class="textinput item"><h3 class="item_text"> قیمت : </h3>{{ form.price }} هزار تومان</div>
             {% endif %}
             <div id="paid" class="textinput item paid_text">پرداخت شده : {{ form.paid }}</div>
-            <input id="create" type="submit" value="Create" class="submit_btn">
+            <input id="create" class="submit_btn" type="submit" value="Create">
         {% if form_type == "auto" %}
             <script>
     const days_limit = document.getElementById('id_days_limit');
@@ -86,7 +88,7 @@
         subloader.style.display = 'block';
         priceloading.style.display = 'block';
         const otherField2Value = type.value;
-        const url = `{% url "servers:api_get_time_choices" %}?type=${otherField2Value}`;
+        const url = `{% url "configs:api_get_time_choices" %}?type=${otherField2Value}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -115,7 +117,7 @@
         priceloading.style.display = 'block';
         const otherField2Value = type.value;
         const otherField1Value = days_limit.value;
-        const url = `{% url "servers:api_get_usage_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
+        const url = `{% url "configs:api_get_usage_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -143,7 +145,7 @@
         priceloading.style.display = 'block';
         const otherField2Value = type.value;
         const otherField1Value = days_limit.value;
-        const url = `{% url "servers:api_get_iplimit_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
+        const url = `{% url "configs:api_get_iplimit_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -172,7 +174,7 @@
         const otherField2Value = type.value;
         const otherField3Value = days_limit.value;
         const otherField4Value = ip_limit.value;
-        const url = `{% url "servers:api_get_axact_price" %}?usage=${otherField1Value}&type=${otherField2Value}&time=${otherField3Value}&iplimit=${otherField4Value}`;
+        const url = `{% url "configs:api_get_axact_price" %}?usage=${otherField1Value}&type=${otherField2Value}&time=${otherField3Value}&iplimit=${otherField4Value}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -193,7 +195,6 @@
         </form>
     </div>
 {% include "loading.html" %}
-{% include "list_servers.html" %}
 
 </body>
 </html>
