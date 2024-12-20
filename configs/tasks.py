@@ -86,8 +86,9 @@ def update_usage():
         if not service.status == 4:
             if service.usage >= service.usage_limit and not service.usage_limit == 0:
                 service.status = 2
-            elif not service.expire_time == 0 and service.expire_time < datetime.now().timestamp() and not service.start_time == 0:
-                service.status = 2
+            elif not service.expire_time == 0:
+                if service.expire_time < datetime.now().timestamp() and not service.start_time == 0:
+                    service.status = 2
             else:
                 service.status = 0
             service.save()
