@@ -123,7 +123,7 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
                     Service.objects.create(
                         uuid=service_uuid,
                         name=service_name,
-                        usage_limit=pay_obj.info["config_price"],
+                        usage_limit=pay_obj.info["usage_limit"],
                         expire_time=pay_obj.info["expire_time"] * 30,
                         user_limit=pay_obj.info["user_limit"],
                         customer=pay_obj.customer,
