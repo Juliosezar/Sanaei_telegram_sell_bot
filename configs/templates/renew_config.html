@@ -42,9 +42,9 @@
 <div id="main">
     <div id="zx">
     {% if form_type == 'auto' %}
-        <a href="{% url 'configs:bot_create_config' 'manual' %}" class="change_form">کانفیگ دستی</a>
+        <a href="{% url 'configs:bot_renew_config' service.uuid 'manual' %}" class="change_form">کانفیگ دستی</a>
     {% else %}
-        <a href="{% url 'configs:bot_create_config' 'auto' %}" class="change_form">کانفیگ خودکار</a>
+        <a href="{% url 'configs:bot_renew_config' service.uuid 'auto' %}" class="change_form">کانفیگ خودکار</a>
     {% endif %}
     </div>
         <form novalidate action="" method="post" dir="rtl">
