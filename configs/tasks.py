@@ -85,15 +85,16 @@ def update_usage():
         service.usage = sum([config.usage for config in Config.objects.filter(service=service)])
 
         if not service.status == 4:
+            status = 0
             if service.usage >= service.usage_limit and not service.usage_limit == 0:
-                service.status = 2
-            elif not service.expire_time == 0:
-                print(service.name)
+                status = 2
+            if not service.expire_time == 0:
+                print(f"first ==>  {service.name}")
                 if service.expire_time < datetime.now().timestamp() and not service.start_time == 0:
-                    print(service.name)
-                    service.status = 2
-            else:
-                service.status = 0
+                    print(f"first ==>  {service.name}")
+                    status = 2
+
+            service.status = status
             service.save()
 
 
