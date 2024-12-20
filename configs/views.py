@@ -281,11 +281,11 @@ class Sublink(APIView):
             is_v2ray_client = any(word in user_agent for word in ["hiddify", "v2ray", "Streisand"])
             if is_v2ray_client:
                 service_obj = Service.objects.get(uuid=config_uuid)
+                time_stamp = datetime.now().timestamp()
                 if not service_obj.expire_time == 0 and service_obj.start_time == 0:
-                    time_stamp = datetime.now().timestamp()
-                    service_obj.start_time = time_stamp
                     service_obj.expire_time = time_stamp + (service_obj.expire_time * 86400)
-                    service_obj.save()
+                service_obj.start_time = time_stamp
+                service_obj.save()
                 response = HttpResponse(content_str)
                 response['Content-Disposition'] = f'attachment; filename="Napsv_{service.name}"'
                 return response
