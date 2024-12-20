@@ -1,0 +1,40 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "base_head.html" %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'configs/create_config.css' %}">
+</head>
+<body>
+{% include "navbar_sellers.html" %}
+{% include 'messages.html' %}
+<div id="main">
+        <form novalidate action="" method="post" dir="ltr">
+            {% for field_errors in form.errors.values %}
+              {% for error in field_errors %}
+                  <p dir="rtl" class="errors">{{ error }}</p>
+              {% endfor %}
+            {% endfor %}
+            <h3 id="title">Change User Access</h3>
+            {% csrf_token %}
+{#            {% if not edit %}#}
+{#                <div id="time_limit" class="textinput item"><h3 class="item_text">server ID: </h3>{{ form.ID }}</div>#}
+{#            {% endif %}#}
+            <div dir="rtl" id="time_limit" class="textinput item"><h3 class="item_text">نوع فروشنده: </h3>{{ form.level_access }}</div>
+            <div dir="rtl" id="time_limit" class="textinput item"><h3 class="item_text">محدودیت خرید: </h3>{{ form.payment_limit }}هزار تومن</div>
+            <div dir="rtl" id="time_limit" class="textinput item"><h3 class="item_text"> دسترسی صورتحساب و تعرفه ها: </h3>{{ form.finance_access }}</div>
+            <div dir="rtl" id="time_limit" class="textinput item"><h3 class="item_text">دسترسی ساخت سرویس: </h3>{{ form.create_config_acc }}</div>
+            <div dir="rtl" id="time_limit" class="textinput item"><h3 class="item_text">دسترسی لیست سرویس ها : </h3>{{ form.list_configs_acc }}</div>
+            <div dir="rtl" id="time_limit" class="textinput item"><h3 class="item_text">دسترسی حذف سرویس: </h3>{{ form.delete_config_acc }}</div>
+            <div dir="rtl" id="time_limit" class="textinput item"><h3 class="item_text">دسترسی غیرفعال کردن کانفیگ: </h3>{{ form.disable_config_acc }}</div>
+            <div dir="rtl" id="time_limit" class="textinput item"><h3 class="item_text">بات تلگرام: </h3>{{ form.bot }}</div>
+            <input id="create" type="submit" class="submit_btn" value="Change">
+        </form>
+    </div>
+{% include "loading.html" %}
+
+</body>
+</html>

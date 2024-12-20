@@ -1,5 +1,4 @@
 from celery import shared_task
-
 from accounts.models import User
 from bot.commands import CommandRunner
 from customers.models import Customer
@@ -215,11 +214,11 @@ def delete_notif():
 #                 status=1,
 #             ).save()
 #             print(service.name, server.name)
-from bot.models import CustomerTmpStatus
-@shared_task
-def xx():
-    for i in Customer.objects.all():
-        CustomerTmpStatus.objects.create(
-            customer=i,
-
-        ).save()
+# from bot.models import CustomerTmpStatus
+# @shared_task
+# def xx():
+#     for i in Customer.objects.all():
+#         CustomerTmpStatus.objects.create(
+#             customer=i,
+#
+#         ).save()

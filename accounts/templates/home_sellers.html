@@ -113,7 +113,7 @@
             {% endif %}
 
         {% if user.level_access == 10 %}
-            <a href="" class="links" id="setting">👤 فروشنده ها 🛠️</a>
+            <a href="{% url "sellers:sellers_list" %}" class="links" id="setting">👤 فروشنده ها 🛠️</a>
             <a href="" class="links" id="setting">⚙️ بات تلگرام 🤖️</a>
             <a href="" class="links" id="setting">⚙️ تنظیمات 🛠️</a>
         {% endif %}

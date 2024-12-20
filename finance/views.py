@@ -171,18 +171,15 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
 
 class DenyPaymentPage(LoginRequiredMixin, View):
     def get(self, request, obj_id):
-        pass
-
-    def post(self, request, obj_id):
         deny_reason = ""
         pay_obj = BotPayment.objects.get(id=obj_id)
         if pay_obj.status == 0:
-            CommandRunner.send_msg(pay_obj.customer.chat_id,f"پرداخت شما تایید نشد ❌ \n علت : {deny_reason}")
+            CommandRunner.send_msg(pay_obj.customer.chat_id, f"پرداخت شما تایید نشد ❌ \n علت : {deny_reason}")
             pay_obj.status = 9
             pay_obj.save()
         elif pay_obj.action == 1:
             if pay_obj.action == 0:
-                pass # TODO:
+                pass  # TODO:
             elif pay_obj.action == 1:
                 pass
             elif pay_obj.action == 5:
@@ -192,6 +189,9 @@ class DenyPaymentPage(LoginRequiredMixin, View):
         else:
             messages.error(request, "این پرداخت توسط ادمین دیگری تایید یا رد شده است.")
         return redirect('finance:confirm_payments', 1)
+
+    def post(self, request, obj_id):
+        pass
 
 class EditPricePayment(LoginRequiredMixin, View):
     def get(self, request, obj_id, typ):

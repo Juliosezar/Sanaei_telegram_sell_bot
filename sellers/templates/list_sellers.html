@@ -1,0 +1,99 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fa" class="no-js">
+	<head>
+		<title>List Configs</title>
+        {% include "base_head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'finance/surathesab_page.css' %}"/>
+    </head>
+	<body dir="ltr">
+        {% include "navbar_sellers.html" %}
+        {% include 'messages.html' %}
+        <div id="main">
+            <div class="addbox">
+                <a href="" class="addprice">➕ جدید</a>
+            </div>
+            <h3 id="counter">لیست فروشنده ها</h3>
+		    <div class="xcontainer">
+		    		<table class="overflow-y">
+		    			<thead>
+		    				<tr>
+                                <th>USERNAME</th>
+                                <th>TYPE</th>
+                                <th>محدودیت خرید</th>
+                                <th>صورت حساب و تعرفه ها</th>
+                                <th>ساخت و تمدید</th>
+                                <th>لیست سرویس ها</th>
+                                <th>حذف سرویس</th>
+                                <th>غیرفعال کردن</th>
+                                <th>Telegram Bot</th>
+                            </tr>
+		    			</thead>
+		    			<tbody>
+                        {% for seller in sellers %}
+
+		    				<tr>
+
+                                 <td><a href="{% url 'sellers:change_seller' seller.id %}">{{ seller.username }}</a></td>
+
+                                {% if seller.level_access == 1 %}
+                                    <td>با زیرمجموعه</td>
+                                {% else %}
+                                    <td>معمولی</td>
+                                {% endif %}
+
+                                 <td>{{ seller.payment_limit|price }} T</td>
+
+                                {% if seller.finance_access %}
+                                 <td>✅</td>
+                                {% else %}
+                                 <td>❌</td>
+                                {% endif %}
+
+                                {% if seller.create_config_acc %}
+                                 <td>✅</td>
+                                {% else %}
+                                 <td>❌</td>
+                                {% endif %}
+
+                                {% if seller.list_configs_acc %}
+                                 <td>✅</td>
+                                {% else %}
+                                 <td>❌</td>
+                                {% endif %}
+
+                                {% if seller.delete_config_acc %}
+                                 <td>✅</td>
+                                {% else %}
+                                 <td>❌</td>
+                                {% endif %}
+
+                                {% if seller.disable_config_acc %}
+                                 <td>✅</td>
+                                {% else %}
+                                 <td>❌</td>
+                                {% endif %}
+
+                                 <td>{{ seller.bot }}</td>
+
+                            </tr>
+
+                        {% endfor %}
+		    			</tbody>
+		    		</table>
+            </div>
+
+
+        </div>
+
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script src={% static "js/list.js" %}></script>
+	</body>
+
+{% include "loading.html" %}
+
+</html>
