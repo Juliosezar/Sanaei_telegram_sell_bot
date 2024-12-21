@@ -476,7 +476,7 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
                 price = SellersPrices.objects.get(seller=service.owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
             else:
                 price = cd['price']
-            price *= 1000
+
             if form_type == 'auto':
                 time_limit = time_limit * 30
 
