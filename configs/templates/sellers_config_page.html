@@ -151,10 +151,10 @@
                 {% endif %}
 
                 {% if user.disable_config_acc %}
-                    {% if service.enable %}
-                        <a class="conf_btnss disable_btn" href="{% url 'configs:disable_config' service.uuid 1 %}"><img class="enable" src="{% static "img/disable.png" %}" alt=""> غیرفعال </a>
+                    {% if service.status == 1 %}
+                        <a class="conf_btnss disable_btn" href="{% url 'configs:disable_config' service.uuid 1 %}"><img class="disable" src="{% static "img/enable.png" %}" alt=""> فعال کردن </a>
                     {% else %}
-                        <a class="conf_btnss disable_btn" href="{% url 'configs:disable_config' service.uuid 0 %}"><img class="disable" src="{% static "img/enable.png" %}" alt=""> فعال کردن </a>
+                        <a class="conf_btnss disable_btn" href="{% url 'configs:disable_config' service.uuid 0 %}"><img class="enable" src="{% static "img/disable.png" %}" alt=""> غیرفعال </a>
                     {% endif %}
                 {% endif %}
                 {% if user.delete_config_acc %}

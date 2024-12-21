@@ -1037,6 +1037,10 @@ class CommandRunner:
             service = Service.objects.get(uuid=config_uuid)
             price = Prices.objects.get(usage_limit=usage_limit, expire_limit=expire_limit, user_limit=user_limit).price
             service.usage_limit = usage_limit
+            if expire_limit == 0:
+                service.expire_time = 0
+            else:
+                service.expire_time = (datetime.now().timestamp() + (expire_limit * 30 * 86400)) if service.start_time != 0 else expire_limit * 30
             service.expire_time = (datetime.now().timestamp() + (expire_limit * 30 * 86400)) if service.start_time != 0 else expire_limit * 30
             service.user_limit = user_limit
             service.save()

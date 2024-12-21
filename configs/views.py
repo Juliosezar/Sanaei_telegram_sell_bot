@@ -5,8 +5,7 @@ from django.views import View
 from bot.commands import CommandRunner
 from sellers.models import SubSellerSubset
 from accounts.models import User
-from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, SellersCreateConfigForm, \
-    ManualSellersCreateConfigForm, ChangeConfigSettingForm
+from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, ChangeConfigSettingForm
 from finance.models import Prices, SellersPrices
 from django.contrib import messages
 from rest_framework.views import APIView
@@ -422,7 +421,6 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
                 price = SellersPrices.objects.get(seller=owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
             else:
                 price = cd['price']
-            price *= 1000
             if form_type == 'auto':
                 time_limit = time_limit * 30
             service_uuid = uuid.uuid4()
