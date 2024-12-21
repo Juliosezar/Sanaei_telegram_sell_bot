@@ -106,6 +106,8 @@ def config_name(uuidd):
 def split_name(name):
     if "@" in name:
         return name.split("@")[1]
+    else:
+        return name
 
 
 # @register.filter(name="paylog")
