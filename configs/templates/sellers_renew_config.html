@@ -80,6 +80,7 @@
     const submitButton = document.getElementById('create');
     const subloader = document.getElementById('subloader');
     const priceloading = document.getElementById('price_loading');
+    const seller_username = '{{ service.owner.username }}'
     function fetchTimeChoices() {
         days_limit.disabled = true;
         usage_limit.disabled = true;
@@ -88,7 +89,7 @@
         subloader.style.display = 'block';
         priceloading.style.display = 'block';
         const otherField2Value = type.value;
-        const url = `{% url "configs:seller_api_get_time_choices" %}?type=${otherField2Value}`;
+        const url = `{% url "configs:seller_api_get_time_choices" %}?type=${otherField2Value}&username=${seller_username}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -117,7 +118,7 @@
         priceloading.style.display = 'block';
         const otherField2Value = type.value;
         const otherField1Value = days_limit.value;
-        const url = `{% url "configs:seller_api_get_usage_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
+        const url = `{% url "configs:seller_api_get_usage_choices" %}?type=${otherField2Value}&time=${otherField1Value}&username=${seller_username}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -145,7 +146,7 @@
         priceloading.style.display = 'block';
         const otherField2Value = type.value;
         const otherField1Value = days_limit.value;
-        const url = `{% url "configs:seller_api_get_iplimit_choices" %}?type=${otherField2Value}&time=${otherField1Value}`;
+        const url = `{% url "configs:seller_api_get_iplimit_choices" %}?type=${otherField2Value}&time=${otherField1Value}&username=${seller_username}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())
@@ -174,7 +175,7 @@
         const otherField2Value = type.value;
         const otherField3Value = days_limit.value;
         const otherField4Value = ip_limit.value;
-        const url = `{% url "configs:seller_api_get_axact_price" %}?usage=${otherField1Value}&type=${otherField2Value}&time=${otherField3Value}&iplimit=${otherField4Value}`;
+        const url = `{% url "configs:seller_api_get_axact_price" %}?usage=${otherField1Value}&type=${otherField2Value}&time=${otherField3Value}&iplimit=${otherField4Value}&username=${seller_username}`;
         h3Element.textContent = ``;
         fetch(url)
             .then(response => response.json())

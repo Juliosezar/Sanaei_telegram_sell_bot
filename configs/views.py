@@ -481,7 +481,10 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
                 time_limit = time_limit * 30
 
             service.usage_limit = usage
-            service.expire_time = (datetime.now().timestamp() + (time_limit * 86400)) if service.start_time != 0 else time_limit
+            if time_limit == 0:
+                service.expire_time = 0
+            else:
+                service.expire_time = (datetime.now().timestamp() + (time_limit * 86400)) if service.start_time != 0 else time_limit
             service.user_limit = ip_limit
             service.save()
             ConfigAction.create_config_job_queue(service.uuid, 4)
