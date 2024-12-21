@@ -303,7 +303,6 @@ class Sublink(APIView):
 
 # Api
 
-
 class ApiGetConfigTimeChoices(APIView):
     def get(self, request):
         sleep(0.25)
@@ -570,12 +569,12 @@ class SellersConfigPage(LoginRequiredMixin, View):
             sub_link_domain = environ.get("SUB_LINK_DOMAIN")
             sub_link_domain = "https://" + sub_link_domain.replace("https://","").replace("http://","")
             sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
-            sub_link = ('کانفیگ شما: \n\n  ' + sub_link + "")
+            sub_link_with_name = (f'شماره سرویس: {service.name} \n\n  ' + sub_link)
+            return render(request, 'sellers_config_page.html', {'service': service, 'sub_link': sub_link, "sub_link_with_name": sub_link_with_name})
         else:
-            service = False
-            sub_link = False
+            messages.info(request, "این کانفیک حذف شده است.")
+            return redirect("accounts:home_sellerso")
 
-        return render(request, 'sellers_config_page.html', {'service': service, 'sub_link': sub_link})
 
 ####### sellers api
 
