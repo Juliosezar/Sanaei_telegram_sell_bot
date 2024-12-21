@@ -102,6 +102,12 @@ def config_name(uuidd):
         return "----"
 
 
+@register.filter(name="split_name")
+def split_name(name):
+    if "@" in name:
+        return name.split("@")[1]
+
+
 # @register.filter(name="paylog")
 # def paylog(id: dict):
 #     if "buy" in list(id.keys()):

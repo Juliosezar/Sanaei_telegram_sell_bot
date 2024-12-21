@@ -272,9 +272,10 @@ class Sublink(APIView):
     def get(self, request, config_uuid):
         if Service.objects.filter(uuid=config_uuid).exists():
             service = Service.objects.get(uuid=config_uuid)
+            service_name = service.name.split("@")[1] if "@" in service.name else service.name
             content = []
             for server in Server.objects.all():
-                content.append(f"vless://{config_uuid}@{server.fake_domain}:{server.inbound_port}?type=tcp&path=%2F&host=speedtest.net&headerType=http&security=none#Napsv_{service.name} / {server.name}")
+                content.append(f"vless://{config_uuid}@{server.fake_domain}:{server.inbound_port}?type=tcp&path=%2F&host=speedtest.net&headerType=http&security=none#{service_name} / {server.name}")
             shuffle(content)
             content_str = ""
             for i in content:
@@ -290,7 +291,7 @@ class Sublink(APIView):
                 service_obj.start_time = time_stamp
                 service_obj.save()
                 response = HttpResponse(content_str)
-                response['Content-Disposition'] = f'attachment; filename="Napsv_{service.name}"'
+                response['Content-Disposition'] = f'attachment; filename="{service_name}"'
                 return response
             else:
                 return redirect("configs:client_config_page",config_uuid)

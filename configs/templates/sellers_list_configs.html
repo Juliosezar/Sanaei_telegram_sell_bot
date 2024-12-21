@@ -111,13 +111,13 @@
 
 
                                 {% if service.status == 1 %}
-		    					    <th style="background-color: #888888" class="fix_col name_red"><p onclick="hidden_page(`{{ service.name }}`, `{{ service.uuid }}`,false)" class="c_name" style="color: #000e47" href="{% url 'configs:conf_page' service.uuid  %}">🚫 {{ service.name }} 🚫</p></th>
+		    					    <th style="background-color: #888888" class="fix_col name_red"><p onclick="hidden_page(`{{ service.name|split_name }}`, `{{ service.uuid }}`,false)" class="c_name" style="color: #000e47" href="{% url 'configs:conf_page' service.uuid  %}">🚫 {{ service.name|split_name }} 🚫</p></th>
                                 {% elif service.status == 2 %}
-		    					    <th class="fix_col name_red"><p onclick="hidden_page(`{{ service.name }}`, `{{ service.uuid }}`,true)" class="c_name" style="color: red" href="{% url 'configs:conf_page' service.uuid %}">{{ service.name }}</p></th>
+		    					    <th class="fix_col name_red"><p onclick="hidden_page(`{{ service.name|split_name }}`, `{{ service.uuid }}`,true)" class="c_name" style="color: red" href="{% url 'configs:conf_page' service.uuid %}">{{ service.name|split_name }}</p></th>
                                 {% elif service.status == 4 %}
-		    					    <th class="fix_col name_red" style="background-color: red"><p class="c_name" style="color: #ffffff; background-color: red" href="{% url 'configs:conf_page' service.uuid %}">{{ service.name }} (deleting)</p></th>
+		    					    <th class="fix_col name_red" style="background-color: red"><p class="c_name" style="color: #ffffff; background-color: red" href="{% url 'configs:conf_page' service.uuid %}">{{ service.name|split_name }} (deleting)</p></th>
                                 {% else %}
-		    					    <th class="fix_col"><p onclick="hidden_page(`{{ service.name }}`, `{{ service.uuid }}`,true)" class="c_name">{{ service.name }}</p></th>
+		    					    <th class="fix_col"><p onclick="hidden_page(`{{ service.name|split_name }}`, `{{ service.uuid }}`,true)" class="c_name">{{ service.name|split_name }}</p></th>
                                 {% endif %}
                                 <td>
                                     {% if service.usage_limit == 0  %}
