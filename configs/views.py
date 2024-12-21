@@ -5,7 +5,7 @@ from django.views import View
 from bot.commands import CommandRunner
 from sellers.models import SubSellerSubset
 from accounts.models import User
-from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, ChangeConfigSettingForm
+from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, ChangeConfigSettingForm, SellersCreateConfigForm, ManualSellersCreateConfigForm
 from finance.models import Prices, SellersPrices
 from django.contrib import messages
 from rest_framework.views import APIView
@@ -398,15 +398,15 @@ class ApiGetConfigPriceChoices(APIView):
 
 class SellersCreateConfigView(LoginRequiredMixin, View):
     def get(self, request, username, form_type):
-        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        forms = {'auto': SellersCreateConfigForm, 'manual': ManualSellersCreateConfigForm}
         return render(request, 'sellers_create_config.html',
-                      {'form': forms[form_type], 'form_type': form_type, "seller_username": username})
+                      {'form': forms[form_type](username=username), 'form_type': form_type, "seller_username": username})
 
     def post(self, request, username, form_type):
         from finance.views import FinanceAction
-        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        forms = {'auto': SellersCreateConfigForm, 'manual': ManualSellersCreateConfigForm}
         owner = User.objects.get(username=username)
-        form = forms[form_type](request.POST)
+        form = forms[form_type](request.POST, username=username)
         if form.is_valid():
             ip_limit = 0
             time_limit = 0
@@ -450,16 +450,16 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
 
 class SellersRenewConfigView(LoginRequiredMixin, View):
     def get(self, request, config_uuid, form_type):
-        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        forms = {'auto': SellersCreateConfigForm, 'manual': ManualSellersCreateConfigForm}
         service = Service.objects.get(uuid=config_uuid)
         return render(request, 'sellers_renew_config.html',
-                      {'form': forms[form_type], 'form_type': form_type, "service": service})
+                      {'form': forms[form_type](username=service.owner.username), 'form_type': form_type, "service": service})
 
     def post(self, request, config_uuid, form_type):
         from finance.views import FinanceAction
-        forms = {'auto': CreateConfigForm, 'manual': ManualCreateConfigForm}
+        forms = {'auto': SellersCreateConfigForm, 'manual': ManualSellersCreateConfigForm}
         service = Service.objects.get(uuid=config_uuid)
-        form = forms[form_type](request.POST)
+        form = forms[form_type](request.POST, username=service.owner.username)
         if form.is_valid():
             ip_limit = 0
             time_limit = 0

@@ -626,7 +626,7 @@ class CommandRunner:
             text += '\n' "📥 حجم مصرفی: " f'{service.usage}GB از {usage_limit}' '\n' '⏳ روز های باقی مانده: ' f'{expire_days}' '\n' '📶 وضعیت: ' f'{status}' '\n' f'⚙️ نوع: ' f'{kind}'
             text = text.replace('_', "\\_")
             text += ("\n\n"'📡 کانفیگ شما:' ' 'f"\n`{sub_link}`\n\n")
-            text +=  " برای کپی کانفیگ بر روی دکمه متن کلیک کنید." "\n"
+            text +=  "❇️ برای کپی کانفیگ بر روی متن ⬆️ کلیک کنید." "\n"
             text += "\n" " برای آپدیت اطلاعات بالا بر روی دکمه (Refresh) کلیک کنید 👇"
         else:
             text = '❌ این سرویس دیگر فعال نیست.'
@@ -655,7 +655,8 @@ class CommandRunner:
                 sub_link_domain = environ.get("SUB_LINK_DOMAIN")
                 sub_link_domain = "https://" + sub_link_domain.replace("https://", "").replace("http://", "")
                 sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{msg}/")
-                text = f"نام سرویس: {obj.name}" + "\n\n" + sub_link
+                text = f" نام سرویس: {obj.name}" + "\n\n" + f"`{sub_link}`\n\n" +  "❇️ برای کپی کانفیگ بر روی متن ⬆️ کلیک کنید."
+                text = text.replace("_", "\\_")
                 cls.send_msg(chat_id, "🟢 سرویس شما ثبت شد.")
                 data = {
                     'chat_id': chat_id,

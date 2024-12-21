@@ -1,7 +1,7 @@
 from django import forms
-from finance.models import Prices
+from finance.models import Prices, SellersPrices
 from django.core.exceptions import ValidationError
-
+from django.db.models import Q
 
 class SearchConfigForm(forms.Form):
     search_config = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'placeholder': 'Search Config Name or UUID'}))
@@ -114,13 +114,16 @@ class ChangeConfigSettingForm(forms.Form):
 
 class SellersCreateConfigForm(forms.Form):
     def __init__(self, *args, **kwargs):
+        self.username = kwargs.pop('username')
         super().__init__(*args, **kwargs)
         self.fields["type"].choices = self.type_limit()
     def type_limit(self):
-        types = [('limited','حجمی')]
-        if Prices.objects.filter(usage_limit=0).exists():
+        types = []
+        if SellersPrices.objects.filter(~Q(usage_limit=0), ~Q(expire_limit=0),seller__username=self.username).exists():
+            types = [('limited','حجمی')]
+        if SellersPrices.objects.filter(usage_limit=0, seller__username=self.username).exists():
             types.append(('usage_unlimit', "حجم نامحدود"))
-        if Prices.objects.filter(expire_limit=0).exists():
+        if SellersPrices.objects.filter(expire_limit=0, seller__username=self.username).exists():
             types.append(('time_unlimit', "زمان نامحدود"))
         return types
 
@@ -141,17 +144,9 @@ class SellersCreateConfigForm(forms.Form):
 
 class ManualSellersCreateConfigForm(forms.Form):
     def __init__(self, *args, **kwargs):
+        self.username = kwargs.pop('username')
         super().__init__(*args, **kwargs)
-        self.fields["type"].choices = self.type_limit()
-    def type_limit(self):
-        types = [('limited','حجمی')]
-        if Prices.objects.filter(usage_limit=0).exists():
-            types.append(('usage_unlimit', "حجم نامحدود"))
-        if Prices.objects.filter(expire_limit=0).exists():
-            types.append(('time_unlimit', "زمان نامحدود"))
-        return types
-
-    type = forms.ChoiceField(required=False)
+    type = forms.ChoiceField(required=False,choices=[('limited','حجمی'),('usage_unlimit', "حجم نامحدود"), ('time_unlimit', "زمان نامحدود")])
     usage_limit = forms.IntegerField(required=False)
     days_limit = forms.IntegerField(required=False)
     ip_limit = forms.ChoiceField(required=False, choices=[(1, '1 کاربره'), (2, '2 کاربره')])

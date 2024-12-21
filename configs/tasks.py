@@ -31,7 +31,6 @@ def run_jobs():
             response = ServerApi.disable_config(job_queue.config.server.ID, job_queue.config.service.uuid, True)
         elif job_queue.job == 4: # reset
             response = ServerApi.reset_usage(job_queue.config.server.ID, job_queue.config.service.name)
-            print(response)
 
 
         if response:
@@ -83,15 +82,12 @@ def update_usage():
     # sum usages and ended configs
     for service in Service.objects.all():
         service.usage = sum([config.usage for config in Config.objects.filter(service=service)])
-        print(f"xxxx ====> {service.name}")
         if not service.status == 4:
             status = 0
             if service.usage >= service.usage_limit and not service.usage_limit == 0:
                 status = 2
             if not service.expire_time == 0:
-                print(f"first ==>  {service.name}")
                 if service.expire_time < datetime.now().timestamp() and not service.start_time == 0:
-                    print(f"first ==>  {service.name}")
                     status = 2
 
             service.status = status
