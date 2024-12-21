@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-
 from bot.commands import CommandRunner
 from sellers.models import SubSellerSubset
 from accounts.models import User
@@ -23,6 +22,10 @@ from random import shuffle
 from datetime import datetime
 import urllib.parse
 from configs.tasks import run_jobs
+import qrcode
+from django.conf import settings
+
+
 
 
 class ConfigAction:
@@ -262,10 +265,11 @@ class ClientsConfigPage(View):
             sub_link_domain = environ.get("SUB_LINK_DOMAIN")
             sub_link_domain = "https://" + sub_link_domain.replace("https://", "").replace("http://", "")
             sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
+            img = qrcode.make(sub_link)
+            img.save(str(settings.MEDIA_ROOT) + f"/{config_uuid}.jpg")
+            return render(request, 'client_config_page.html', {'service': service, 'sub_link': sub_link})
         else:
-            service = False
-            sub_link = False
-        return render(request, 'client_config_page.html', {'service': service, 'sub_link': sub_link})
+            pass # TODO
 
 
 class Sublink(APIView):
@@ -572,8 +576,13 @@ class SellersConfigPage(LoginRequiredMixin, View):
             sub_link_domain = environ.get("SUB_LINK_DOMAIN")
             sub_link_domain = "https://" + sub_link_domain.replace("https://","").replace("http://","")
             sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
-            sub_link_with_name = (f'شماره سرویس: {service.name} \n\n  ' + sub_link)
-            return render(request, 'sellers_config_page.html', {'service': service, 'sub_link': sub_link, "sub_link_with_name": sub_link_with_name})
+            sub_link_with_name = (f'🌐 شماره سرویس: {service.name} \n\n ' + sub_link)
+
+            img = qrcode.make(sub_link)
+            img.save(str(settings.MEDIA_ROOT) + f"/{config_uuid}.jpg")
+            qrcode_link = urllib.parse.urljoin(sub_link_domain, f"/media/{config_uuid}.jpg")
+            qrcode_link = sub_link_with_name + "\n\n" + "💠 QrCode : \n\n" + qrcode_link
+            return render(request, 'sellers_config_page.html', {'service': service, 'sub_link': sub_link, "sub_link_with_name": sub_link_with_name, "qrcode_link":qrcode_link})
         else:
             messages.info(request, "این کانفیک حذف شده است.")
             return redirect("accounts:home_sellerso")
