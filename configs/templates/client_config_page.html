@@ -15,7 +15,7 @@
     {% include 'messages.html' %}
 <div id="main">
 {#    {% if service %}#}
-        <h3 id="conf_name">{{ service.name }}</h3>
+        <h3 id="conf_name">{{ service.name|split_name }}</h3>
         {% if service.status == 1 %}
             <h4 id="dis" dir="rtl">⛔ این کانفیگ غیرفعال است. ⛔</h4>
         {% endif %}

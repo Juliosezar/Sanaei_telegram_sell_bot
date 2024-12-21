@@ -23,12 +23,13 @@ class SellersList(LoginRequiredMixin, View):
 
 class ChangeSellerAccesses(LoginRequiredMixin, View):
     def get(self, request, seller_id):
-        form = ChangeSellerAccessForm()
+        seller = User.objects.get(id=seller_id)
+        form = ChangeSellerAccessForm(username=seller.username)
         return render(request,"change_seller_access.html", {"form": form})
 
     def post(self, request, seller_id):
-        form = ChangeSellerAccessForm(request.POST)
         seller = User.objects.get(id=seller_id)
+        form = ChangeSellerAccessForm(request.POST, username=seller.username)
         if form.is_valid():
             cd = form.cleaned_data
             seller.level_access = cd["level_access"]
@@ -38,6 +39,7 @@ class ChangeSellerAccesses(LoginRequiredMixin, View):
             seller.list_configs_acc = cd["list_configs_acc"]
             seller.delete_config_acc = cd["delete_config_acc"]
             seller.disable_config_acc = cd["disable_config_acc"]
+            seller.brand = cd["brand"]
             seller.bot = None
             seller.save()
             return redirect("sellers:sellers_list")

@@ -22,6 +22,7 @@
 		    				<tr>
                                 <th>USERNAME</th>
                                 <th>TYPE</th>
+                                <th>برند</th>
                                 <th>محدودیت خرید</th>
                                 <th>صورت حساب و تعرفه ها</th>
                                 <th>ساخت و تمدید</th>
@@ -43,7 +44,7 @@
                                 {% else %}
                                     <td>معمولی</td>
                                 {% endif %}
-
+                                <td>{{ seller.brand }}</td>
                                  <td>{{ seller.payment_limit|price }} T</td>
 
                                 {% if seller.finance_access %}

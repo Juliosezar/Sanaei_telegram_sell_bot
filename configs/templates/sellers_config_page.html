@@ -19,7 +19,7 @@
     {% if not service %}
             <h3 dir="rtl" id="conf_name">این سرویس لغو شده است.</h3>
     {% else %}
-        <h3 id="conf_name">{{ service.name }}</h3>
+        <h3 id="conf_name">{{ service.name|split_name }}</h3>
         <div id="box0" dir="rtl">
             {% if not service.customer.chat_id %}
                 <h3 class="c_info"> یوزر: ---- <a id="u_reg" href=""> Register 🆔</a></h3>

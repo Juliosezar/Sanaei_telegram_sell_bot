@@ -16,6 +16,7 @@ class User(AbstractBaseUser):
     delete_config_acc = models.BooleanField(default=True)
     disable_config_acc = models.BooleanField(default=True)
     bot = models.ForeignKey(SellerBots, on_delete=models.DO_NOTHING, null=True)
+    brand = models.CharField(max_length=20, default='Service')
 
 
     objects = UserManager()

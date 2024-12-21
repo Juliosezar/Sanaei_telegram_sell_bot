@@ -273,6 +273,7 @@ class Sublink(APIView):
         if Service.objects.filter(uuid=config_uuid).exists():
             service = Service.objects.get(uuid=config_uuid)
             service_name = service.name.split("@")[1] if "@" in service.name else service.name
+            service_name = service.owner.brand + "_" + service_name
             content = []
             for server in Server.objects.all():
                 content.append(f"vless://{config_uuid}@{server.fake_domain}:{server.inbound_port}?type=tcp&path=%2F&host=speedtest.net&headerType=http&security=none#{service_name} / {server.name}")
