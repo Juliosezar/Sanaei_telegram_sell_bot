@@ -302,7 +302,7 @@ class SellersSumBills(LoginRequiredMixin, View):
         sub_list = {sub.sub: sub.head for sub in SubSellerSubset.objects.all()}
         sellers_list = {}
         for seller in User.objects.filter(level_access__in=[0,1]):
-            sum_prices = PurchaseRecord.objects.filter(created_for=seller).aggregate(sum=Sum('price'))['sum'] or 0
+            sum_prices = sum(p.price if p.type in [0,1] else p.price * -1 for p in PurchaseRecord.objects.filter(created_for=seller))
             if seller in sub_list.keys():
                 seller = sub_list[seller]
             if seller in sellers_list.keys():
@@ -317,7 +317,7 @@ class SellerPayBills(LoginRequiredMixin, View):
     def get(self, request, username):
         list_of_subs = [sub.sub for sub in SubSellerSubset.objects.filter(head__username=username)]
         list_of_subs.append(User.objects.get(username=username))
-        purchases = PurchaseRecord.objects.filter(created_for__in=list_of_subs)
+        purchases = PurchaseRecord.objects.filter(created_for__in=list_of_subs).order_by("date_time")
         sum_bills = sum(p.price if p.type in [0,1] else p.price * -1 for p in purchases)
         form = PriceForm
         return render(request, 'seller_pay_page.html',
@@ -326,7 +326,7 @@ class SellerPayBills(LoginRequiredMixin, View):
     def post(self, request, username):
         list_of_subs = [sub.sub for sub in SubSellerSubset.objects.filter(head__username=username)]
         list_of_subs.append(User.objects.get(username=username))
-        purchases = PurchaseRecord.objects.filter(created_for__in=list_of_subs)
+        purchases = PurchaseRecord.objects.filter(created_for__in=list_of_subs).order_by("date_time")
         sum_bills = sum(p.price if p.type in [0,1] else p.price * -1 for p in purchases)
         form = PriceForm(request.POST)
         if form.is_valid():
