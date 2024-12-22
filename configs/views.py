@@ -100,7 +100,7 @@ class BotCreateConfigView(LoginRequiredMixin, View):
             if form_type == 'auto':
                 price = Prices.objects.get(usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
             else:
-                price = cd['price']
+                price = cd['price'] * 1000
             paid = cd["paid"]
             if form_type == 'auto':
                 time_limit = time_limit * 30
@@ -153,7 +153,7 @@ class BotRenewConfigView(LoginRequiredMixin, View):
             if form_type == 'auto':
                 price = Prices.objects.get(usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
             else:
-                price = cd['price']
+                price = cd['price'] * 1000
             paid = cd["paid"]
             if form_type == 'auto':
                 time_limit = time_limit * 30
@@ -427,11 +427,11 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
                 usage = int(cd["usage_limit"])
 
             if form_type == 'auto':
+                time_limit = time_limit * 30
                 price = SellersPrices.objects.get(seller=owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
             else:
-                price = cd['price']
-            if form_type == 'auto':
-                time_limit = time_limit * 30
+                price = cd['price'] * 1000
+
             service_uuid = uuid.uuid4()
             service_name = ConfigAction.generate_config_name()
             Service.objects.create(
@@ -479,12 +479,10 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
                 usage = int(cd["usage_limit"])
 
             if form_type == 'auto':
+                time_limit = time_limit * 30
                 price = SellersPrices.objects.get(seller=service.owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
             else:
-                price = cd['price']
-
-            if form_type == 'auto':
-                time_limit = time_limit * 30
+                price = cd['price'] * 1000
 
             service.usage_limit = usage
             if time_limit == 0:
@@ -572,7 +570,6 @@ class SellersConfigPage(LoginRequiredMixin, View):
     def get(self, request, config_uuid):
         if Service.objects.filter(uuid=config_uuid).exists():
             service = Service.objects.get(uuid=config_uuid)
-            get_config_link = f"نام سرویس: {service.name}" "\n\n" "برای دریافت کانفیگ روی لینک زیر کلیک کنید 👇🏻" "\n"  f'tg://resolve?domain={environ.get('BOT_USERNAME')}&start=register_{config_uuid}'
             sub_link_domain = environ.get("SUB_LINK_DOMAIN")
             sub_link_domain = "https://" + sub_link_domain.replace("https://","").replace("http://","")
             sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")

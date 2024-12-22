@@ -89,9 +89,9 @@ def update_usage():
             if not service.expire_time == 0:
                 if service.expire_time < datetime.now().timestamp() and not service.start_time == 0:
                     status = 2
-
-            service.status = status
-            service.save()
+            if service.status != status:
+                service.status = status
+                service.save()
 
 
 @shared_task
