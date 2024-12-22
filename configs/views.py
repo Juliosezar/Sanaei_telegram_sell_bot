@@ -448,7 +448,7 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
             run_jobs.delay()
             FinanceAction.create_purchase_record(owner, request.user, price, 0, f"{usage}GB / {time_limit}d / {ip_limit}u", service_name)
             return redirect('configs:sellers_conf_page', str(service_uuid))
-        return render(request, 'sellers_create_config.html', {'form': form, 'form_type': form_type})
+        return render(request, 'sellers_create_config.html', {'form': form, 'form_type': form_type, "seller_username": username})
 
 
 
