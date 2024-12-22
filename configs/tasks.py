@@ -44,9 +44,12 @@ def run_jobs():
 def update_usage():
     for server in Server.objects.all():
         response = ServerApi.get_list_configs(server.ID)
+        print("connecing ",server.name)
         try:
             if response:
+                print("connected ", server.name)
                 for name in response:
+                    print(name)
                     config_uuid = (response[name]["uuid"])
                     if Config.objects.filter(service__uuid=config_uuid, server=server, status__in=[1,2]).exists():
                         config_obj = Config.objects.get(service__uuid=config_uuid, server=server)
