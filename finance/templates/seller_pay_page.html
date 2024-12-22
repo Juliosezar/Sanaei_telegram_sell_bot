@@ -14,6 +14,13 @@
         <div id="main">
             <h3 id="counter">{{ username }}</h3>
             <h3 id="counter"> T صورتحساب کل: {{ sum_bills|price }}</h3>
+        {% if user.level_access == 10 %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <div>{{ form.price }},000</div>
+                <input type="submit" value="پرداخت">
+            </form>
+        {% endif %}
 		    <div class="xcontainer">
 		    		<table class="overflow-y">
 		    			<thead>
@@ -25,25 +32,24 @@
                                 <th>DATE/TIME</th>
                                 <th>CREATE BY</th>
                                 <th>CREATE FOR</th>
-
                             </tr>
 		    			</thead>
 		    			<tbody>
                         {% for value in purchases %}
                             <tr>
-                                <td>{{ value.service_name }}</td>
-                                <td>{{ value.price|price }} T</td>
+                                <td class="color{{ value.type }}">{{ value.service_name }}</td>
+                                <td class="color{{ value.type }}">{{ value.price|price }} T</td>
                                 {% if value.type == 0 %}
-                                    <td>خرید</td>
+                                    <td class="color{{ value.type }}">خرید</td>
                                 {% elif value.type == 1 %}
-                                    <td>تمدید</td>
+                                    <td class="color{{ value.type }}">تمدید</td>
                                 {% elif value.type == 2 %}
-                                    <td>پرداخت</td>
+                                    <td class="color{{ value.type }}">پرداخت</td>
                                 {% endif %}
-                                <td>{{ value.description }}</td>
-                                <td>{{ value.date_time|timestamp }}</td>
-                                <td>{{ value.created_by }}</td>
-                                <td>{{ value.created_for }}</td>
+                                <td class="color{{ value.type }}">{{ value.description }}</td>
+                                <td class="color{{ value.type }}">{{ value.date_time|timestamp }}</td>
+                                <td class="color{{ value.type }}">{{ value.created_by }}</td>
+                                <td class="color{{ value.type }}">{{ value.created_for }}</td>
 
                             </tr>
                         {% endfor %}

@@ -5,7 +5,7 @@ from django.views import View
 from django.db.models import Sum
 from accounts.models import User
 from sellers.models import SubSellerSubset
-from .forms import EditPayPriceForm, AddPriceForm, AddOffForm, SellersAddPriceForm
+from .forms import EditPayPriceForm, AddPriceForm, AddOffForm, SellersAddPriceForm, PriceForm
 from customers.models import Customer
 from .models import BotPayment, OffCodes, SellersPrices,Prices, PurchaseRecord
 from bot.commands import CommandRunner
@@ -16,7 +16,6 @@ from configs.models import Service
 import uuid
 from configs.tasks import run_jobs
 from datetime import datetime
-
 
 class FinanceAction:
     @staticmethod
@@ -319,9 +318,31 @@ class SellerPayBills(LoginRequiredMixin, View):
         list_of_subs = [sub.sub for sub in SubSellerSubset.objects.filter(head__username=username)]
         list_of_subs.append(User.objects.get(username=username))
         purchases = PurchaseRecord.objects.filter(created_for__in=list_of_subs)
-        sum_bills = purchases.aggregate(sum=Sum('price'))['sum'] or 0
-        return render(request, 'seller_pay_page.html', {"purchases": reversed(purchases), "sum_bills": sum_bills, "username":username})
+        sum_bills = sum(p.price if p.type in [0,1] else p.price * -1 for p in purchases)
+        form = PriceForm
+        return render(request, 'seller_pay_page.html',
+                      {"purchases": reversed(purchases), "sum_bills": sum_bills, "username":username, "form":form})
 
+    def post(self, request, username):
+        list_of_subs = [sub.sub for sub in SubSellerSubset.objects.filter(head__username=username)]
+        list_of_subs.append(User.objects.get(username=username))
+        purchases = PurchaseRecord.objects.filter(created_for__in=list_of_subs)
+        sum_bills = sum(p.price if p.type in [0,1] else p.price * -1 for p in purchases)
+        form = PriceForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            PurchaseRecord.objects.create(
+                created_for = User.objects.get(username=username),
+                created_by = request.user,
+                service_name = "پرداخت",
+                price = cd["price"] * 1000,
+                type = 2,
+                description =  "پرداخت",
+                date_time = datetime.now().timestamp(),
+            ).save()
+            return redirect("finance:sellers_pay_bill", username)
+        return render(request, 'seller_pay_page.html',
+                      {"purchases": reversed(purchases), "sum_bills": sum_bills, "username": username, "form":form})
 
 class SelectSeller(LoginRequiredMixin, View):
     def get(self, request, action):

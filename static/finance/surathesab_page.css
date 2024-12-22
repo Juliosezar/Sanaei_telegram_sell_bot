@@ -19,10 +19,7 @@ body {
     margin: 1rem 0 2rem;
 }
 
-.pay {
 
-    background-color: #b9ffb3;
-}
 
 form {
     display: flex;
@@ -134,4 +131,14 @@ input {
 }
 
 
+}
+
+.color2 {
+    background-color: #a1ffa4;
+}
+
+
+
+.color1 {
+    background-color: #c9e8ff;
 }

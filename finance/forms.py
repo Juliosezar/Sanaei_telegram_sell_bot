@@ -116,3 +116,7 @@ class AddOffForm(forms.Form):
         print(amount)
         if not amount:
             raise ValidationError("مقداد تخفیف را وارد کنید.")
+
+
+class PriceForm(forms.Form):
+    price = forms.IntegerField(initial=0, required=False, max_value=10000)
