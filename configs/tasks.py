@@ -82,7 +82,7 @@ def update_usage():
     # sum usages and ended configs
     for service in Service.objects.all():
         service.usage = sum([config.usage for config in Config.objects.filter(service=service)])
-        if not service.status == 4:
+        if not service.status in [4, 1]:
             status = 0
             if service.usage >= service.usage_limit and not service.usage_limit == 0:
                 status = 2
