@@ -99,11 +99,11 @@ class BotCreateConfigView(LoginRequiredMixin, View):
 
             if form_type == 'auto':
                 price = Prices.objects.get(usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
+                time_limit = time_limit * 30
             else:
                 price = cd['price'] * 1000
             paid = cd["paid"]
-            if form_type == 'auto':
-                time_limit = time_limit * 30
+
             service_uuid = uuid.uuid4()
             service_name = ConfigAction.generate_config_name()
             Service.objects.create(
@@ -152,11 +152,11 @@ class BotRenewConfigView(LoginRequiredMixin, View):
 
             if form_type == 'auto':
                 price = Prices.objects.get(usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
+                time_limit = time_limit * 30
             else:
                 price = cd['price'] * 1000
             paid = cd["paid"]
-            if form_type == 'auto':
-                time_limit = time_limit * 30
+
 
             service.usage_limit = usage
             if time_limit == 0:
@@ -427,8 +427,8 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
                 usage = int(cd["usage_limit"])
 
             if form_type == 'auto':
-                time_limit = time_limit * 30
                 price = SellersPrices.objects.get(seller=owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
+                time_limit = time_limit * 30
             else:
                 price = cd['price'] * 1000
 
@@ -479,8 +479,8 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
                 usage = int(cd["usage_limit"])
 
             if form_type == 'auto':
-                time_limit = time_limit * 30
                 price = SellersPrices.objects.get(seller=service.owner,usage_limit=usage, expire_limit=time_limit, user_limit=ip_limit).price
+                time_limit = time_limit * 30
             else:
                 price = cd['price'] * 1000
 
