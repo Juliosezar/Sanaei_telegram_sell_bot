@@ -94,7 +94,7 @@ def update_usage():
                     status = 2
             if service.status != status:
                 service.status = status
-                service.save()
+        service.save()
 
 
 @shared_task
