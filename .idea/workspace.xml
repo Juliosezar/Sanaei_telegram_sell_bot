@@ -6,8 +6,33 @@
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance/templates/seller_pay_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/finance/templates/seller_pay_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/v2/finance/surathesab_page.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/v2/finance/surathesab_page.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/add_seller.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/add_seller.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/add_vpn_app.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/add_vpn_app.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/home_bot.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_bot.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/home_sellers.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_sellers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/log_in.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/log_in.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/register_user.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/register_user.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/sellers_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/sellers_info.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/settings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/show_apps.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/show_apps.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/change_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/change_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/change_unlimit_limit.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/change_unlimit_limit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/client_config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/client_config_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/config_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/create_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/create_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/renew_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/renew_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/sellers_config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/sellers_config_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/sellers_create_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/sellers_create_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/sellers_list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/sellers_list_configs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/sellers_renew_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/sellers_renew_config.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/subsellers_list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/subsellers_list_configs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templates/Custumer_details.html" beforeDir="false" afterPath="$PROJECT_DIR$/customers/templates/Custumer_details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templates/change_wallet.html" beforeDir="false" afterPath="$PROJECT_DIR$/customers/templates/change_wallet.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templates/list_custumers.html" beforeDir="false" afterPath="$PROJECT_DIR$/customers/templates/list_custumers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templates/register_conf_for_customer.html" beforeDir="false" afterPath="$PROJECT_DIR$/customers/templates/register_conf_for_customer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templates/send_msg_to_all.html" beforeDir="false" afterPath="$PROJECT_DIR$/customers/templates/send_msg_to_all.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers/templates/send_msg_to_custumer.html" beforeDir="false" afterPath="$PROJECT_DIR$/customers/templates/send_msg_to_custumer.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,11 +100,11 @@
       <recent name="$PROJECT_DIR$/finance" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static" />
       <recent name="$PROJECT_DIR$/static/v2" />
       <recent name="$PROJECT_DIR$/configs/templates" />
       <recent name="$PROJECT_DIR$/finance/templates" />
       <recent name="$PROJECT_DIR$/static/configs" />
-      <recent name="$PROJECT_DIR$/configs" />
     </key>
   </component>
   <component name="RunManager">
@@ -161,7 +186,7 @@
       <workItem from="1734865355301" duration="5279000" />
       <workItem from="1734873563634" duration="4556000" />
       <workItem from="1734893849533" duration="5243000" />
-      <workItem from="1734949988152" duration="4984000" />
+      <workItem from="1734949988152" duration="5618000" />
     </task>
     <servers />
   </component>

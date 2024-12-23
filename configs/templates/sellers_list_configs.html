@@ -5,8 +5,8 @@
 	<head>
 		<title>List Configs</title>
         {% include "base_head.html" %}
-        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'configs/list_configs.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}?{% now "d" %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'configs/list_configs.css' %}?{% now "d" %}" />
     </head>
 	<body dir="ltr">
     <script>

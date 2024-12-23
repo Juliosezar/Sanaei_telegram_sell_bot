@@ -7,8 +7,8 @@
 {% include "base_head.html" %}
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'configs/config_page.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}?{% now "d" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'configs/config_page.css' %}?{% now "d" %}">
 </head>
 
 <body dir="">

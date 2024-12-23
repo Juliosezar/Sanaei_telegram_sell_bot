@@ -6,7 +6,7 @@
 {% include "base_head.html" %}
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'home_page.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'home_page.css' %}?{% now "d" %}">
     <script>
         $(document).ready(function() {
             $('#create_config_box').hide()

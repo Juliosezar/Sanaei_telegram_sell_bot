@@ -7,8 +7,8 @@
 {% include "base_head.html" %}
     <meta charset="UTF-8">
     <title>Title</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'custumers/custumer_details.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}?{% now "d" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'custumers/custumer_details.css' %}?{% now "d" %}">
     <script>
         $(document).ready(function() {
             $("#loading").hide()

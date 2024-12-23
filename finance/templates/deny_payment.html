@@ -7,7 +7,7 @@
 {% include "base_head.html" %}
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'finance/deny_payment.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'finance/deny_payment.css' %}?{% now "d" %}">
     <script>
         $(document).ready(function() {
             $("#loading").hide()
