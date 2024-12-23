@@ -32,6 +32,9 @@
                                 <th>DATE/TIME</th>
                                 <th>CREATE BY</th>
                                 <th>CREATE FOR</th>
+                                {% if user.level_access == 10 %}
+                                <th>DELETE</th>
+                                {% endif %}
                             </tr>
 		    			</thead>
 		    			<tbody>
@@ -50,7 +53,9 @@
                                 <td class="color{{ value.type }}">{{ value.date_time|timestamp }}</td>
                                 <td class="color{{ value.type }}">{{ value.created_by }}</td>
                                 <td class="color{{ value.type }}">{{ value.created_for }}</td>
-
+                                {% if user.level_access == 10 %}
+                                    <td><a style="background-color: #ff7474; padding: 0.2rem 0.5rem" href="{% url "finance:sellers_delete_pay_bill" value.id %}">delete</a></td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
 		    			</tbody>

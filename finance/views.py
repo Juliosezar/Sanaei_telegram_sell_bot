@@ -404,3 +404,9 @@ class SellersAddPrice(LoginRequiredMixin, View):
             ).save()
             return redirect('finance:sellers_show_prices', username)
         return render(request, 'seller_add_price.html', {'form': form, "username":username})
+
+
+class SellerDeletePayBills(LoginRequiredMixin, View):
+    def get(self, request, id):
+        PurchaseRecord.objects.get(id=id).delete()
+        return redirect(request.META.get('HTTP_REFERER', '/'))

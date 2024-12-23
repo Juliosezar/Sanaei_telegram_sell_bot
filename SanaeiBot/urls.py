@@ -15,4 +15,5 @@ urlpatterns = [
     path('servers/', include('servers.urls', namespace='servers')),
     path("configs/", include("configs.urls", namespace='configs')),
     path("sellers/",include("sellers.urls", namespace='sellers')),
+    path("log/", include("logs.urls", namespace='logs')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

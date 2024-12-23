@@ -17,6 +17,7 @@ urlpatterns = [
 
     path("sellers_sum_bils/", views.SellersSumBills.as_view(), name='sellers_sum_bils'),
     path("sellers_pay_bill/<str:username>/", views.SellerPayBills.as_view(), name='sellers_pay_bill'),
+    path("sellers_delete_pay_bill/<int:id>/", views.SellerDeletePayBills.as_view(), name='sellers_delete_pay_bill'),
     path("select_seller/<str:action>/", views.SelectSeller.as_view(), name='select_seller'),
     path("sellers_show_prices/<str:username>/",views.SellersShowPrices.as_view(), name='sellers_show_prices' ),
     path('seller_delete/<int:obj_id>/', views.SellersDeletePrice.as_view(), name='seller_delete_price'),

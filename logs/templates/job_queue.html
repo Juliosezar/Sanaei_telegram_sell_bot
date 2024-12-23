@@ -1,0 +1,78 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fa" class="no-js">
+	<head>
+		<title>List Configs</title>
+        {% include "base_head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}?{% now "d" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'finance/surathesab_page.css' %}?{% now "d" %}"/>
+    </head>
+	<body dir="ltr">
+        {% include "navbar_bot.html" %}
+        {% include 'messages.html' %}
+        <div id="main">
+
+            <h3 id="counter">Job Queue Status</h3>
+		    <div class="xcontainer">
+		    		<table class="overflow-y">
+		    			<thead>
+		    				<tr>
+                                <th>SERVICE</th>
+                                <th>JOB</th>
+                                <th>STATUS</th>
+                                <th>SERVER</th>
+                                <th>TRY COUNT</th>
+                                <th>LAST TRY</th>
+                                {% if user.level_access == 10 %}
+                                <th>DELETE</th>
+                                {% endif %}
+                            </tr>
+		    			</thead>
+		    			<tbody>
+                        {% for row in data %}
+
+		    				<tr>
+                                	<td>{{ row.config.service.name }}</td>
+
+                                    {% if row.job == 0 %}
+                                        <td style="background-color: #a3ffa7">Create</td>
+                                    {% elif row.job == 1 %}
+                                        <td style="background-color: #bcbcbc">Disable</td>
+                                    {% elif row.job == 2 %}
+                                        <td style="background-color: #ff5656">Delete</td>
+                                    {% elif row.job == 3 %}
+                                        <td style="background-color: #9cfff5">Enable</td>
+                                    {% elif row.job == 4 %}
+                                        <td style="background-color: rgba(125,162,255,0.62)">Reset</td>
+                                    {% endif %}
+                                    {% if row.done %}
+                                        <td>✅</td>
+                                    {% else %}
+                                	    <td>❌</td>
+                                    {% endif %}
+                                    <td>{{ row.config.server.name }}</td>
+                                    <td>{{ row.try_count }}</td>
+                                    <td>{{ row.last_try|timestamp }}</td>
+                                    {% if user.level_access == 10 %}
+                                    <td><a style="background-color: #ff7474; padding: 0.2rem 0.5rem" href="{% url "logs:delete_job_queue" row.id %}">delete</a></td>
+                                    {% endif %}
+                            </tr>
+
+                        {% endfor %}
+		    			</tbody>
+		    		</table>
+            </div>
+
+
+        </div>
+
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script src={% static "js/list.js" %}></script>
+	</body>
+
+{% include "loading.html" %}
+
+</html>

@@ -33,6 +33,7 @@ class ConfigJobsQueue(models.Model):
     last_try = models.BigIntegerField(default=0)
     try_count = models.SmallIntegerField(default=0)
 
+
 class EndNotif(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     timestamp = models.PositiveBigIntegerField()
