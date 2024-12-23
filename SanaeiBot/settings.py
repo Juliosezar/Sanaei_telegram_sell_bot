@@ -115,7 +115,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = '/2/static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = environ.get('STATIC_ROOT')
 STATICFILES_FINDERS = ("compressor.finders.CompressorFinder",)
 COMPRESS_PRECOMPILERS = (
