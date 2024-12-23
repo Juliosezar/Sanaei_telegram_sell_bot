@@ -307,7 +307,7 @@ class Sublink(APIView):
             return HttpResponse(status=404)
 
     def post(self, request, config_uuid):
-        r        if Service.objects.filter(uuid=config_uuid).exists():
+        if Service.objects.filter(uuid=config_uuid).exists():
             service = Service.objects.get(uuid=config_uuid)
             service_name = service.name.split("@")[1] if "@" in service.name else service.name
             if service.owner:
@@ -325,6 +325,7 @@ class Sublink(APIView):
             print(user_agent)
             is_v2ray_client = any(word.lower() in user_agent.lower() for word in ["hiddify", "v2ray", "Streisand", "Hiddify", "V2rayNG", "V2Box", "FoXray","NekoBox", "v2raytun"])
             if is_v2ray_client:
+
                 service_obj = Service.objects.get(uuid=config_uuid)
                 time_stamp = datetime.now().timestamp()
                 if not service_obj.expire_time == 0 and service_obj.start_time == 0:
