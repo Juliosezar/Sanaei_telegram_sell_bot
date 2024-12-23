@@ -290,7 +290,7 @@ class Sublink(APIView):
                 content_str += (i + "\n")
             user_agent = request.headers.get('User-Agent', None)
             print(user_agent)
-            is_v2ray_client = any(word.lower() in user_agent.lower() for word in ["hiddify", "v2ray", "Streisand", "Hiddify", "V2ray", "V2Box", "FoXray","NekoBox", "v2raytun"])
+            is_v2ray_client = any(word.lower() in user_agent.lower() for word in ["hiddify", "v2ray", "Streisand", "Hiddify", "V2rayNG", "V2Box", "FoXray","NekoBox", "v2raytun"])
             if is_v2ray_client:
                 service_obj = Service.objects.get(uuid=config_uuid)
                 time_stamp = datetime.now().timestamp()
@@ -307,7 +307,37 @@ class Sublink(APIView):
             return HttpResponse(status=404)
 
     def post(self, request, config_uuid):
-        return HttpResponse(status=404)
+        r        if Service.objects.filter(uuid=config_uuid).exists():
+            service = Service.objects.get(uuid=config_uuid)
+            service_name = service.name.split("@")[1] if "@" in service.name else service.name
+            if service.owner:
+                service_name = service.owner.brand + "_" + service_name
+            else:
+                service_name =  "Napsv_" + service_name
+            content = []
+            for server in Server.objects.all():
+                content.append(f"vless://{config_uuid}@{server.fake_domain}:{server.inbound_port}?type=tcp&path=%2F&host=speedtest.net&headerType=http&security=none#{service_name} / {server.name}")
+            shuffle(content)
+            content_str = ""
+            for i in content:
+                content_str += (i + "\n")
+            user_agent = request.headers.get('User-Agent', None)
+            print(user_agent)
+            is_v2ray_client = any(word.lower() in user_agent.lower() for word in ["hiddify", "v2ray", "Streisand", "Hiddify", "V2rayNG", "V2Box", "FoXray","NekoBox", "v2raytun"])
+            if is_v2ray_client:
+                service_obj = Service.objects.get(uuid=config_uuid)
+                time_stamp = datetime.now().timestamp()
+                if not service_obj.expire_time == 0 and service_obj.start_time == 0:
+                    service_obj.expire_time = time_stamp + (service_obj.expire_time * 86400)
+                service_obj.start_time = time_stamp
+                service_obj.save()
+                response = HttpResponse(content_str)
+                response['Content-Disposition'] = f'attachment; filename="{service_name}"'
+                return response
+            else:
+                return redirect("configs:client_config_page",config_uuid)
+        else:
+            return HttpResponse(status=404)
 
 # Api
 
