@@ -57,7 +57,6 @@ def webhook(request):
     if request.method == 'POST':
         try:
             update = json.loads(request.body)
-            print(update)
             if 'message' in update:
                 chat_id = update['message']['chat']['id']
                 if not Customer.objects.filter(chat_id=chat_id).exists():
@@ -93,7 +92,6 @@ def webhook(request):
             elif 'callback_query' in update:
                 msg_id = update["callback_query"]["message"]["message_id"]
                 query_data = update['callback_query']['data']
-                print(query_data)
                 chat_id = update['callback_query']['message']['chat']['id']
                 if not Customer.objects.get(chat_id=chat_id).active:
                     CommandRunner.send_msg(chat_id, "🚫 دسترسی شما به بات توسط ادمین لغو شده است.")

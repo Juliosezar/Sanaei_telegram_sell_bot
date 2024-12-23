@@ -290,7 +290,7 @@ class Sublink(APIView):
                 content_str += (i + "\n")
             user_agent = request.headers.get('User-Agent', None)
             print(user_agent)
-            is_v2ray_client = any(word in user_agent for word in ["hiddify", "v2ray", "Streisand", "Hiddify", "V2ray", "V2Box", "FoXray"])
+            is_v2ray_client = any(word.lower() in user_agent.lower() for word in ["hiddify", "v2ray", "Streisand", "Hiddify", "V2ray", "V2Box", "FoXray","NekoBox", "v2raytun"])
             if is_v2ray_client:
                 service_obj = Service.objects.get(uuid=config_uuid)
                 time_stamp = datetime.now().timestamp()
