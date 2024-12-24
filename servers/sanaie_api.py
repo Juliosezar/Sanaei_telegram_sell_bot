@@ -37,7 +37,7 @@ class ServerApi:
             session = cls.create_session(server_id)
             if not session:
                 return False
-            list_configs = session.get(server_obj.url + "panel/api/inbounds/list/", timeout=15)
+            list_configs = session.get(server_obj.url + "panel/api/inbounds/list/", timeout=10)
             if list_configs.status_code != 200:
                 session.close()
                 return False
@@ -141,7 +141,7 @@ class ServerApi:
         session = cls.create_session(server_id)
         if not session:
             return False
-        respons = session.get(url)
+        respons = session.get(url, timeout=6)
         if respons.status_code == 200:
             if respons.json()['success']:
                 obj = respons.json()["obj"]
@@ -187,7 +187,7 @@ class ServerApi:
         session = cls.create_session(server_id)
         if not session:
             return False
-        response = session.post(url)
+        response = session.post(url, timeout=6)
         if response.status_code == 200:
             if response.json()['success']:
                 session.close()
@@ -215,7 +215,7 @@ class ServerApi:
         }
         header = {"Accept": "application/json"}
         try:
-            respons = session.post(url, headers=header, json=data1)
+            respons = session.post(url, headers=header, json=data1, timeout=6)
             if respons.status_code == 200:
                 if respons.json()['success']:
                     return True

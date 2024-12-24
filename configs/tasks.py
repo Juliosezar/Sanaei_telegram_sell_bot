@@ -6,7 +6,7 @@ from servers.models import Server
 from .models import ConfigJobsQueue, Config, Service, EndNotif
 from servers.sanaie_api import ServerApi
 from datetime import datetime
-
+from logs.views import LogAction
 
 
 @shared_task
@@ -57,13 +57,18 @@ def update_usage():
                             config_obj.status = 2
                         config_obj.last_update = datetime.now().timestamp()
                         if config_obj.service.status == 0 and not response[name]["enable"]:
-                            ServerApi.disable_config(server.ID, config_obj.service.uuid, True)
+                            r = ServerApi.disable_config(server.ID, config_obj.service.uuid, True)
+                            if r:
+                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'")
                         elif config_obj.service.status in [1,2] and response[name]["enable"]:
-                            ServerApi.disable_config(server.ID, config_obj.service.uuid, False)
+                            r = ServerApi.disable_config(server.ID, config_obj.service.uuid, False)
+                            if r:
+                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Disable / service \'{config_obj.service.name}\' / server \'{server.name}\'")
                         elif config_obj.service.status == 4:
                             delete = ServerApi.delete_config(server.ID, config_obj.service.uuid)
                             if delete:
                                 config_obj.status = 3
+                                LogAction.create_celery_log(config_obj.service.owner, f"❌ Delete / service \'{config_obj.service.name}\' / server \'{server.name}\'")
                         config_obj.save()
                 server.last_update = datetime.now().timestamp()
                 server.save()
@@ -78,8 +83,8 @@ def update_usage():
             server.save()
 
 
-
-    # sum usages and ended configs
+@shared_task
+def sum_usage_and_ending_services():
     for service in Service.objects.all():
         service.usage = sum([config.usage for config in Config.objects.filter(service=service)])
         if not service.status in [4, 1]:
@@ -102,6 +107,7 @@ def delete_service():
             if not config.status == 3:
                 deleted = False
         if deleted:
+            LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ \  service \'{service.name}\' ")
             service.delete()
 
 
@@ -160,66 +166,3 @@ def delete_notif():
             notif.delete()
 
 
-
-# @shared_task
-# def xx():
-#     import json
-#     with open('/home/sezar/projects/SanaeiBot/x.json', 'r') as file:
-#         data = json.load(file)
-#     list_db = {}
-#     for i in data:
-#         list_db[i["config_uuid"]] = i["chat_id_id"]
-#
-#
-#     for server in Server.objects.all():
-#         print(server.fake_domain)
-#         x = ServerApi.get_list_configs(server.ID)
-#         for config in x:
-#             # print(config, x[config])
-#             uuuid = x[config]["uuid"].replace("-","")
-#             # print(uuuid)
-#             customer = None
-#             if uuuid in list_db:
-#                 if Customer.objects.filter(chat_id=list_db[uuuid]).exists():
-#                     customer = Customer.objects.get(chat_id=list_db[uuuid])
-#             owner = None
-#             if "@" in config:
-#                 if User.objects.filter(username=config.split("@")[0]).exists():
-#                     owner = User.objects.get(username=config.split("@")[0])
-#             if Service.objects.filter(name=config).exists():
-#                 print(config)
-#             elif Service.objects.filter(uuid=x[config]["uuid"]).exists():
-#                 print(config)
-#             else:
-#                 Service.objects.create(
-#                     customer=customer,
-#                     uuid=x[config]["uuid"],
-#                     name=config,
-#                     usage_limit=x[config]["usage_limit"],
-#                     start_time=datetime.now().timestamp(),
-#                     expire_time=x[config]["expire_time"],
-#                     status=0 if x[config]["enable"] else 1,
-#                     owner=owner,
-#                     created_by=User.objects.get(username="Sezar"),
-#                 ).save()
-
-
-#
-# @shared_task
-# def xx():
-#     for service in Service.objects.all():
-#         for server in Server.objects.all():
-#             Config.objects.create(
-#                 service=service,
-#                 server=server,
-#                 status=1,
-#             ).save()
-#             print(service.name, server.name)
-# from bot.models import CustomerTmpStatus
-# @shared_task
-# def xx():
-#     for i in Customer.objects.all():
-#         CustomerTmpStatus.objects.create(
-#             customer=i,
-#
-#         ).save()
