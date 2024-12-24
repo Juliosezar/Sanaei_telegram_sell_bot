@@ -107,7 +107,7 @@ def delete_service():
             if not config.status == 3:
                 deleted = False
         if deleted:
-            LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ \  service \'{service.name}\' ")
+            LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ /  service \'{service.name}\' ")
             service.delete()
 
 
