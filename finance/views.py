@@ -86,7 +86,10 @@ class FirstConfirmPayment(LoginRequiredMixin, View):
                 if Customer.objects.get(chat_id=pay_obj.customer.chat_id).wallet >= pay_obj.info["config_price"]:
                     service = Service.objects.get(uuid=pay_obj.info["service_uuid"])
                     service.usage_limit = pay_obj.info["usage_limit"]
-                    service.expire_time = (datetime.now().timestamp() + (pay_obj.info["expire_time"] * 86400)) if service.start_time != 0 else pay_obj.info["expire_time"]
+                    if pay_obj.info["expire_time"] == 0:
+                        service.expire_time = 0
+                    else:
+                        service.expire_time = (datetime.now().timestamp() + (pay_obj.info["expire_time"] * 86400)) if service.start_time != 0 else pay_obj.info["expire_time"]
                     service.user_limit = pay_obj.info["user_limit"]
                     service.save()
                     ConfigAction.create_config_job_queue(service.uuid, 4)
@@ -140,8 +143,10 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
                 if Customer.objects.get(chat_id=pay_obj.customer.chat_id).wallet >= pay_obj.info["config_price"]:
                     service = Service.objects.get(uuid=pay_obj.info["service_uuid"])
                     service.usage_limit = pay_obj.info["usage_limit"]
-                    service.expire_time = (datetime.now().timestamp() + (pay_obj.info["expire_time"] * 86400)) if service.start_time != 0 else pay_obj.info["expire_time"]
-                    service.user_limit = pay_obj.info["user_limit"]
+                    if pay_obj.info["expire_time"] == 0:
+                        service.expire_time = 0
+                    else:
+                        service.expire_time = (datetime.now().timestamp() + (pay_obj.info["expire_time"] * 86400)) if service.start_time != 0 else pay_obj.info["expire_time"]
                     service.save()
                     ConfigAction.create_config_job_queue(service.uuid, 4)
                     FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
