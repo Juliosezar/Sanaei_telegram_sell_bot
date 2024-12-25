@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'finance/surathesab_page.css' %}?{% now "d" %}"/>
     </head>
 	<body dir="ltr">
-        {% include "navbar_bot.html" %}
+        {% include "navbar_sellers.html" %}
         {% include 'messages.html' %}
         <div id="main">
 
@@ -23,6 +23,7 @@
                                 <th>STATUS</th>
                                 <th>SERVER</th>
                                 <th>TRY COUNT</th>
+                                <th>CREAT BY</th>
                                 <th>LAST TRY</th>
                                 {% if user.level_access == 10 %}
                                 <th>DELETE</th>
@@ -53,6 +54,13 @@
                                     {% endif %}
                                     <td>{{ row.config.server.name }}</td>
                                     <td>{{ row.try_count }}</td>
+                                    {% if row.by_user %}
+                                    <td>{{ row.by_user }}</td>
+                                    {% else %}
+                                        <td>Bot</td>
+                                    {% endif %}
+
+
                                     <td>{{ row.last_try|timestamp }}</td>
                                     {% if user.level_access == 10 %}
                                     <td><a style="background-color: #ff7474; padding: 0.2rem 0.5rem" href="{% url "logs:delete_job_queue" row.id %}">delete</a></td>

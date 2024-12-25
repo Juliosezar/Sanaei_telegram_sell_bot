@@ -105,8 +105,8 @@
         {% endif %}
 
             <a href="" class="links" id="setting">🗃️  Logs 👨🏻‍🔧</a>
-
-            <a href="" class="links" id="setting">📶 Status 📑</a>
+            <a href="{% url "logs:sellers_job_queue" %}" class="links" id="setting">🗃️ Job Queue 🗑</a>
+            <a href="{% url 'logs:sellers_status' %}" class="links" id="setting">📶 Status 📑</a>
             {% if not user.level_access == 0 %}
                 <a href="" class="links" id="message">️📝 پیام همگانی 📨</a>
                 <a href="" class="links" id="report">📊 گزارشات 📈</a>

@@ -32,6 +32,7 @@ class ConfigJobsQueue(models.Model):
     done = models.BooleanField(default=False)
     last_try = models.BigIntegerField(default=0)
     try_count = models.SmallIntegerField(default=0)
+    by_user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, related_name='by_user')
 
 
 class EndNotif(models.Model):

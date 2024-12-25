@@ -55,12 +55,13 @@ class ConfigAction:
 
 
     @staticmethod
-    def create_config_job_queue(service_uuid, job):
+    def create_config_job_queue(service_uuid, job, by_user=None):
         service = Service.objects.get(uuid=service_uuid)
         for config in Config.objects.filter(service=service):
             ConfigJobsQueue.objects.create(
                 config=config,
                 job=job,
+                by_user=by_user,
             ).save()
 
     @staticmethod
@@ -116,7 +117,7 @@ class BotCreateConfigView(LoginRequiredMixin, View):
                 created_by=request.user,
             ).save()
             ConfigAction.create_config_db(service_uuid)
-            ConfigAction.create_config_job_queue(service_uuid, 0)
+            ConfigAction.create_config_job_queue(service_uuid, 0, request.user)
             run_jobs.delay()
             FinanceAction.create_purchase_record(None, request.user, price, 0, f"{usage}GB / {time_limit}d / {ip_limit}u", service_name)
             return redirect('configs:conf_page', str(service_uuid))
@@ -166,7 +167,7 @@ class BotRenewConfigView(LoginRequiredMixin, View):
             service.user_limit = ip_limit
             service.paid = paid
             service.save()
-            ConfigAction.create_config_job_queue(service.uuid, 4)
+            ConfigAction.create_config_job_queue(service.uuid, 4, request.user)
             ConfigAction.reset_config_db(service.uuid)
             run_jobs.delay()
             if service.customer:
@@ -231,11 +232,7 @@ class DeleteConfig(LoginRequiredMixin, View):
         service = Service.objects.get(uuid=config_uuid)
         service.status = 4
         service.save()
-        for config in Config.objects.filter(service=service):
-            ConfigJobsQueue.objects.create(
-                config=config,
-                job=2,
-            ).save()
+        ConfigAction.create_config_job_queue(service.uuid, 2, request.user)
         run_jobs.delay()
         messages.success(request, f"سرویس {service.name} در صف حذف قرار گرفت.")
         return redirect(request.META.get('HTTP_REFERER', '/'))
@@ -246,13 +243,9 @@ class DisableConfig(LoginRequiredMixin, View):
         service.status = 0 if enable else 1
         service.save()
         for config in Config.objects.filter(service=service):
-            ConfigJobsQueue.objects.create(
-                config=config,
-                job=3 if enable else 1,
-            ).save()
+            ConfigAction.create_config_job_queue(service.uuid, 3 if enable else 1, request.user)
             config.status = 2
             config.save()
-
             run_jobs.delay()
 
         return redirect(request.META.get('HTTP_REFERER', '/'))
@@ -475,7 +468,7 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
                 owner=owner,
             ).save()
             ConfigAction.create_config_db(service_uuid)
-            ConfigAction.create_config_job_queue(service_uuid, 0)
+            ConfigAction.create_config_job_queue(service_uuid, 0, request.user)
             run_jobs.delay()
             FinanceAction.create_purchase_record(owner, request.user, price, 0, f"{usage}GB / {time_limit}d / {ip_limit}u", service_name)
             return redirect('configs:sellers_conf_page', str(service_uuid))
@@ -522,7 +515,7 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
                 service.expire_time = (datetime.now().timestamp() + (time_limit * 86400)) if service.start_time != 0 else time_limit
             service.user_limit = ip_limit
             service.save()
-            ConfigAction.create_config_job_queue(service.uuid, 4)
+            ConfigAction.create_config_job_queue(service.uuid, 4, request.user)
             ConfigAction.reset_config_db(service.uuid)
             run_jobs.delay()
 

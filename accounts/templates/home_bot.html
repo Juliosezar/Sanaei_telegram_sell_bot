@@ -97,7 +97,7 @@
             <a href="{% url "configs:bot_create_config" "auto" %}" class="links link2">➕ ساخت کانفیگ 🔗</a>
             <a href="{% url "configs:bot_list_config" %}" class="links link2">📋 لیست کانفیگ ها 🔗</a>
             <a href="{% url "servers:show_servers" %}" class="links" id="servers">🌐 سرور ها 📶</a>
-            <a href="" class="links" id="setting">📑 Status 📶</a>
+            <a href="{% url 'logs:bot_status' %}" class="links" id="setting">📑 Status 📶</a>
             <a href="{% url "customers:custumers_list" %}" class="links" id="customers">👥 مشتری ها 🤖</a>
 {#            <a href="{% url "reports:admin_logs" %}" class="links" id="setting">🗃️ Admin Log 👨🏻‍🔧</a>#}
 {#            <a href="{% url "reports:pay_logs" %}" class="links" id="setting">🗃️ Pays Log 💰</a>#}
