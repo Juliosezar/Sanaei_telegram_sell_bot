@@ -314,18 +314,7 @@ class Sublink(APIView):
             content_str = ""
             for i in content:
                 content_str += (i + "\n")
-            # user_agent = request.headers.get('User-Agent', None)
-            # print(f"post == > {user_agent}")
-            # is_v2ray_client = any(word.lower() in user_agent.lower() for word in ["hiddify", "v2ray", "Streisand", "Hiddify", "V2rayNG", "V2Box", "FoXray","NekoBox", "v2raytun"])
-            # if is_v2ray_client:
-            #
-            #     service_obj = Service.objects.get(uuid=config_uuid)
-            #     time_stamp = datetime.now().timestamp()
-            #     if not service_obj.expire_time == 0 and service_obj.start_time == 0:
-            #         service_obj.expire_time = time_stamp + (service_obj.expire_time * 86400)
-            #     service_obj.start_time = time_stamp
-            #     service_obj.save()
-            return Response({"obj":content_str})
+            return Response({"obj":content_str, "name":service_name})
 
 
 
