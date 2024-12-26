@@ -191,8 +191,11 @@ class BotChangeConfigPage(LoginRequiredMixin, View):
         if form.is_valid():
             cd = form.cleaned_data
             service.usage_limit = cd["usage_limit"]
-            service.expire_time = cd["days_limit"] if service.start_time == 0 else ((cd["days_limit"] * 86400) + datetime.now().timestamp())
-            service.user_limit = cd["ip_limit"]
+            if int(cd["days_limit"]) == 0:
+                service.expire_time = 0
+            else:
+                service.expire_time = (datetime.now().timestamp() + (int(cd["days_limit"]) * 86400)) if service.start_time != 0 else int(cd["days_limit"])
+            service.user_limit = int(cd["ip_limit"])
             service.save()
 
             messages.success(request, "کانفیگ با موفقیت آپدیت شد.")
@@ -528,7 +531,11 @@ class SellersChangeConfigPage(LoginRequiredMixin, View):
         if form.is_valid():
             cd = form.cleaned_data
             service.usage_limit = cd["usage_limit"]
-            service.expire_time = cd["days_limit"] if service.start_time == 0 else ((cd["days_limit"] * 86400) + datetime.now().timestamp())
+            if int(cd["days_limit"]) == 0:
+                service.expire_time = 0
+            else:
+                service.expire_time = (datetime.now().timestamp() + (
+                            int(cd["days_limit"]) * 86400)) if service.start_time != 0 else int(cd["days_limit"])
             service.user_limit = cd["ip_limit"]
             service.save()
 
