@@ -314,6 +314,9 @@ class Sublink(APIView):
             content_str = ""
             for i in content:
                 content_str += (i + "\n")
+            time_stamp = datetime.now().timestamp()
+            service_obj.start_time = time_stamp
+            service_obj.save()
             return Response({"obj":content_str, "name":service_name})
 
 
