@@ -140,7 +140,7 @@ def create_recorded_configs():
 @shared_task
 def send_end_service_notif():
     for service in Service.objects.filter(owner=None, status__in=[0,1,2]):
-        if service.customer:
+        if service.customer and service.usage_limit != 0:
             if service.status == 2:
                 if not EndNotif.objects.filter(service=service, type=0).exists():
                     CommandRunner.send_end_of_config_notif(service.uuid, 0)
