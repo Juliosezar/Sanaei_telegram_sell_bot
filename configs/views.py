@@ -317,6 +317,8 @@ class Sublink(APIView):
             content_str = ""
             for i in content:
                 content_str += (i + "\n")
+            if not service_obj.expire_time == 0 and service_obj.start_time == 0:
+                service_obj.expire_time = time_stamp + (service_obj.expire_time * 86400)
             time_stamp = datetime.now().timestamp()
             service_obj = Service.objects.get(uuid=config_uuid)
             service_obj.start_time = time_stamp
