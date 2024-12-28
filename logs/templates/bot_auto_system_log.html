@@ -1,0 +1,52 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fa" class="no-js">
+	<head>
+		<title>List Configs</title>
+        {% include "base_head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}?{% now "d" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'finance/surathesab_page.css' %}?{% now "d" %}"/>
+    </head>
+	<body dir="ltr">
+        {% include "navbar_bot.html" %}
+        {% include 'messages.html' %}
+        <div id="main">
+
+            <h3 id="counter">Auto System Log</h3>
+		    <div class="xcontainer">
+		    		<table class="overflow-y">
+		    			<thead>
+		    				<tr>
+                                <th>DESCRIPTION</th>
+                                <th>Customer</th>
+                                <th>DATE/TIME</th>
+                            </tr>
+		    			</thead>
+		    			<tbody>
+                        {% for row in logs %}
+
+		    				<tr>
+                                	<td>{{ row.description }}</td>
+                                    <td>{{ row.customer.chat_id }}</td>
+                                    <td>{{ row.timestamp|timestamp }}</td>
+
+                            </tr>
+
+                        {% endfor %}
+		    			</tbody>
+		    		</table>
+            </div>
+
+
+        </div>
+
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script src={% static "js/list.js" %}></script>
+	</body>
+
+{% include "loading.html" %}
+
+</html>

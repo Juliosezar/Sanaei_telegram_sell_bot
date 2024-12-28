@@ -59,16 +59,16 @@ def update_usage():
                         if config_obj.service.status == 0 and not response[name]["enable"]:
                             r = ServerApi.disable_config(server.ID, config_obj.service.uuid, True)
                             if r:
-                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'")
+                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
                         elif config_obj.service.status in [1,2] and response[name]["enable"]:
                             r = ServerApi.disable_config(server.ID, config_obj.service.uuid, False)
                             if r:
-                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Disable / service \'{config_obj.service.name}\' / server \'{server.name}\'")
+                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Disable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
                         elif config_obj.service.status == 4:
                             delete = ServerApi.delete_config(server.ID, config_obj.service.uuid)
                             if delete:
                                 config_obj.status = 3
-                                LogAction.create_celery_log(config_obj.service.owner, f"❌ Delete / service \'{config_obj.service.name}\' / server \'{server.name}\'")
+                                LogAction.create_celery_log(config_obj.service.owner, f"❌ Delete / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
                         config_obj.save()
                 server.last_update = datetime.now().timestamp()
                 server.save()
@@ -107,7 +107,7 @@ def delete_service():
             if not config.status == 3:
                 deleted = False
         if deleted:
-            LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ /  service \'{service.name}\' ")
+            LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ /  service \'{service.name}\'", service.customer)
             service.delete()
 
 

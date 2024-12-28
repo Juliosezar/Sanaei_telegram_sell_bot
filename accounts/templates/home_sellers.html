@@ -106,6 +106,7 @@
 
             <a href="" class="links" id="setting">🗃️  Logs 👨🏻‍🔧</a>
             <a href="{% url "logs:sellers_job_queue" %}" class="links" id="setting">🗃️ Job Queue 🗑</a>
+            <a href="{% url "logs:sellers_auto_system_log" %}" class="links" id="setting">🗃️ AutoSys Log 🗑</a>
             <a href="{% url 'logs:sellers_status' %}" class="links" id="setting">📶 Status 📑</a>
             {% if not user.level_access == 0 %}
                 <a href="" class="links" id="message">️📝 پیام همگانی 📨</a>

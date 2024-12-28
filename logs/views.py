@@ -10,8 +10,9 @@ from sellers.models import SubSellerSubset
 
 class LogAction:
     @staticmethod
-    def create_celery_log(owner, desc):
+    def create_celery_log(owner, desc, customer):
         CeleryLog.objects.create(
+            customer=customer,
             owner=owner,
             description=desc,
             timestamp=datetime.now().timestamp()
@@ -56,3 +57,24 @@ class SellersStatusView(LoginRequiredMixin, View):
         servers = Server.objects.all()
         return render(request, "sellers_status.html", {"servers": servers})
 
+
+class BotAutoSystemLog(LoginRequiredMixin, View):
+    def get(self, request):
+        logs = CeleryLog.objects.filter(owner=None)[:1500]
+        return render(request, "bot_auto_system_log.html", {"logs": reversed(logs)})
+
+
+class SellersAutoSystemLog(LoginRequiredMixin, View):
+    def get(self, request):
+        if request.user.level_access == 10:
+            logs = CeleryLog.objects.filter(~Q(owner=None)).order_by( 'id')[:1500]
+        elif request.user.level_access == 1:
+            sellers = [request.user]
+            for seller in SubSellerSubset.objects.filter(head=request.user):
+                sellers.append(seller.sub)
+            logs = CeleryLog.objects.filter(owner__in=sellers).order_by( 'id')[:1500]
+        else:
+            logs = CeleryLog.objects.filter(owner=request.user).order_by( 'id')[:1500]
+
+
+        return render(request, "sellers_auto_system_log.html", {"logs": reversed(logs)})
