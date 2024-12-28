@@ -6,12 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/home_bot.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_bot.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/home_sellers.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_sellers.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/logs/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/logs/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/logs/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/089713c8-33cf-4f99-80fb-6a73369db83f.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/41291efb-f782-4e86-bc08-951a8aa96a37.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/497fea59-390e-422c-8be7-07464499b7ac.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/71cfa7cb-58ac-4cf9-a689-aff37f008d6a.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/8f2c4102-7980-42fe-9c07-c518de0bf9e4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/bc6144db-640c-4323-8d70-d16e8f4e4c57.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/e4699468-c41a-4957-8ef8-cc39e8c5d0ad.jpg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,11 +81,11 @@
       <recent name="$PROJECT_DIR$/finance/templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/logs/templates" />
       <recent name="$PROJECT_DIR$/static" />
       <recent name="$PROJECT_DIR$/static/v2" />
       <recent name="$PROJECT_DIR$/configs/templates" />
-      <recent name="$PROJECT_DIR$/finance/templates" />
     </key>
   </component>
   <component name="RunManager">
@@ -172,7 +174,7 @@
       <workItem from="1735123533210" duration="697000" />
       <workItem from="1735137895969" duration="6060000" />
       <workItem from="1735145777855" duration="14604000" />
-      <workItem from="1735368038725" duration="2808000" />
+      <workItem from="1735368038725" duration="5314000" />
     </task>
     <servers />
   </component>
