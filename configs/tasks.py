@@ -148,7 +148,7 @@ def send_end_service_notif():
 
 
             elif service.status in [0,1]:
-                if service.start_time != 0 and (service.expire_time - datetime.now().timestamp()) < 43400:
+                if service.start_time != 0 and (service.expire_time - datetime.now().timestamp()) < 43400 and service.expire_time != 0:
                     if not EndNotif.objects.filter(service=service, type=1).exists():
                         CommandRunner.send_end_of_config_notif(service.uuid, 1)
                         EndNotif.objects.create(service=service, type=1, timestamp=datetime.now().timestamp()).save()
