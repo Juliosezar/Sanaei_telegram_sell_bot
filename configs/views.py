@@ -115,6 +115,7 @@ class BotCreateConfigView(LoginRequiredMixin, View):
                 user_limit=ip_limit,
                 paid=paid,
                 created_by=request.user,
+                price=price,
             ).save()
             ConfigAction.create_config_db(service_uuid)
             ConfigAction.create_config_job_queue(service_uuid, 0, request.user)
@@ -166,6 +167,7 @@ class BotRenewConfigView(LoginRequiredMixin, View):
                 service.expire_time = (datetime.now().timestamp() + (time_limit * 86400)) if service.start_time != 0 else time_limit
             service.user_limit = ip_limit
             service.paid = paid
+            service.price = price
             service.save()
             ConfigAction.create_config_job_queue(service.uuid, 4, request.user)
             ConfigAction.reset_config_db(service.uuid)

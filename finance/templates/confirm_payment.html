@@ -89,7 +89,7 @@
                             {% elif i.action == 0 %}
                                 <h4 class="info">Add to Wallet</h4>
                             {% else %}
-                            <h4 class="info">Renew: <a style="color: #98e2ff" href="">{{ i.info.service_uuid|get_conf_name }}</a></h4>
+                            <h4 class="info">Renew: <a style="color: #98e2ff" href="{% url "customers:custumer_detail" i.customer.chat_id %}">{{ i.info.service_uuid|get_conf_name }}</a></h4>
                             {% endif %}
                             <h3 class="info">userid: <a href="" style="color: #98e2ff">{{ i.customer.chat_id }}</a></h3>
                             <h3 class="info">price : <span class="nspan">{{ i.price }} T</span></h3>
@@ -121,7 +121,11 @@
                 <div class="paybox" >
                     <div class="pay_info">
                         <div class="infobox">
-                            <h3 class="info">userid:<a style="color: #98e2ff" href=""> {{ i.custumer.userid }}</a></h3>
+                            {% if not i.customer.chat_id %}
+                                <h3 class="info">userid: ------</h3>
+                            {% else %}
+                                <h3 class="info">userid:<a style="color: #98e2ff" href="{% url 'customers:custumer_detail' i.customer.chat_id %}">{{ i.customer.chat_id }}</a></h3>
+                            {% endif %}
                             <h3 class="info">price : <span class="nspan">{{ i.price|price }} T</span></h3>
 
                         </div>
@@ -130,7 +134,7 @@
                                 <a href="{% url 'finance:second_confirm' i.id %}" class="sec_confirm c_btnd">تایید نهایی</a>
                             </div>
                             <div class="confirmbtn">
-                                <a href="" class="deny c_btnd">عدم تایید</a>
+                                <a href="{% url 'finance:deny_payments' i.id %}" class="deny c_btnd">عدم تایید و حذف</a>
                             </div>
                         </div>
                     </div>
@@ -144,21 +148,16 @@
             {% for i in not_paid %}
                 <div class="xy">
                     <div class="fbox">
-                    {% if i.renew_count == 0 %}
-                        <h3 class="ttt">Buy Service</h3>
-                    {% else %}
-                        <h3 class="ttt">Renew Service</h3>
-                    {% endif %}
-                        <a href="{% url "servers:conf_page" i.server.server_id i.config_uuid i.config_name %}" class="notpaid_text">Service: <span class="nspan" style="color: #98E2FFFF">{{ i.config_name }}</span> </a>
-                        <h3 class="notpaid_text">price:  <span class="nspan">{{ i.price|price }} T</span></h3>
-                        {% if i.chat_id == none %}
+                        <a href="{% url "configs:conf_page" i.uuid %}" class="notpaid_text">Service: <span class="nspan" style="color: #98E2FFFF">{{ i.name }}</span> </a>
+                        <h3 class="notpaid_text">price:  <span class="nspan">{{ i.price }} T</span></h3>
+                        {% if not i.customer.chat_id %}
                             <h3 class="notpaid_text">user:  <span class="nspan">----</span></h3>
                         {% else %}
-                            <a href="{% url "customers:custumer_detail" i.chat_id.userid %}" class="notpaid_text">user:  <span style="color: #98E2FFFF" class="nspan">{{ i.chat_id.userid }}</span></a>
+                            <a href="{% url "customers:custumer_detail" i.customer.chat_id %}" class="notpaid_text">user:  <span style="color: #98E2FFFF" class="nspan">{{ i.customer.chat_id }}</span></a>
                         {% endif %}
                     </div>
                     <div class="pbox">
-                        <a href="{% url "finance:paid_after_create" i.id %}" class="confirm x_btnd">پرداخت شده</a>
+                        <a href="" class="confirm x_btnd">پرداخت شده</a>
                         <a href="" class="disable x_btnd">غیرفعال کانفیگ</a>
                         <a href="" class="deny x_btnd">حذف کانفیگ</a>
                     </div>

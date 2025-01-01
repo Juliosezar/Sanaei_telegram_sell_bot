@@ -42,13 +42,13 @@ class ConfirmPaymentPage(LoginRequiredMixin, View):
     def get(self, request, show_box):
         pay_queue_obj = BotPayment.objects.filter(status=0)
         second_pay_queue_obj = BotPayment.objects.filter(status=1)
-        # not_paid_obj = ConfigsInfo.objects.filter(paid=False)
+        not_paid_obj = Service.objects.filter(paid=False, owner=None)
         if not pay_queue_obj.exists() and not second_pay_queue_obj.exists():
             messages.info(request, "پرداختی برای تایید نمانده است. \n برای اطمینان یکبار صفحه را رفرش کنید.")
         return render(request, 'confirm_payment.html',
                       {'confirm': pay_queue_obj, "confirm_count": pay_queue_obj.count(),
                        "second_confirm": second_pay_queue_obj, "second_confirm_count": second_pay_queue_obj.count(),
-                       # "not_paid": not_paid_obj, "not_paid_count": not_paid_obj.count(),
+                       "not_paid": not_paid_obj, "not_paid_count": not_paid_obj.count(),
                        "show_box": show_box})
 
 
@@ -73,9 +73,11 @@ class FirstConfirmPayment(LoginRequiredMixin, View):
                         user_limit=pay_obj.info["user_limit"],
                         customer=pay_obj.customer,
                     ).save()
+                    pay_obj.service_uuid = service_uuid
                     ConfigAction.create_config_db(service_uuid)
                     ConfigAction.create_config_job_queue(service_uuid, 0)
                     FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
+                    CommandRunner.send_msg(pay_obj.customer.chat_id,f"پرداخت شما تایید شد و لینک سرویس برای شما ارسال میشود.")
                     CommandRunner.send_sub_link(service_uuid)
                     run_jobs.delay()
                     FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 0,f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expire_time"] * 30}d / {pay_obj.info["user_limit"]}u", service_name)
@@ -92,6 +94,7 @@ class FirstConfirmPayment(LoginRequiredMixin, View):
                         service.expire_time = (datetime.now().timestamp() + (pay_obj.info["expire_time"] * 86400)) if service.start_time != 0 else pay_obj.info["expire_time"]
                     service.user_limit = pay_obj.info["user_limit"]
                     service.save()
+                    pay_obj.service_uuid = service.uuid
                     ConfigAction.create_config_job_queue(service.uuid, 4)
                     FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
                     ConfigAction.reset_config_db(service.uuid)
@@ -130,11 +133,14 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
                         user_limit=pay_obj.info["user_limit"],
                         customer=pay_obj.customer,
                     ).save()
+                    pay_obj.service_uuid = service_uuid
                     ConfigAction.create_config_db(service_uuid)
                     ConfigAction.create_config_job_queue(service_uuid, 0)
                     FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
+                    CommandRunner.send_msg(pay_obj.customer.chat_id,f"پرداخت شما تایید شد و لینک سرویس برای شما ارسال میشود.")
                     CommandRunner.send_sub_link(service_uuid)
                     run_jobs.delay()
+
                     FinanceAction.create_purchase_record(None, None, pay_obj.info["config_price"], 0,f"{pay_obj.info["usage_limit"]}GB / {pay_obj.info["expire_time"] * 30}d / {pay_obj.info["user_limit"]}u", service_name)
                 else:
                     CommandRunner.send_msg(pay_obj.customer.chat_id,
@@ -148,6 +154,7 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
                     else:
                         service.expire_time = (datetime.now().timestamp() + (pay_obj.info["expire_time"] * 86400)) if service.start_time != 0 else pay_obj.info["expire_time"]
                     service.save()
+                    pay_obj.service_uuid = service.uuid
                     ConfigAction.create_config_job_queue(service.uuid, 4)
                     FinanceAction.change_wallet(pay_obj.info["config_price"] * -1, pay_obj.customer.chat_id)
                     ConfigAction.reset_config_db(service.uuid)
@@ -177,29 +184,31 @@ class DenyPaymentPage(LoginRequiredMixin, View):
     def get(self, request, obj_id):
         deny_reason = ""
         pay_obj = BotPayment.objects.get(id=obj_id)
-        if pay_obj.status == 0:
-            CommandRunner.send_msg(pay_obj.customer.chat_id, f"پرداخت شما تایید نشد ❌ \n علت : {deny_reason}")
-            pay_obj.status = 9
-            pay_obj.save()
-        elif pay_obj.action == 1:
+        CommandRunner.send_msg(pay_obj.customer.chat_id, f"پرداخت شما تایید نشد ❌ \n علت : {deny_reason}")
+        if pay_obj.status == 1:
             if pay_obj.action == 0:
-                pass  # TODO:
-            elif pay_obj.action == 1:
-                pass
-            elif pay_obj.action == 5:
-                pass
-            pay_obj.status = 9
-            pay_obj.save()
+                pay_obj = BotPayment.objects.get(id=obj_id)
+                FinanceAction.change_wallet(pay_obj.price * -1, pay_obj.customer.chat_id)
+            else:
+                service = Service.objects.get(uuid=pay_obj.service_uuid)
+                service.status = 4
+                service.save()
+                ConfigAction.create_config_job_queue(service.uuid, 2, request.user)
+                run_jobs.delay()
+                messages.success(request, f"سرویس {service.name} در صف حذف قرار گرفت.")
+
+
         else:
             messages.error(request, "این پرداخت توسط ادمین دیگری تایید یا رد شده است.")
-        return redirect('finance:confirm_payments', 1)
+        pay_obj.status = 9
+        pay_obj.save()
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
     def post(self, request, obj_id):
         pass
 
 class EditPricePayment(LoginRequiredMixin, View):
     def get(self, request, obj_id, typ):
-        pass
         form = EditPayPriceForm
         model_obj = BotPayment.objects.get(id=obj_id)
         return render(request, 'edit_price_payment.html', {'obj': model_obj, 'form': form})

@@ -13,3 +13,15 @@ class SellerBots(models.Model):
     name = models.CharField(max_length=30)
 
 
+class SendMessage(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    message = models.TextField()
+    done = models.BooleanField(default=False)
+    created_at = models.BigIntegerField()
+    updated_at = models.BigIntegerField()
+    try_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.done )+ " / " + self.message[:40]
+
+

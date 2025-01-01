@@ -5,7 +5,7 @@ from configs.models import Service
 from customers.models import Customer
 import requests
 import json
-from .models import CustomerTmpStatus
+from .models import CustomerTmpStatus, SendMessage
 from finance.models import BotPayment, Prices, UserActiveOffCodes, OffCodes
 from django.core.files.base import ContentFile
 from django.conf import settings
@@ -95,9 +95,29 @@ class CommandRunner:
         if keyboard:
             data['reply_markup'] = {"inline_keyboard": [keyboard]}
         respons = cls.send_api("sendMessage", data)
-        # if not respons:
-        #     SendMessage.objects.create(customer=CustumerModel.objects.get(chat_id=chat_id), message=msg)
+        if not respons:
+            SendMessage.objects.create(customer=Customer.objects.get(chat_id=chat_id),
+                                       message=msg,
+                                       created_at=datetime.now().timestamp(),
+                                       ).save()
         return True
+
+    @classmethod
+    def send_msg_again(cls, id):
+        obj = SendMessage.objects.get(id=id)
+        if obj.try_count <= 50:
+            for i in ['_', '*', '[', ']', '(', ')', '~', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']:
+                msg = obj.message.replace(i, f"\\{i}")
+            data = {'chat_id': obj.customer.chat_id,
+                    'text': msg,
+                    'parse_mode': 'MarkdownV2',
+                    }
+            respons = cls.send_api("sendMessage", data)
+            if not respons:
+                obj.try_count += 1
+                obj.updated_at = datetime.now().timestamp()
+                obj.save()
+            return True
 
     @classmethod
     def download_photo(cls, file_id, chat_id):

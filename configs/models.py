@@ -16,7 +16,7 @@ class Service(models.Model):
     status = models.SmallIntegerField(default=0, choices=[(0,'Active'), (1,'disable'), (2,'Ended'), (4,'deleting')])
     owner = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True) # null => main bot
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, related_name='created_by')
-
+    price = models.PositiveBigIntegerField(null=True)
 
 class Config(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE)

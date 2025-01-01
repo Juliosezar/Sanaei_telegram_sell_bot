@@ -22,6 +22,7 @@ class BotPayment(models.Model):
     info = models.JSONField(default=dict)
     image = models.ImageField(upload_to='payment_images/', blank=True, null=True)
     status = models.IntegerField()
+    service_uuid = models.UUIDField(null=True)
     # -1 waiting for download pic / 0 waiting for firts confirm /
     # 1 first confirm / 2 second confirm / 9 deny confirm
 
