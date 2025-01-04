@@ -18,6 +18,7 @@ class Service(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, related_name='created_by')
     price = models.PositiveBigIntegerField(null=True)
 
+
 class Config(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)

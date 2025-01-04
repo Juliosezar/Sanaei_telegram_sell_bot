@@ -184,7 +184,7 @@ class DenyPaymentPage(LoginRequiredMixin, View):
     def get(self, request, obj_id):
         deny_reason = ""
         pay_obj = BotPayment.objects.get(id=obj_id)
-        CommandRunner.send_msg(pay_obj.customer.chat_id, f"پرداخت شما تایید نشد ❌ \n علت : {deny_reason}")
+        CommandRunner.send_msg(pay_obj.customer.chat_id, f"پرداخت شما تایید نشد ❌ ")
         if pay_obj.status == 1:
             if pay_obj.action == 0:
                 pay_obj = BotPayment.objects.get(id=obj_id)
@@ -196,6 +196,7 @@ class DenyPaymentPage(LoginRequiredMixin, View):
                 ConfigAction.create_config_job_queue(service.uuid, 2, request.user)
                 run_jobs.delay()
                 messages.success(request, f"سرویس {service.name} در صف حذف قرار گرفت.")
+                CommandRunner.send_msg(pay_obj.customer.chat_id, f"سرویس {service.name} حذف شد ❌")
 
 
         else:

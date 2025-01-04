@@ -4,7 +4,8 @@ from django.views import View
 from bot.commands import CommandRunner
 from sellers.models import SubSellerSubset
 from accounts.models import User
-from .forms import CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, ChangeConfigSettingForm, SellersCreateConfigForm, ManualSellersCreateConfigForm
+from .forms import (CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, ChangeConfigSettingForm,
+                    SellersCreateConfigForm, ManualSellersCreateConfigForm, DisableAllForm)
 from finance.models import Prices, SellersPrices
 from django.contrib import messages
 from rest_framework.views import APIView
@@ -609,6 +610,37 @@ class SellersConfigPage(LoginRequiredMixin, View):
         else:
             messages.info(request, "این کانفیک حذف شده است.")
             return redirect("accounts:home_sellerso")
+
+
+class DisableAllService(LoginRequiredMixin, View):
+    def get(self, request):
+        form = DisableAllForm
+        return render(request, "disable_all_sellers_service.html", {"form":form})
+
+
+    def post(self, request):
+        form = DisableAllForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            seller = User.objects.get(username=cd["seller"])
+            if cd["action"] == "0":
+                seller.disable_config_acc = False
+                messages.success(request, f"سرویس های {cd["seller"]} غیرفعال شدند.")
+                for service in Service.objects.filter(owner__username=cd["seller"], status__in=[0, 1]):
+                    service.status = 1
+                    service.save()
+            elif cd["action"] == "1":
+                messages.success(request, f"سرویس های {cd["seller"]} فعال شدند.")
+                for service in Service.objects.filter(owner__username=cd["seller"], status__in=[0, 1]):
+                    service.status = 0
+                    service.save()
+            seller.save()
+
+
+            return redirect("accounts:home_sellers")
+        return render(request, "disable_all_sellers_service.html", {"form":form})
+
+
 
 
 ####### sellers api

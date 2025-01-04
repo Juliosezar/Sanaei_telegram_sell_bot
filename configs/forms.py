@@ -2,6 +2,8 @@ from django import forms
 from finance.models import Prices, SellersPrices
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from accounts.models import User
+
 
 class SearchConfigForm(forms.Form):
     search_config = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'placeholder': 'Search Config Name or UUID'}))
@@ -184,3 +186,23 @@ class ManualSellersCreateConfigForm(forms.Form):
                 raise ValidationError('حجم کانفیگ را وارد کنید.')
             elif not 1 < usage_limit < 1000:
                 raise ValidationError('حجم کانفیگ باید بین 1 تا 1000 گیگ باشد.')
+
+
+
+class DisableAllForm(forms.Form):
+    @staticmethod
+    def sellers_cj():
+        l = [(None,"-------")]
+        for i in User.objects.filter(level_access__in=[0,1]):
+            l.append((i.username, i.username))
+        return l
+
+    seller = forms.ChoiceField(required=False, choices=sellers_cj())
+    action = forms.ChoiceField(required=False, choices=[(None,"--------"), (0,"Disable ⛔"), (1 , "Enable ✅")])
+
+    def clean(self):
+        action = self.cleaned_data.get('action')
+        seller = self.cleaned_data.get('seller')
+
+        if seller == "" or action == "":
+            raise ValidationError("انتخاب کنید.")

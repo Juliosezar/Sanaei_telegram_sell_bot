@@ -115,6 +115,7 @@
 
         {% if user.level_access == 10 %}
             <a href="{% url "sellers:sellers_list" %}" class="links" id="setting">👤 فروشنده ها 🛠️</a>
+            <a href="{% url "configs:sellers_disable_all_services" %}" class="links" id="setting">✅ فعال/غیرفعال سرویس ها ⛔</a>
             <a href="" class="links" id="setting">⚙️ بات تلگرام 🤖️</a>
             <a href="" class="links" id="setting">⚙️ تنظیمات 🛠️</a>
         {% endif %}

@@ -1,0 +1,32 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "base_head.html" %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'configs/create_config.css' %}?{% now "d" %}">
+</head>
+<body>
+
+{% include "navbar_bot.html" %}
+{% include 'messages.html' %}
+<div id="main">
+        <form novalidate action="" method="post" dir="rtl">
+            {% for field_errors in form.errors.values %}
+              {% for error in field_errors %}
+                  <p dir="rtl" class="errors">{{ error }}</p>
+              {% endfor %}
+            {% endfor %}
+            <h3 id="title">فعال/غیرفعال کردن سرویس های فروشنده</h3>
+            {% csrf_token %}
+            <div class="textinput item"><h3 class="item_text">فروشنده: </h3>{{ form.seller }}</div>
+            <div class="textinput item"><h3 class="item_text">عمل: </h3>{{ form.action }}</div>
+            <input id="create" class="submit_btn" type="submit" value="Create">
+        </form>
+    </div>
+{% include "loading.html" %}
+
+</body>
+</html>

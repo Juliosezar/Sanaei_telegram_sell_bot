@@ -21,8 +21,8 @@ class BotPayment(models.Model):
     action = models.IntegerField() # 0 => add wallet / 1 => buy / 2 => renew
     info = models.JSONField(default=dict)
     image = models.ImageField(upload_to='payment_images/', blank=True, null=True)
-    status = models.IntegerField()
     service_uuid = models.UUIDField(null=True)
+    status = models.IntegerField()
     # -1 waiting for download pic / 0 waiting for firts confirm /
     # 1 first confirm / 2 second confirm / 9 deny confirm
 

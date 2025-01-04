@@ -112,11 +112,12 @@ class CommandRunner:
                     'text': msg,
                     'parse_mode': 'MarkdownV2',
                     }
-            respons = cls.send_api("sendMessage", data)
-            if not respons:
-                obj.try_count += 1
-                obj.updated_at = datetime.now().timestamp()
-                obj.save()
+            response = cls.send_api("sendMessage", data)
+            obj.try_count += 1
+            obj.updated_at = datetime.now().timestamp()
+            if response:
+                obj.done = True
+            obj.save()
             return True
 
     @classmethod
