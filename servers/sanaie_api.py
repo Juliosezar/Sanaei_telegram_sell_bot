@@ -231,8 +231,6 @@ class ServerApi:
             url = server_obj.url + "panel/api/inbounds"
             response = session.post(url + f"/{server_obj.inbound_id}/resetClientTraffic/{config_name}/", headers={},
                                     data={}, timeout=6)
-            print(response.status_code)
-            print(response.json())
             if response.status_code == 200:
                 if response.json()['success']:
                     session.close()

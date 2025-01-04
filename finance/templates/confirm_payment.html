@@ -155,11 +155,16 @@
                         {% else %}
                             <a href="{% url "customers:custumer_detail" i.customer.chat_id %}" class="notpaid_text">user:  <span style="color: #98E2FFFF" class="nspan">{{ i.customer.chat_id }}</span></a>
                         {% endif %}
+                        {% if i.status == 1 %}
+                            <h3 dir="rtl" style="background-color: aliceblue; color: red; text-align: center" class="notpaid_text">سرویس غیرفعال است.</h3>
+                        {% endif %}
                     </div>
                     <div class="pbox">
-                        <a href="" class="confirm x_btnd">پرداخت شده</a>
-                        <a href="" class="disable x_btnd">غیرفعال کانفیگ</a>
-                        <a href="" class="deny x_btnd">حذف کانفیگ</a>
+                        <a href="{% url "finance:pay_debts" i.uuid 0 %}" class="confirm x_btnd">پرداخت شده</a>
+                        {% if not i.status == 1 %}
+                            <a href="{% url "finance:pay_debts" i.uuid 1 %}" class="disable x_btnd">غیرفعال کانفیگ</a>
+                        {% endif %}
+                        <a href="{% url "finance:pay_debts" i.uuid 2 %}" class="deny x_btnd">حذف کانفیگ</a>
                     </div>
                 </div>
             {% endfor %}

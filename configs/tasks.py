@@ -3,7 +3,7 @@ import shutil
 
 from celery import shared_task
 from django.conf import settings
-
+from zipfile import ZipFile
 from accounts.models import User
 from bot.commands import CommandRunner
 from customers.models import Customer
@@ -174,23 +174,23 @@ def delete_notif():
 @shared_task
 def send_back_up():
     source_file_path = settings.BASE_DIR / 'db.sqlite3'
-
     destination_directory = os.environ.get("MEDIA_ROOT") + "/backup/"
-    filename = os.path.basename(source_file_path)
-    destination_path = os.path.join(destination_directory, filename)
-    if os.path.exists(destination_path):
-        os.remove(destination_path)
-    shutil.copy(source_file_path, destination_path)
+
+    with ZipFile(destination_directory + 'backup.zip', 'w') as zip_file:
+        zip_file.write(source_file_path)
 
     with open(settings.BASE_DIR / 'settings.json', 'r') as f:
         data = json.load(f)
         admins = data["admins_id"]
         for admin in admins:
-            data = {
-                "chat_id": admin,
-                "document": f"{os.environ.get("PANEL_DOMAIN")}/media/backup/{filename}",
-            }
-            CommandRunner.send_api("sendDocument",data)
+            with open(destination_directory + "backup.zip", "rb" ) as zip_file:
+                data = {
+                    "chat_id": admin,
+                }
+                files = {
+                    'document': (os.path.basename(destination_directory + "backup.zip"), zip_file ,'application/octet-stream')
+                }
+                CommandRunner.send_api("sendDocument",data, files)
 
 
 

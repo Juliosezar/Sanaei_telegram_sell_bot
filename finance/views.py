@@ -182,7 +182,6 @@ class SecondConfirmPayment(LoginRequiredMixin, View):
 
 class DenyPaymentPage(LoginRequiredMixin, View):
     def get(self, request, obj_id):
-        deny_reason = ""
         pay_obj = BotPayment.objects.get(id=obj_id)
         CommandRunner.send_msg(pay_obj.customer.chat_id, f"پرداخت شما تایید نشد ❌ ")
         if pay_obj.status == 1:
@@ -205,8 +204,7 @@ class DenyPaymentPage(LoginRequiredMixin, View):
         pay_obj.save()
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
-    def post(self, request, obj_id):
-        pass
+
 
 class EditPricePayment(LoginRequiredMixin, View):
     def get(self, request, obj_id, typ):
@@ -224,6 +222,25 @@ class EditPricePayment(LoginRequiredMixin, View):
             messages.success(request, "مبلغ با موفقیت تغییر کرد. از لیست زیر آن را تایید کنید.")
             return redirect('finance:confirm_payments', 1)
         return render(request, 'edit_price_payment.html', {'obj': model_obj, 'form': form})
+
+
+class PayDebts(LoginRequiredMixin, View):
+    def get(self, request, uuid, action):
+        service = Service.objects.get(uuid=uuid)
+        if not service.paid:
+            if action == 0:
+                service.paid = True
+            elif action == 1:
+                service.status = 1
+            elif action == 2:
+                service.status = 4
+                ConfigAction.create_config_job_queue(service.uuid, 2, request.user)
+                run_jobs.delay()
+                messages.success(request, f"سرویس {service.name} در صف حذف قرار گرفت.")
+            service.save()
+        else:
+            messages.error(request, "این پرداخت توسط ادمین دیگری تایید یا رد شده است.")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 

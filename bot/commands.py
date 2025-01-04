@@ -42,14 +42,17 @@ class Action:
 class CommandRunner:
 
     @classmethod
-    def send_api(cls, api_method, data):
+    def send_api(cls, api_method, data, file=False):
         url = TELEGRAM_SERVER_URL + api_method
         try:
-            # print(data)
-            response = requests.post(url, json=data, timeout=3)
-            # print(response.json())
+            if not file:
+                response = requests.post(url, json=data, timeout=3)
+            else:
+                response = requests.post(url, data=data, timeout=3, files=file)
+            print(response.json())
             return response
         except requests.exceptions.RequestException as e:
+            print(e)
             # ErrorLog.objects.create(
             #     error=e,
             #     timestamp=int(JalaliDateTime.now().timestamp())
