@@ -102,6 +102,7 @@ class CommandRunner:
             SendMessage.objects.create(customer=Customer.objects.get(chat_id=chat_id),
                                        message=msg,
                                        created_at=datetime.now().timestamp(),
+                                       updated_at=datetime.now().timestamp(),
                                        ).save()
         return True
 

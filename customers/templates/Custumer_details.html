@@ -49,7 +49,7 @@
                 <h3 class="info_item">وضعیت : غیرفعال 🔴</h3>
             {% endif %}
         <div id="btnaction">
-            <a class="imgc" href=""><img src="{% static "img/sendmsg.png" %}"></a>
+            <a class="imgc" href="{% url "customers:send_msg_to_customer" customer_obj.chat_id %}"><img src="{% static "img/sendmsg.png" %}"></a>
             <a class="imgc" href=""><img src="{% static 'img/icons8-restart-512.png' %}" alt=""></a>
             {% if customer_obj.active %}
                 <a class="ban imgc" href=""><img src="{% static "img/ban.png" %}" alt=""></a>

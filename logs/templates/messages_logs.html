@@ -1,0 +1,63 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fa" class="no-js">
+	<head>
+		<title>List Configs</title>
+        {% include "base_head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'reports/logs.css' %}"/>
+    </head>
+	<body dir="ltr">
+        {% include "navbar_bot.html" %}
+        {% include 'messages.html' %}
+        <div id="main">
+            <div class="del_box">
+                <a class="del_msg" href="{% url "logs:delete_msgs" "Succes" %}">حذف ارسال شده ها</a>
+                <a class="del_msg" href="{% url "logs:delete_msgs" "Failure" %}">حذف ارور ها</a>
+            </div>
+            <h3 id="counter">Messages Status
+            </h3>
+		    <div class="xcontainer">
+		    		<table class="overflow-y">
+		    			<thead>
+		    				<tr>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Message</th>
+                                <th>created at</th>
+                                <th>updated at</th>
+                                <th>try count</th>
+                            </tr>
+		    			</thead>
+		    			<tbody>
+                        {% for row in logs %}
+                            <tr>
+                                <td><a href="{% url "customers:custumer_detail" row.customer.chat_id %}">{{ row.customer.chat_id }}</a></td>
+                                <td>{{ row.status }}{% if row.done %}✅{% elif row.try_count == 3 %}❌{% else %}⏳{% endif %}</td>
+                                <td dir="rtl">{{ row.message|slice:30 }}</td>
+                                <td dir="rtl">{{ row.created_at|timestamp }}</td>
+                                <td dir="rtl">{{ row.updated_at|timestamp }}</td>
+                                <td dir="rtl">{{ row.try_count }}</td>
+
+                            </tr>
+
+                        {% endfor %}
+		    			</tbody>
+		    		</table>
+            </div>
+
+
+        </div>
+
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script src={% static "js/list.js" %}></script>
+
+{% include "loading.html" %}
+	</body>
+
+
+
+</html>

@@ -1,12 +1,16 @@
+from datetime import datetime
+
+from bot.commands import CommandRunner
+from bot.tasks import send_msg_again
 from django.contrib import messages
 from configs.models import Service
 from .models import Customer
-from .forms import SearchCustomerForm, ChangeWalletForm
+from .forms import SearchCustomerForm, ChangeWalletForm, SendMessageToAllForm
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-
+from bot.models import SendMessage
 
 class CustomerList(LoginRequiredMixin, View):
     def get(self, request):
@@ -49,3 +53,41 @@ class ChangeWalletAmount(LoginRequiredMixin, View):
             customer_model.save()
             return redirect('customers:custumer_detail', userid)
         return render(request, 'change_wallet.html', {"form": form})
+
+
+class SendMsgToAllView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = SendMessageToAllForm()
+        return render(request, 'send_msg_to_all.html', {"form": form})
+
+    def post(self, request):
+        form = SendMessageToAllForm(request.POST)
+        if form.is_valid():
+            msg = form.cleaned_data['message']
+            for i in Customer.objects.all():
+                SendMessage.objects.create(
+                    customer=i,
+                    message=msg,
+                    created_at=datetime.now().timestamp(),
+                    updated_at=datetime.now().timestamp(),
+                ).save()
+            messages.success(request, "پیام در صف ارسال قرار گرفت.")
+            send_msg_again.delay()
+            return redirect("accounts:home_bot")
+        return render(request, 'send_msg_to_all.html', {"form": form})
+
+
+
+class SendMsgToCustomerView(LoginRequiredMixin, View):
+    def get(self, request, customer):
+        form = SendMessageToAllForm()
+        return render(request, 'send_msg_to_custumer.html', {"form": form})
+
+    def post(self, request, customer):
+        form = SendMessageToAllForm(request.POST)
+        if form.is_valid():
+            msg = form.cleaned_data['message']
+            CommandRunner.send_msg(customer, msg)
+            messages.success(request, "پیام در صف ارسال قرار گرفت.")
+            return redirect("customers:custumer_detail", customer)
+        return render(request, 'send_msg_to_custumer.html', {"form": form})

@@ -15,24 +15,23 @@
 </head>
 
 <body dir="rtl">
-
-    {% include "navbar.html" %}
+    {% include "navbar_bot.html" %}
     {% include 'messages.html' %}
     <div id="main">
-
         <form action="" method="post" novalidate dir="rtl">
+            <h3 style="color: white; margin-top: 2rem">پیام به مشتری</h3>
             {% for field_errors in form.errors.values %}
-                  {% for error in field_errors %}
+              {% for error in field_errors %}
                   <p dir="rtl" style="background-color: #ff6b6b ; width: 90%; text-align: center; margin-top: 0.5rem" class="errors">{{ error }}</p>
-                  {% endfor %}
-                {% endfor %}
+              {% endfor %}
+            {% endfor %}
             {% csrf_token %}
+
             <div>{{ form.message }}</div>
-            <input type="submit" value="Send" class="submit_btn">
+            <input type="submit" value="Send" id="send" class="submit_btn">
         </form>
     </div>
 {% include "loading.html" %}
-{% include "list_servers.html" %}
 
 </body>
 </html>

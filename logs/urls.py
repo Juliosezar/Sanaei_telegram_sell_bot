@@ -11,4 +11,7 @@ urlpatterns = [
     path("sellers_status/", views.SellersStatusView.as_view(), name="sellers_status"),
     path("bot_auto_system_log/", views.BotAutoSystemLog.as_view(), name="bot_auto_system_log"),
     path("sellers_auto_system_log/", views.SellersAutoSystemLog.as_view(), name="sellers_auto_system_log"),
+
+    path("send_msgs_log/", views.SendMsgsLogsView.as_view(), name="send_msgs_log"),
+    path("delete_msgs/<str:typ>", views.DeleteMsgView.as_view(), name="delete_msgs"),
 ]
