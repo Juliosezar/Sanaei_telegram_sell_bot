@@ -17,8 +17,9 @@ def servers_connection():
             text += f"🟠 {server.name} \n🟠 Possible Problem Connection \n{"➖"*11}\n"
         if (datetime.now().timestamp() - server.last_update) > 3600:
             text += f"⭕️ {server.name} \n⭕️ Problem Sanaei Panel connection \n{"➖"*11}\n"
-    with open(settings.BASE_DIR / 'settings.json', 'r') as f:
-        data = json.load(f)
-        admins = data["admins_id"]
-        for admin in admins:
-            CommandRunner.send_msg(admin, text)
+    if len(text) > 1:
+        with open(settings.BASE_DIR / 'settings.json', 'r') as f:
+            data = json.load(f)
+            admins = data["admins_id"]
+            for admin in admins:
+                CommandRunner.send_msg(admin, text)

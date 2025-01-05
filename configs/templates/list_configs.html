@@ -231,10 +231,7 @@
 		    			</tbody>
 		    		</table>
             </div>
-
-
-        </div>
-    <div id="filterbox" style="justify-self: center;justify-items: center;border: white solid 3px; margin-bottom: 5rem">
+<div id="filterbox" style="justify-self: center;justify-items: center;border: white solid 3px; margin-bottom: 5rem">
                 {% for i in pages|rang:page %}
                     {% if i >= 0 %}
                         {% if i == page %}
@@ -247,6 +244,9 @@
                     {% endif %}
                 {% endfor %}
                 </div>
+
+        </div>
+
         <div id="list_action">
             <div class="closebox" dir="rtl"><button onclick="show_main()" class="close_btn">✖️</button></div>
             <h3 id="cooonf_name"></h3>

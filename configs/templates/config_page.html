@@ -21,7 +21,7 @@
             {% if not service.customer.chat_id %}
                 <h3 class="c_info"> یوزر: ---- <a id="u_reg" href=""> Register 🆔</a></h3>
              {% else %}
-                <h3 class="c_info">یوزر: <a style="color: white" href="">{{ service.customer.chat_id }}</a></h3>
+                <h3 class="c_info">یوزر: <a style="color: white" href="{% url "customers:custumer_detail" service.customer.chat_id %}">{{ service.customer.chat_id }}</a></h3>
             {% endif %}
             <h3 class="c_info">ساخته توسط: {{ service.created_by }}</h3>
         </div>
