@@ -44,45 +44,12 @@ def int_day_and_hour(value):
     return day
 
 
-# @register.filter(name="break_name")
-# def break_name(value):
-#     if ConfigsInfo.objects.filter(config_name=value).exists():
-#         return f'{value} 🤖'
-#     elif '@' in value:
-#         return False
-#     return value
 
-
-# @register.filter(name="config_seved")
-# def config_seved(value):
-#     if ConfigsInfo.objects.filter(config_uuid=value).exists():
-#         return True
-#     return False
-
-
-# @register.filter(name="infinit_limit")
-# def infinit_limit(value):
-#     config_info = ConfigsInfo.objects.filter(config_uuid=value)
-#     if config_info.exists():
-#         if InfinitCongisLimit.objects.filter(config__config_uuid=value).exists():
-#             return InfinitCongisLimit.objects.get(config__config_uuid=value).limit
-#         else:
-#             return "Not Set"
-#     return None
 
 
 @register.filter(name="timestamp")
 def timestamp(value):
     return JalaliDateTime.fromtimestamp(value, pytz.timezone("Asia/Tehran")).strftime("%c")
-
-
-# @register.filter(name="get_server")
-# def get_server(value):
-#     if CreateConfigQueue.objects.filter(config_uuid=value).exists():
-#         return CreateConfigQueue.objects.get(config_uuid=value).server.server_name
-#     else:
-#         return "----"
-
 
 def status(value):
     if value == 1:
@@ -110,24 +77,30 @@ def split_name(name):
         return name
 
 
-# @register.filter(name="paylog")
-# def paylog(id: dict):
-#     if "buy" in list(id.keys()):
-#         obj = ConfirmPaymentQueue.objects.get(id=id["buy"])
-#         if obj.config_in_queue:
-#             return f"Buy / {config_name(obj.config_uuid)} / {price(obj.pay_price)}T / {status(obj.status)}"
-#         else:
-#             return f"Wallet / {price(obj.pay_price)}T / {status(obj.status)}"
-#     else:
-#         obj = ConfirmTamdidPaymentQueue.objects.get(id=id["tamdid"])
-#         return f"Tamdid / {obj.config.config_name} / {price(obj.pay_price)}T / {status(obj.status)}"
-#
-#
-# @register.filter(name="get_user")
-# def get_user(id: dict):
-#     if "buy" in list(id.keys()):
-#         obj = ConfirmPaymentQueue.objects.get(id=id["buy"])
-#         return obj.custumer.userid
-#     else:
-#         obj = ConfirmTamdidPaymentQueue.objects.get(id=id["tamdid"])
-#         return obj.config.chat_id.userid
+@register.filter(name="rang")
+def rang(num, page):
+    if num > 6:
+        lt = [1, 2]
+        if not page in [1,2,3]:
+            print(page)
+            print(lt)
+            lt.append(-2)
+        lt.append(page -1)
+        lt.append(page)
+        lt.append(page + 1)
+        if not page in [num -1,num, num-2, num-3]:
+            lt.append(-1)
+        lt.append(num - 1)
+        lt.append(num)
+        for i in lt:
+            if i >= num +1:
+                lt.remove(i)
+            elif i == 0:
+                lt.remove(0)
+        print(lt)
+        lt = list(dict.fromkeys(lt))
+        return lt
+    else:
+        return [i for i in range(1,num+1)]
+
+

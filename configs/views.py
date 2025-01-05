@@ -207,18 +207,20 @@ class BotChangeConfigPage(LoginRequiredMixin, View):
 
 
 class BotListConfigView(LoginRequiredMixin, View):
-    def get(self, request,*args, **kwargs):
+    def get(self, request, page,*args, **kwargs):
         data = Service.objects.filter(owner=None)
+        pages = (data.count() // 100) + 1
         searchform = SearchConfigForm()
-        return render(request, "list_configs.html", {"data": data, 'searchform': searchform})
+        return render(request, "list_configs.html", {"data": data[(page-1)*100:page*100], 'searchform': searchform, "pages":pages, "page":page})
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, page, *args, **kwargs):
         searchform = SearchConfigForm(request.POST)
         if searchform.is_valid():
             word = searchform.cleaned_data["search_config"]
             data = Service.objects.filter(Q(name__icontains=word) | Q(uuid__icontains=word),owner=None)
+            pages = (data.count() // 100) + 1
             return render(request, "list_configs.html",
-                          {"data": data, "searchform": searchform, "searched": True})
+                          {"data": data[(page-1)*100:page*100], "searchform": searchform, "searched": True,"pages":pages, "page":page})
 
 class ConfigPage(LoginRequiredMixin, View):
     def get(self, request, config_uuid):

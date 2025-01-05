@@ -73,14 +73,14 @@
             }
         </style>
         <li class="hidephone"><a class="www" href="{% url "configs:bot_create_config" "auto" %}" id="action_create_config">ساخت کانفیگ</a></li>
-        <li class="hidephone"><a class="www" href="{% url "configs:bot_list_config" %}" id="action_list_config">لیست کانفیگ ها</a></li>
+        <li class="hidephone"><a class="www" href="{% url "configs:bot_list_config" 1 %}" id="action_list_config">لیست کانفیگ ها</a></li>
     </ul>
 </header>
     {% include 'messages.html' %}
     <div id="main">
         <div id="box1">
             <div id="searchbox">
-                <form novalidate action="{% url "configs:bot_list_config" %}" class="serch_box_inside" method="post">
+                <form novalidate action="{% url "configs:bot_list_config" 1 %}" class="serch_box_inside" method="post">
                     {% csrf_token %}
                     <img class="search_img" src="{% static 'img/search-config.png' %}" alt="search">
                     {{ search_config.search_config }}
@@ -95,7 +95,7 @@
             </div>
             <a href="{% url "finance:confirm_payments" 1 %}" class="links link2" id="pay_confirm">✅ تایید پرداخت 💳</a>
             <a href="{% url "configs:bot_create_config" "auto" %}" class="links link2">➕ ساخت کانفیگ 🔗</a>
-            <a href="{% url "configs:bot_list_config" %}" class="links link2">📋 لیست کانفیگ ها 🔗</a>
+            <a href="{% url "configs:bot_list_config" 1 %}" class="links link2">📋 لیست کانفیگ ها 🔗</a>
             <a href="{% url "servers:show_servers" %}" class="links" id="servers">🌐 سرور ها 📶</a>
             <a href="{% url 'logs:bot_status' %}" class="links" id="setting">📑 Status 📶</a>
             <a href="{% url "customers:custumers_list" %}" class="links" id="customers">👥 مشتری ها 🤖</a>

@@ -76,16 +76,30 @@
                 <h3 id="textin" dir="rtl">{{ searchform.search_config }}</h3>
                 <input id="subbut" value="Search" class="submit_btn" type="submit">
                  {% if searched == True %}
-                    <a id="comeback" href="{% url 'configs:bot_list_config' %}">بازگشت</a>
+                    <a id="comeback" href="{% url 'configs:bot_list_config' 1 %}">بازگشت</a>
                  {% endif %}
              </div>
          </form>
-        <div id="filterbox">
+        <div id="filterbox" style="justify-self: center;justify-items: center;border: white solid 3px">
+                {% for i in pages|rang:page %}
+                    {% if i >= 0 %}
+                        {% if i == page %}
+                            <h4 style="background-color: #00254c; color: #ffffff;border: solid white 2px; padding: 0.3rem 0.6rem 0.1rem; margin:0.1rem 0.1rem 0.5rem; border-radius: 50rem">{{ i }}</h4>
+                        {% else %}
+                            <a style="background-color: aliceblue; color: #0a0000; padding: 0.3rem 0.6rem 0.1rem; margin:0.1rem 0.1rem 0.5rem; border-radius: 50rem" href="{% url "configs:bot_list_config" i %}">{{ i }}</a>
+                        {% endif %}
+                    {% else %}
+                        <h3 style="color: white">...</h3>
+                    {% endif %}
+                {% endfor %}
+                </div>
+            <div id="filterbox">
                     <div><input id="All" type="checkbox" value="All Configs" name="All"> <label for="All"> All Configs</label></div>
                     <div><input id="Ended" type="checkbox" value="Ended" name="Ended"> <label for="Ended"> Ended</label></div>
                     <div><input id="Disabled" type="checkbox" value="Disabled" name="Disabled"> <label for="Disabled"> Disabled</label></div>
                     <div><input id="Active" type="checkbox" value="Active" name="Active"> <label for="Active"> Active</label></div>
                 </div>
+
 		    <div class="xcontainer">
 
 		    		<table class="overflow-y">
@@ -220,6 +234,19 @@
 
 
         </div>
+    <div id="filterbox" style="justify-self: center;justify-items: center;border: white solid 3px; margin-bottom: 5rem">
+                {% for i in pages|rang:page %}
+                    {% if i >= 0 %}
+                        {% if i == page %}
+                            <h4 style="background-color: #00254c; color: #ffffff;border: solid white 2px; padding: 0.3rem 0.6rem 0.1rem; margin:0.1rem 0.1rem 0.5rem; border-radius: 50rem">{{ i }}</h4>
+                        {% else %}
+                            <a style="background-color: aliceblue; color: #0a0000; padding: 0.3rem 0.6rem 0.1rem; margin:0.1rem 0.1rem 0.5rem; border-radius: 50rem" href="{% url "configs:bot_list_config" i %}">{{ i }}</a>
+                        {% endif %}
+                    {% else %}
+                        <h3 style="color: white">...</h3>
+                    {% endif %}
+                {% endfor %}
+                </div>
         <div id="list_action">
             <div class="closebox" dir="rtl"><button onclick="show_main()" class="close_btn">✖️</button></div>
             <h3 id="cooonf_name"></h3>
@@ -249,6 +276,7 @@
                     <p class="ttt">حذف</p>
                 </a>
         </div>
+
             <script>
                 function hidden_page(name ,uuid, enable) {
                     document.getElementById("main").style.display = "none";
