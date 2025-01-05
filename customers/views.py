@@ -73,7 +73,7 @@ class SendMsgToAllView(LoginRequiredMixin, View):
                 ).save()
             messages.success(request, "پیام در صف ارسال قرار گرفت.")
             send_msg_again.delay()
-            return redirect("accounts:home_bot")
+            return redirect("logs:send_msgs_log")
         return render(request, 'send_msg_to_all.html', {"form": form})
 
 

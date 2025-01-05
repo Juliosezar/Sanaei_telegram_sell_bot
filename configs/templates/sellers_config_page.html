@@ -20,14 +20,7 @@
             <h3 dir="rtl" id="conf_name">این سرویس لغو شده است.</h3>
     {% else %}
         <h3 id="conf_name">{{ service.name|split_name }}</h3>
-        <div id="box0" dir="rtl">
-            {% if not service.customer.chat_id %}
-                <h3 class="c_info"> یوزر: ---- <a id="u_reg" href=""> Register 🆔</a></h3>
-             {% else %}
-                <h3 class="c_info">یوزر: <a style="color: white" href="">{{ service.customer.chat_id }}</a></h3>
-            {% endif %}
-            <h3 class="c_info">ساخته توسط: {{ service.created_by }}</h3>
-        </div>
+
 
         {% if service.status == 1 %}
             <h4 id="dis" dir="rtl">⛔ این کانفیگ غیرفعال است. ⛔</h4>

@@ -39,8 +39,7 @@ COMMANDS = {
     'renew_wallet': CommandRunner.renew_config_from_wallet,
     "renew_pay": CommandRunner.Renew_pay_for_config,
     "waiting_for_pic_for_renew_config": CommandRunner.get_pic_for_renew_config,
-
-    # "QRcode": CommandRunner.Qrcode
+    "QRcode": CommandRunner.Qrcode
 }
 
 

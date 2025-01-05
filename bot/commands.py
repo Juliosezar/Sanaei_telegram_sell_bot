@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import datetime
 from os import environ
@@ -11,6 +12,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 import urllib.parse
 from uuid import UUID
+import qrcode
 
 
 TOKEN = environ.get('TELEGRAM_TOKEN')
@@ -567,7 +569,7 @@ class CommandRunner:
         sub_link_domain = environ.get("SUB_LINK_DOMAIN")
         sub_link_domain = "https://" + sub_link_domain.replace("https://","").replace("http://","")
         sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
-        send_text = (f" 🔰 سرویس: {service.name}"  "\n\n" ' 🌐 لینک سرویس: \n\n  '+ sub_link + "\n" + "لینک بالا را کپی کرده و در برنامه مورد نظر اضافه کنید.")
+        send_text = (f" 🔰 سرویس: {service.name}"  "\n\n" ' 🌐 لینک سرویس: \n\n  '+ sub_link + "\n" + "لینک بالا را کپی کرده و در برنامه مورد نظر اضافه کنید." + "\n" + "برای دریافت Qrcode و نمایش حجم و زمان باقی مانده میتوانید روی لینک کلیک کنید یا به بخش <<سرویس های من>> در منوی بات مراجعه کنید.")
         cls.send_msg(service.customer.chat_id, send_text)
 
 
@@ -1131,3 +1133,23 @@ class CommandRunner:
                 'parse_mode': 'Markdown',
             }
         cls.send_api("editMessageText", data)
+
+
+    @classmethod
+    def Qrcode(cls, chat_id, *args):
+
+        service = Service.objects.get(uuid=args[1])
+        sub_link_domain = environ.get("SUB_LINK_DOMAIN")
+        sub_link_domain = "https://" + sub_link_domain.replace("https://", "").replace("http://", "")
+        sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{args[1]}/")
+        img = qrcode.make(sub_link)
+        img.save(str(settings.MEDIA_ROOT) + f"/{args[1]}.jpg")
+        data = {
+            "chat_id": chat_id,
+            "caption": service.name,
+        }
+        with open(str(settings.MEDIA_ROOT) + f"/{args[1]}.jpg", 'rb') as image_file:
+            files = {
+                'photo': image_file
+            }
+            CommandRunner.send_api("sendPhoto", data, files)
