@@ -12,7 +12,7 @@ from .models import Server
 class ServerApi:
     @classmethod
     def create_session(cls, server_id):
-        server_obj = Server.objects.get(ID=server_id)
+        server_obj = Server.objects.get(id=server_id)
         server_url = server_obj.url
         incound_id = server_obj.inbound_id
         login_payload = {"username": server_obj.username, "password": server_obj.password}
@@ -33,7 +33,7 @@ class ServerApi:
     @classmethod
     def get_list_configs(cls, server_id):
         try:
-            server_obj = Server.objects.get(ID=server_id)
+            server_obj = Server.objects.get(id=server_id)
             session = cls.create_session(server_id)
             if not session:
                 return False
@@ -65,7 +65,7 @@ class ServerApi:
 
     @classmethod
     def create_config(cls, server_id, config_name, uid, enable=True):
-        server_obj = Server.objects.get(ID=server_id)
+        server_obj = Server.objects.get(id=server_id)
         url = server_obj.url + "panel/api/inbounds/addClient"
         setting = {
             'clients': [{
@@ -96,7 +96,7 @@ class ServerApi:
 
     @classmethod
     def renew_config(cls, server_id, config_uuid, config_name, expire_time, total_usage, ip_limit, reset=True):
-        server_obj = Server.objects.get(ID=server_id)
+        server_obj = Server.objects.get(id=server_id)
         url = server_obj.url + "panel/api/inbounds"
         expire_time = (int(expire_time) * 24 * 60 * 60 * 1000 * -1)
         total_usage = (int(convert_units(int(total_usage), BinaryUnits.GB, BinaryUnits.BYTE)[0]))
@@ -136,7 +136,7 @@ class ServerApi:
 
     @classmethod
     def get_config(cls, server_id, config_name):
-        server_obj = Server.objects.get(ID=server_id)
+        server_obj = Server.objects.get(id=server_id)
         url = server_obj.url + f"panel/api/inbounds/getClientTraffics/{config_name}"
         session = cls.create_session(server_id)
         if not session:
@@ -182,7 +182,7 @@ class ServerApi:
 
     @classmethod
     def delete_config(cls, server_id, config_uuid):
-        server_obj = Server.objects.get(ID=server_id)
+        server_obj = Server.objects.get(id=server_id)
         url = server_obj.url + f"panel/api/inbounds/{server_obj.inbound_id}/delClient/{config_uuid}"
         session = cls.create_session(server_id)
         if not session:
@@ -197,7 +197,7 @@ class ServerApi:
     @classmethod
     def disable_config(cls, server_id, config_uuid, enable):
         session = cls.create_session(server_id)
-        server_obj = Server.objects.get(ID=server_id)
+        server_obj = Server.objects.get(id=server_id)
         service_obj = Service.objects.get(uuid=config_uuid)
         url = server_obj.url + f"panel/api/inbounds/updateClient/{config_uuid}"
 
@@ -226,7 +226,7 @@ class ServerApi:
     @classmethod
     def reset_usage(cls, server_id, config_name):
         try:
-            server_obj = Server.objects.get(ID=server_id)
+            server_obj = Server.objects.get(id=server_id)
             session = cls.create_session(server_id)
             url = server_obj.url + "panel/api/inbounds"
             response = session.post(url + f"/{server_obj.inbound_id}/resetClientTraffic/{config_name}/", headers={},
@@ -243,7 +243,7 @@ class ServerApi:
     @classmethod
     def get_online_users(cls, server_id):
         try:
-            server_obj = Server.objects.get(ID=server_id)
+            server_obj = Server.objects.get(id=server_id)
             session = cls.create_session(server_id)
             url = server_obj.url + "panel/api/inbounds"
             response = session.post(url + f"/onlines", headers={},data={}, timeout=6)

@@ -19,23 +19,23 @@ def run_jobs():
     for job_queue in ConfigJobsQueue.objects.filter(done=False):
         response = False
         if job_queue.job == 0: # create
-            response = ServerApi.create_config(job_queue.config.server.ID, job_queue.config.service.name, job_queue.config.service.uuid)
+            response = ServerApi.create_config(job_queue.config.server.id, job_queue.config.service.name, job_queue.config.service.uuid)
             if response:
                 status = Config.objects.get(configjobsqueue=job_queue)
                 status.status = 1
                 status.save()
 
         elif job_queue.job == 1: # disable
-            response = ServerApi.disable_config(job_queue.config.server.ID, job_queue.config.service.uuid, False)
+            response = ServerApi.disable_config(job_queue.config.server.id, job_queue.config.service.uuid, False)
         elif job_queue.job == 2: # delete
-            response = ServerApi.delete_config(job_queue.config.server.ID, job_queue.config.service.uuid)
+            response = ServerApi.delete_config(job_queue.config.server.id, job_queue.config.service.uuid)
             if response:
                 job_queue.config.status = 3
                 job_queue.config.save()
         elif job_queue.job == 3: # enable
-            response = ServerApi.disable_config(job_queue.config.server.ID, job_queue.config.service.uuid, True)
+            response = ServerApi.disable_config(job_queue.config.server.id, job_queue.config.service.uuid, True)
         elif job_queue.job == 4: # reset
-            response = ServerApi.reset_usage(job_queue.config.server.ID, job_queue.config.service.name)
+            response = ServerApi.reset_usage(job_queue.config.server.id, job_queue.config.service.name)
 
 
         if response:
@@ -48,7 +48,7 @@ def run_jobs():
 @shared_task
 def update_usage():
     for server in Server.objects.all():
-        response = ServerApi.get_list_configs(server.ID)
+        response = ServerApi.get_list_configs(server.id)
         try:
             if response:
                 for name in response:
@@ -62,15 +62,15 @@ def update_usage():
                             config_obj.status = 2
                         config_obj.last_update = datetime.now().timestamp()
                         if config_obj.service.status == 0 and not response[name]["enable"]:
-                            r = ServerApi.disable_config(server.ID, config_obj.service.uuid, True)
+                            r = ServerApi.disable_config(server.id, config_obj.service.uuid, True)
                             if r:
                                 LogAction.create_celery_log(config_obj.service.owner, f"⛔ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
                         elif config_obj.service.status in [1,2] and response[name]["enable"]:
-                            r = ServerApi.disable_config(server.ID, config_obj.service.uuid, False)
+                            r = ServerApi.disable_config(server.id, config_obj.service.uuid, False)
                             if r:
                                 LogAction.create_celery_log(config_obj.service.owner, f"⛔ Disable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
                         elif config_obj.service.status == 4:
-                            delete = ServerApi.delete_config(server.ID, config_obj.service.uuid)
+                            delete = ServerApi.delete_config(server.id, config_obj.service.uuid)
                             if delete:
                                 config_obj.status = 3
                                 LogAction.create_celery_log(config_obj.service.owner, f"❌ Delete / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
@@ -82,7 +82,7 @@ def update_usage():
         except Exception as e:
             print(e) # TODO: log error
 
-        response2 = ServerApi.get_online_users(server.ID)
+        response2 = ServerApi.get_online_users(server.id)
         if response2:
             server.online_users = response2
             server.save()
@@ -119,18 +119,18 @@ def delete_service():
 @shared_task
 def delete_not_recorded_config():
     for server in Server.objects.all():
-        response = ServerApi.get_list_configs(server.ID)
+        response = ServerApi.get_list_configs(server.id)
         if response:
             for name in response:
                 config_uuid = (response[name]["uuid"])
                 if not Service.objects.filter(uuid=config_uuid).exists():
-                    ServerApi.delete_config(server.ID, config_uuid)
+                    ServerApi.delete_config(server.id, config_uuid)
 
 
 @shared_task
 def create_recorded_configs():
     for server in Server.objects.all():
-        response = ServerApi.get_list_configs(server.ID)
+        response = ServerApi.get_list_configs(server.id)
         if response:
             list_uuid = []
             for config in response:
@@ -138,7 +138,7 @@ def create_recorded_configs():
 
             for config in Config.objects.filter(server=server, status__in=[1,2]):
                 if not config.service.uuid in list_uuid and not config.service.status == 4:
-                    ServerApi.create_config(server.ID, config.service.name, config.service.uuid)
+                    ServerApi.create_config(server.id, config.service.name, config.service.uuid)
 
 
 

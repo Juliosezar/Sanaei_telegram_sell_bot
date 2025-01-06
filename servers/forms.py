@@ -139,7 +139,7 @@ class EditServerForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.server_id = kwargs.pop('server_id', None)
         super().__init__(*args, **kwargs)
-        server = Server.objects.get(ID=self.server_id)
+        server = Server.objects.get(id=self.server_id)
         self.fields["server_name"].initial = server.name
         self.fields["server_url"].initial = server.url
         self.fields["username"].initial = server.username

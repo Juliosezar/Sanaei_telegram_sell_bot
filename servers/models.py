@@ -3,7 +3,7 @@ from django.db.models import PositiveIntegerField
 
 
 class Server(models.Model):
-    ID = models.PositiveSmallIntegerField(primary_key=True)
+    id = models.PositiveSmallIntegerField(primary_key=True)
     name = models.CharField(max_length=50)
     url = models.URLField()
     fake_domain = models.CharField(max_length=50)
