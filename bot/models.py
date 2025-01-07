@@ -15,7 +15,7 @@ class SellerBots(models.Model):
 
 class SendMessage(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    message = models.TextField()
+    message_id = models.IntegerField(default=-1)
     done = models.BooleanField(default=False)
     created_at = models.BigIntegerField()
     updated_at = models.BigIntegerField()

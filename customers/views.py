@@ -5,7 +5,7 @@ from bot.tasks import send_msg_again
 from django.contrib import messages
 from configs.models import Service
 from .models import Customer
-from .forms import SearchCustomerForm, ChangeWalletForm, SendMessageToAllForm
+from .forms import SearchCustomerForm, ChangeWalletForm, SendMessageToAllForm, SendMessageToCustomerForm
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
@@ -63,11 +63,12 @@ class SendMsgToAllView(LoginRequiredMixin, View):
     def post(self, request):
         form = SendMessageToAllForm(request.POST)
         if form.is_valid():
-            msg = form.cleaned_data['message']
+            print(form.cleaned_data)
+            msg_id = form.cleaned_data['message'].split("/")[-1]
             for i in Customer.objects.all():
                 SendMessage.objects.create(
                     customer=i,
-                    message=msg,
+                    message_id=msg_id,
                     created_at=datetime.now().timestamp(),
                     updated_at=datetime.now().timestamp(),
                 ).save()
@@ -80,14 +81,14 @@ class SendMsgToAllView(LoginRequiredMixin, View):
 
 class SendMsgToCustomerView(LoginRequiredMixin, View):
     def get(self, request, customer):
-        form = SendMessageToAllForm()
+        form = SendMessageToCustomerForm()
         return render(request, 'send_msg_to_custumer.html', {"form": form})
 
     def post(self, request, customer):
-        form = SendMessageToAllForm(request.POST)
+        form = SendMessageToCustomerForm(request.POST)
         if form.is_valid():
             msg = form.cleaned_data['message']
             CommandRunner.send_msg(customer, msg)
-            messages.success(request, "پیام در صف ارسال قرار گرفت.")
+            messages.success(request, "پیام ارسال شد.")
             return redirect("customers:custumer_detail", customer)
         return render(request, 'send_msg_to_custumer.html', {"form": form})

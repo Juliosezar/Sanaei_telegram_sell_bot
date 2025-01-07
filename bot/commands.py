@@ -100,31 +100,10 @@ class CommandRunner:
         if keyboard:
             data['reply_markup'] = {"inline_keyboard": [keyboard]}
         respons = cls.send_api("sendMessage", data)
-        if not respons:
-            SendMessage.objects.create(customer=Customer.objects.get(chat_id=chat_id),
-                                       message=msg,
-                                       created_at=datetime.now().timestamp(),
-                                       updated_at=datetime.now().timestamp(),
-                                       ).save()
-        return True
-
-    @classmethod
-    def send_msg_again(cls, id):
-        obj = SendMessage.objects.get(id=id)
-        if obj.try_count <= 50:
-            for i in ['_', '*', '[', ']', '(', ')', '~', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']:
-                msg = obj.message.replace(i, f"\\{i}")
-            data = {'chat_id': obj.customer.chat_id,
-                    'text': msg,
-                    'parse_mode': 'MarkdownV2',
-                    }
-            response = cls.send_api("sendMessage", data)
-            obj.try_count += 1
-            obj.updated_at = datetime.now().timestamp()
-            if response:
-                obj.done = True
-            obj.save()
+        if respons:
             return True
+        return False
+
 
     @classmethod
     def download_photo(cls, file_id, chat_id):

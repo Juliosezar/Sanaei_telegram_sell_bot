@@ -35,7 +35,7 @@
                             <tr>
                                 <td><a href="{% url "customers:custumer_detail" row.customer.chat_id %}">{{ row.customer.chat_id }}</a></td>
                                 <td>{{ row.status }}{% if row.done %}✅{% elif row.try_count == 3 %}❌{% else %}⏳{% endif %}</td>
-                                <td dir="rtl">{{ row.message|slice:30 }}</td>
+                                <td dir="rtl">{{ row.message_id }}</td>
                                 <td dir="rtl">{{ row.created_at|timestamp }}</td>
                                 <td dir="rtl">{{ row.updated_at|timestamp }}</td>
                                 <td dir="rtl">{{ row.try_count }}</td>
