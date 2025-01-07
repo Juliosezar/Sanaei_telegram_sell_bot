@@ -84,8 +84,9 @@ class SellersAutoSystemLog(LoginRequiredMixin, View):
 
 class SendMsgsLogsView(LoginRequiredMixin, View):
     def get(self, request):
-        logs = SendMessage.objects.all().order_by("-created_at")[:1000]
+        logs = SendMessage.objects.all().order_by("-created_at")[:2500]
         return render(request, "messages_logs.html", {"logs": logs})
+
 
 class DeleteMsgView(LoginRequiredMixin, View):
     def get(self, request, typ):
