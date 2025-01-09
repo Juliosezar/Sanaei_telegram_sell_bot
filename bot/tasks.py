@@ -22,5 +22,5 @@ def send_msg_again():
             else:
                 msg.try_count += 1
             msg.save()
-            if counter == 50:
+            if counter == 100:
                 break
