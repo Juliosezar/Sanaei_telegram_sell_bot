@@ -111,8 +111,10 @@ def delete_service():
             if not config.status == 3:
                 deleted = False
         if deleted:
+            CommandRunner.send_msg(service.customer.chat_id, f" ❌ سرویس {service.name} حذف شد.")
             LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ /  service \'{service.name}\'", service.customer)
             service.delete()
+
 
 
 @shared_task
