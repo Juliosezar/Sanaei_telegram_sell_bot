@@ -4,6 +4,7 @@ from django.conf import settings
 from zipfile import ZipFile
 
 from bot.commands import CommandRunner
+from finance.models import BotPayment
 from servers.models import Server
 from .models import ConfigJobsQueue, Config, Service, EndNotif
 from servers.sanaie_api import ServerApi
@@ -173,13 +174,14 @@ def delete_notif():
 def auto_delete_service():
     from configs.views import ConfigAction
     for service in Service.objects.filter(status=2):
-        if EndNotif.objects.filter(service=service, type=0).exists():
-            if (datetime.now().timestamp() -EndNotif.objects.get(service=service, type=0).timestamp) > 259200:
-                ConfigAction.create_config_job_queue(service.uuid,2 ,None)
-                service.status = 4
-                service.save()
-                LogAction.create_celery_log(service.owner, f"🆑 delete sevice by celery ❌ /  service \'{service.name}\'",
-                                            service.customer)
+        if EndNotif.objects.filter(service=service, type=0, service__owner=None).exists():
+            if (datetime.now().timestamp() - EndNotif.objects.get(service=service, type=0).timestamp) > 259200:
+                if not BotPayment.objects.filter(service_uuid=service.uuid, status__in=[0,1]).exists():
+                    ConfigAction.create_config_job_queue(service.uuid,2 ,None)
+                    service.status = 4
+                    service.save()
+                    LogAction.create_celery_log(service.owner, f"🆑 delete sevice by celery ❌ /  service \'{service.name}\'",
+                                                service.customer)
 
 
 
