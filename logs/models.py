@@ -9,6 +9,8 @@ class CeleryLog(models.Model):
     description = models.TextField()
     timestamp = models.PositiveBigIntegerField()
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
+    tag = models.PositiveIntegerField(default=0, choices=[(0, "delete completely"),(1,"create"),(2,"delete service"),(3,"delete"),(4,"enable"),(5,"disable")])
+
 
 
 class CustomerLog(models.Model):

@@ -12,12 +12,13 @@ from bot.models import SendMessage
 
 class LogAction:
     @staticmethod
-    def create_celery_log(owner, desc, customer):
+    def create_celery_log(owner, desc, customer, tag):
         CeleryLog.objects.create(
             customer=customer,
             owner=owner,
             description=desc,
-            timestamp=datetime.now().timestamp()
+            timestamp=datetime.now().timestamp(),
+            tag=tag,
         ).save()
 
 

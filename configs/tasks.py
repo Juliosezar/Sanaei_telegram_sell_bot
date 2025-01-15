@@ -62,16 +62,16 @@ def update_usage():
                         if config_obj.service.status == 0 and not response[name]["enable"]:
                             r = ServerApi.disable_config(server.id, config_obj.service.uuid, True)
                             if r:
-                                LogAction.create_celery_log(config_obj.service.owner, f"✅ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
+                                LogAction.create_celery_log(config_obj.service.owner, f"✅ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer, 4)
                         elif config_obj.service.status in [1,2] and response[name]["enable"]:
                             r = ServerApi.disable_config(server.id, config_obj.service.uuid, False)
                             if r:
-                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Disable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
+                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Disable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer,5)
                         elif config_obj.service.status == 4:
                             delete = ServerApi.delete_config(server.id, config_obj.service.uuid)
                             if delete:
                                 config_obj.status = 3
-                                LogAction.create_celery_log(config_obj.service.owner, f"❌ Delete / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
+                                LogAction.create_celery_log(config_obj.service.owner, f"❌ Delete / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer,3)
                         config_obj.save()
                 server.last_update = datetime.now().timestamp()
                 server.save()
@@ -111,9 +111,9 @@ def delete_service():
             if not config.status == 3:
                 deleted = False
         if deleted:
-            if service.customer.chat_id:
+            if service.customer:
                 CommandRunner.send_msg(service.customer.chat_id, f" ❌ سرویس {service.name} حذف شد.")
-            LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ /  service \'{service.name}\'", service.customer)
+            LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ /  service \'{service.name}\'", service.customer, 0)
             service.delete()
 
 
@@ -140,8 +140,11 @@ def create_recorded_configs():
 
             for config in Config.objects.filter(server=server, status__in=[1,2]):
                 if not config.service.uuid in list_uuid and not config.service.status == 4:
-                    ServerApi.create_config(server.id, config.service.name, config.service.uuid)
-
+                    res = ServerApi.create_config(server.id, config.service.name, config.service.uuid)
+                    if res:
+                        LogAction.create_celery_log(config.service.owner,
+                                                    f"❌ Delete / service \'{config.service.name}\' / server \'{server.name}\'",
+                                                    config.service.customer, 1)
 
 
 @shared_task
@@ -184,7 +187,7 @@ def auto_delete_service():
                     service.status = 4
                     service.save()
                     LogAction.create_celery_log(service.owner, f"🆑 delete sevice by celery ❌ /  service \'{service.name}\'",
-                                                service.customer)
+                                                service.customer, 2)
 
 
 
