@@ -14,6 +14,10 @@
         <div id="main">
 
             <h3 id="counter">Auto System Log</h3>
+            <div id="filterbox">
+                    <div><input id="All" type="checkbox" value="All Configs" name="All"> <label for="All"> All Logs</label></div>
+                    <div><input id="Active" type="checkbox" value="Active" name="Active"> <label for="Active">Delete by Celery</label></div>
+                </div>
 		    <div class="xcontainer">
 		    		<table class="overflow-y">
 		    			<thead>
@@ -26,7 +30,7 @@
 		    			<tbody>
                         {% for row in logs %}
 
-		    				<tr>
+		    				<tr class="tags tag{{ row.tag }}">
                                 	<td>{{ row.description }}</td>
                                     {% if row.customer %}
                                         <td><a href="{% url 'customers:custumer_detail' row.customer.chat_id %}">{{ row.customer.chat_id }}</a></td>
@@ -41,16 +45,51 @@
 		    			</tbody>
 		    		</table>
             </div>
-
-
         </div>
+    <script>
+        function togg() {
+            $("#Active").prop("checked", false);
+            $("#All").prop("checked", false);
+            $(".tag2").show();
+        }
+        $(document).ready(function() {
+            $("#All").prop("checked", true);
+            $("#All").click(function () {
+                $("#Active").prop("checked", false);
+                $(".tags").show();
+            });
 
+            $("#Active").click(function () {
+                togg();
+                $("#Active").prop("checked", true);
+                $(".tags").hide();
+                $(".tag2").show();
+            });
+
+
+
+        })
+    </script>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
 		<script src={% static "js/list.js" %}></script>
 	</body>
-
+    <style>
+        #filterbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    max-width: 40rem;
+    background-color: #000d3f;
+    color: white;
+    padding: 0.5rem 0 0.1rem;
+    margin: 0 0 0.25rem 0;
+    width: 98%;
+    border-radius: 15px;
+}
+    </style>
 {% include "loading.html" %}
 
 </html>
