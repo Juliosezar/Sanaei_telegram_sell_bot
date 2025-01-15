@@ -230,6 +230,8 @@ class PayDebts(LoginRequiredMixin, View):
         if not service.paid:
             if action == 0:
                 service.paid = True
+                if service.status == 1:
+                    service.status = 0
             elif action == 1:
                 service.status = 1
             elif action == 2:

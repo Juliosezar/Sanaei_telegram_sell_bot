@@ -62,7 +62,7 @@ def update_usage():
                         if config_obj.service.status == 0 and not response[name]["enable"]:
                             r = ServerApi.disable_config(server.id, config_obj.service.uuid, True)
                             if r:
-                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
+                                LogAction.create_celery_log(config_obj.service.owner, f"✅ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer)
                         elif config_obj.service.status in [1,2] and response[name]["enable"]:
                             r = ServerApi.disable_config(server.id, config_obj.service.uuid, False)
                             if r:
@@ -111,7 +111,8 @@ def delete_service():
             if not config.status == 3:
                 deleted = False
         if deleted:
-            CommandRunner.send_msg(service.customer.chat_id, f" ❌ سرویس {service.name} حذف شد.")
+            if service.customer.chat_id:
+                CommandRunner.send_msg(service.customer.chat_id, f" ❌ سرویس {service.name} حذف شد.")
             LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ /  service \'{service.name}\'", service.customer)
             service.delete()
 

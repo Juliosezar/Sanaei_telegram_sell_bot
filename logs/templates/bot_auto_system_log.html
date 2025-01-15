@@ -28,7 +28,11 @@
 
 		    				<tr>
                                 	<td>{{ row.description }}</td>
-                                    <td>{{ row.customer.chat_id }}</td>
+                                    {% if row.customer %}
+                                        <td><a href="{% url 'customers:custumer_detail' row.customer.chat_id %}">{{ row.customer.chat_id }}</a></td>
+                                    {% else %}
+                                        <td>------</td>
+                                    {% endif %}
                                     <td>{{ row.timestamp|timestamp }}</td>
 
                             </tr>
