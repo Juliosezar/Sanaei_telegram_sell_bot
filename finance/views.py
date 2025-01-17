@@ -116,8 +116,8 @@ class FirstConfirmPayment(LoginRequiredMixin, View):
 class SecondConfirmPayment(LoginRequiredMixin, View):
     def get(self, request, obj_id):
         pay_obj = BotPayment.objects.get(id=obj_id)
-        FinanceAction.change_wallet(pay_obj.price, pay_obj.customer.chat_id)
         if pay_obj.status == 0:
+            FinanceAction.change_wallet(pay_obj.price, pay_obj.customer.chat_id)
             if pay_obj.action == 0:  # add to wallet
                 CommandRunner.send_msg(pay_obj.customer.chat_id,
                                        f"پرداخت شما تایید شد و به مبلغ {pay_obj.price} تومان به کیف پولتان اضافه شد.")
