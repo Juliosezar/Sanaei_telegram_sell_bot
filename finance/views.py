@@ -444,3 +444,9 @@ class SellerDeletePayBills(LoginRequiredMixin, View):
     def get(self, request, id):
         PurchaseRecord.objects.get(id=id).delete()
         return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+class PayHistory(LoginRequiredMixin, View):
+    def get(self, request):
+        obj = BotPayment.objects.all().order_by('-id')[:250]
+        return render(request, 'bot_pay_history.html', {'obj': obj})

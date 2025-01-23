@@ -63,7 +63,7 @@ class SellersStatusView(LoginRequiredMixin, View):
 
 class BotAutoSystemLog(LoginRequiredMixin, View):
     def get(self, request):
-        logs = CeleryLog.objects.filter(owner=None).order_by("-id")[:1500]
+        logs = CeleryLog.objects.filter(owner=None).order_by("-id")[:1000]
         return render(request, "bot_auto_system_log.html", {"logs": logs})
 
 

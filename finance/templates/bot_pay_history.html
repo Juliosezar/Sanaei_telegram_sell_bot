@@ -1,0 +1,79 @@
+{% load static %}
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html lang="fa" class="no-js">
+	<head>
+		<title>List Configs</title>
+        {% include "base_head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'custumers/component.css' %}?{% now "d" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'finance/surathesab_page.css' %}?{% now "d" %}"/>
+    </head>
+	<body dir="ltr">
+        {% include "navbar_sellers.html" %}
+        {% include 'messages.html' %}
+        <div id="main">
+
+            <h3 id="counter">Payment History</h3>
+		    <div class="xcontainer">
+		    		<table class="overflow-y">
+		    			<thead>
+		    				<tr>
+                                <th>Customer</th>
+                                <th>Price</th>
+                                <th>Service</th>
+                                <th>Action</th>
+                                <th>Status</th>
+                                <th>Image</th>
+
+                            </tr>
+		    			</thead>
+		    			<tbody>
+                        {% for row in obj %}
+
+		    				<tr>
+                                	<td><a href="{% url "customers:custumer_detail" row.customer.chat_id %}">{{ row.customer.chat_id }}</a></td>
+                                    <td>{{ row.price|price }} T</td>
+                                    <td>{{ row.service_uuid|get_conf_name }}</td>
+                            {% if row.action == 0 %}
+                            	<td>⬇️ wallet</td>
+                            {% elif row.action == 1 %}
+                                <td>🆕 buy</td>
+                            {% else %}
+                                <td>🔄 renew</td>
+                            {% endif %}
+                            {% if row.status == -1 %}
+                            	<td>waiting for picture</td>
+                            {% elif row.status == 0 %}
+                                <td>wait for confirm</td>
+                            {% elif row.status == 1 %}
+                                <td>❇️ first confirm</td>
+                            {% elif row.status == 2 %}
+                                <td>✅ confirmed</td>
+                            {% elif row.status == 9 %}
+                                <td>❌ denied</td>
+                            {% else %}
+                                <td>----</td>
+                            {% endif %}
+                                {% if row.image %}
+                                    <td><a href={{ row.image.url }}>Image</a></td>
+                                {% endif %}
+                            </tr>
+
+                        {% endfor %}
+		    			</tbody>
+		    		</table>
+            </div>
+
+
+        </div>
+
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+		<script src={% static "js/list.js" %}></script>
+	</body>
+
+{% include "loading.html" %}
+
+</html>

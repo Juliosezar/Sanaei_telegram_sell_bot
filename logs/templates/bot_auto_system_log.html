@@ -24,6 +24,7 @@
 		    				<tr>
                                 <th>DESCRIPTION</th>
                                 <th>Customer</th>
+                                <th>Username</th>
                                 <th>DATE/TIME</th>
                             </tr>
 		    			</thead>
@@ -34,7 +35,13 @@
                                 	<td>{{ row.description }}</td>
                                     {% if row.customer %}
                                         <td><a href="{% url 'customers:custumer_detail' row.customer.chat_id %}">{{ row.customer.chat_id }}</a></td>
+                                        {% if row.customer.username %}
+                                        <td><a href="{% url 'customers:custumer_detail' row.customer.chat_id %}">@{{ row.customer.username }}</a></td>
+                                            {% else %}
+                                                <td>------</td>
+                                            {% endif %}
                                     {% else %}
+                                        <td>------</td>
                                         <td>------</td>
                                     {% endif %}
                                     <td>{{ row.timestamp|timestamp }}</td>

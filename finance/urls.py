@@ -10,6 +10,7 @@ urlpatterns = [
     path('deny_payment/<int:obj_id>/', views.DenyPaymentPage.as_view(), name='deny_payments'),
     path('edit_price_payment/<int:obj_id>/<str:typ>/', views.EditPricePayment.as_view(), name='edit_price'),
     path("pay_debts/<uuid:uuid>/<int:action>/", views.PayDebts.as_view(), name='pay_debts'),
+    path("bot_pay_history/", views.PayHistory.as_view(), name='bot_pay_history'),
 
     path('show_prices/', views.ShowPrices.as_view(), name='show_prices'),
     path('delete_or_edit_price/<int:obj_id>/<str:action>/', views.DeleteOrEditPrice.as_view(),
