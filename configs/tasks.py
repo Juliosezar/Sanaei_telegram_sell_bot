@@ -214,5 +214,9 @@ def send_back_up():
                 }
                 CommandRunner.send_api("sendDocument",data, files)
 
-
-
+@shared_task
+def create_all_configs_in_all_servers():
+    for server in Server.objects.all():
+            for service in Service.objects.all():
+                if not Config.objects.filter(server=server, service=service).exists():
+                    Config.objects.create(server=server, service=service)
