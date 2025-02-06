@@ -291,6 +291,7 @@ class Sublink(APIView):
                 content_str += (i + "\n")
             user_agent = request.headers.get('User-Agent', None)
             is_v2ray_client = any(word.lower() in user_agent.lower() for word in ["hiddify", "v2ray", "Streisand", "Hiddify", "V2rayNG", "V2Box", "FoXray","NekoBox", "v2raytun"])
+
             if is_v2ray_client:
                 service_obj = Service.objects.get(uuid=config_uuid)
                 time_stamp = datetime.now().timestamp()
@@ -316,7 +317,7 @@ class Sublink(APIView):
                 service_name =  "Napsv_" + service_name
             content = []
             for server in Server.objects.all():
-                content.append(f"vless://{config_uuid}@{server.fake_domain}:{server.inbound_port}?type=tcp&path=%2F&host=speedtest.net&headerType=http&security=none#{service_name} / {server.name}")
+                content.append(server.config_example.replace("uuid", str(config_uuid)) + server.name)
             shuffle(content)
             content_str = ""
             for i in content:
