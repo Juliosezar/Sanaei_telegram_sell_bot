@@ -28,6 +28,7 @@ class ServerApi:
                 session.close()
                 return False
         except Exception as e:
+            print(e)
             return False
 
     @classmethod
@@ -61,6 +62,7 @@ class ServerApi:
             session.close()
             return joined_data
         except Exception as e:
+            print(e)
             return False
 
     @classmethod
@@ -92,6 +94,7 @@ class ServerApi:
             session.close()
             return False
         except Exception as e:
+            print(e)
             return False
 
     @classmethod
@@ -132,6 +135,7 @@ class ServerApi:
             session.close()
             return False
         except Exception as e:
+            print(e)
             return False
 
     @classmethod
@@ -221,6 +225,7 @@ class ServerApi:
                     return True
             return False
         except Exception as e:
+            print(e)
             return False
 
     @classmethod
@@ -253,4 +258,5 @@ class ServerApi:
                     return len(response.json()["obj"])
                 return False
         except Exception as e:
+            print(e)
             return False
