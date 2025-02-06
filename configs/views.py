@@ -316,7 +316,7 @@ class Sublink(APIView):
             else:
                 service_name =  "Napsv_" + service_name
             content = []
-            for server in Server.objects.all():
+            for server in Server.objects.filter(active=True):
                 content.append(server.config_example.replace("uuid", str(config_uuid))+ f"{service_name} / {server.name}")
             shuffle(content)
             content_str = ""
