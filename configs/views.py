@@ -284,7 +284,7 @@ class Sublink(APIView):
                 service_name =  "Napsv_" + service_name
             content = []
             for server in Server.objects.filter(active=True):
-                content.append(server.config_example.replace("uuid", str(config_uuid)) + server.name)
+                content.append(server.config_example.replace("uuid", str(config_uuid))+ f"{service_name} / {server.name}")
             shuffle(content)
             content_str = ""
             for i in content:
@@ -317,7 +317,7 @@ class Sublink(APIView):
                 service_name =  "Napsv_" + service_name
             content = []
             for server in Server.objects.all():
-                content.append(server.config_example.replace("uuid", str(config_uuid)) + server.name)
+                content.append(server.config_example.replace("uuid", str(config_uuid))+ f"{service_name} / {server.name}")
             shuffle(content)
             content_str = ""
             for i in content:
