@@ -54,7 +54,7 @@ class EditServer(LoginRequiredMixin, View):
             config_example = (cd["config_example"].split("#")[0]) + "#"
             if not "uuid" in config_example:
                 matches = re.search(regex, config_example)
-                config_example = config_example.replace(matches.group(), "uuid"),
+                config_example = config_example.replace(matches.group(), "uuid")
 
             obj = Server.objects.get(id=server_id)
             obj.name = cd["server_name"]

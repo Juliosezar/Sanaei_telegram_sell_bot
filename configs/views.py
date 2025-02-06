@@ -285,13 +285,11 @@ class Sublink(APIView):
             content = []
             for server in Server.objects.filter(active=True):
                 content.append(server.config_example.replace("uuid", str(config_uuid)) + server.name)
-            print(content)
             shuffle(content)
             content_str = ""
             for i in content:
                 content_str += (i + "\n")
             user_agent = request.headers.get('User-Agent', None)
-            print(f"get == > {user_agent}")
             is_v2ray_client = any(word.lower() in user_agent.lower() for word in ["hiddify", "v2ray", "Streisand", "Hiddify", "V2rayNG", "V2Box", "FoXray","NekoBox", "v2raytun"])
             if is_v2ray_client:
                 service_obj = Service.objects.get(uuid=config_uuid)
