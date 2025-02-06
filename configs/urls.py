@@ -35,6 +35,7 @@ urlpatterns = [
     path("sellers_api_get_config_ip_limit_chices/", views.ApiSellersGetConfigIPLimitChoices.as_view(), name="seller_api_get_iplimit_choices"),
     path("sellers_api_get_axact_price/", views.ApiSellersGetConfigPriceChoices.as_view(), name="seller_api_get_axact_price"),
 
+    path("CreateAllConfigsInAllServers/", views.CreateAllConfigsInAllServers.as_view(), name="CreateAllConfigsInAllServers"),
 ]
 
 

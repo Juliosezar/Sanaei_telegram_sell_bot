@@ -727,3 +727,13 @@ class ApiSellersGetConfigPriceChoices(APIView):
         usage = int(request.GET.get('usage'))
         obj = SellersPrices.objects.get(usage_limit=usage, expire_limit=time, user_limit=iplimit,seller__username=seller_username   ).price
         return Response({'price': f'{obj:,}'})
+
+
+class CreateAllConfigsInAllServers(LoginRequiredMixin, View):
+    def get(self,request):
+        for server in Server.objects.all():
+                for service in Service.objects.all():
+                    if not Config.objects.filter(server=server, service=service).exists():
+                        Config.objects.create(server=server, service=service, status=1).save()
+                        print(service.name)
+        return redirect("accounts:home_bot")
