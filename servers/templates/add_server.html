@@ -6,7 +6,7 @@
 {% include "base_head.html" %}
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'servers/create_config.css' %}?{% now "d" %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'configs/create_config.css' %}?{% now "d" %}">
 </head>
 <body>
 {% include "navbar_bot.html" %}
@@ -27,11 +27,10 @@
             <div id="time_limit" class="textinput item"><h3 class="item_text">Url: </h3>{{ form.server_url }}</div>
             <div id="time_limit" class="textinput item"><h3 class="item_text"> Username: </h3>{{ form.username }}</div>
             <div id="time_limit" class="textinput item"><h3 class="item_text">Password: </h3>{{ form.password }}</div>
-            <div id="time_limit" class="textinput item"><h3 class="item_text">Fake Domain : </h3>{{ form.server_fake_domain }}</div>
             <div id="time_limit" class="textinput item"><h3 class="item_text">Inbound id: </h3>{{ form.inbound_id }}</div>
-            <div id="time_limit" class="textinput item"><h3 class="item_text">Port: </h3>{{ form.inbound_port }}</div>
             <div id="time_limit" class="textinput item"><h3 class="item_text">Active: </h3>{{ form.active }}</div>
             <div id="time_limit" class="textinput item"><h3 class="item_text">maximum connection: </h3>{{ form.maximum_connection }} 0 = unlimited</div>
+            <div id="time_limit" class="textinput item"><h3 class="item_text">config example: </h3>{{ form.config_example }}</div>
             <input id="create" type="submit" class="submit_btn" value="Change">
         </form>
     </div>

@@ -46,7 +46,7 @@ class SellersJobQueueLogView(LoginRequiredMixin, View):
 class DeleteJobQueueView(LoginRequiredMixin, View):
     def get(self, request, id):
         ConfigJobsQueue.objects.get(id=id).delete()
-        return redirect("logs:bot_job_queue")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 class BotStatusView(LoginRequiredMixin, View):

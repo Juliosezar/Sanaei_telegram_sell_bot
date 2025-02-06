@@ -283,8 +283,9 @@ class Sublink(APIView):
             else:
                 service_name =  "Napsv_" + service_name
             content = []
-            for server in Server.objects.all():
-                content.append(f"vless://{config_uuid}@{server.fake_domain}:{server.inbound_port}?type=tcp&path=%2F&host=speedtest.net&headerType=http&security=none#{service_name} / {server.name}")
+            for server in Server.objects.filter(active=True):
+                content.append(server.config_example.replace("uuid", str(config_uuid)) + server.name)
+            print(content)
             shuffle(content)
             content_str = ""
             for i in content:

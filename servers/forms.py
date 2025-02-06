@@ -122,11 +122,10 @@ class AddServerForm(forms.Form):
     server_url = forms.CharField(max_length=60, required=True)
     username = forms.CharField(max_length=30, required=True)
     password = forms.CharField(max_length=30, required=True)
-    server_fake_domain = forms.CharField(max_length=40, required=True)
     inbound_id = forms.IntegerField(required=True)
-    inbound_port = forms.IntegerField(required=True)
     active = forms.BooleanField(initial=True, required=False)
     maximum_connection = forms.IntegerField(required=False, initial=0)
+    config_example = forms.CharField(widget=forms.Textarea, required=True)
 
     def clean_server_url(self):
         url = self.cleaned_data['server_url']
@@ -144,51 +143,22 @@ class EditServerForm(forms.Form):
         self.fields["server_url"].initial = server.url
         self.fields["username"].initial = server.username
         self.fields["password"].initial = server.password
-        self.fields["server_fake_domain"].initial = server.fake_domain
         self.fields["inbound_id"].initial = server.inbound_id
-        self.fields["inbound_port"].initial = server.inbound_port
         self.fields["active"].initial = server.active
         self.fields["maximum_connection"].initial = server.maximum_connection
-
+        self.fields["config_example"].initial = server.config_example
     server_name = forms.CharField(max_length=30, required=True)
     server_url = forms.CharField(max_length=60, required=True)
     username = forms.CharField(max_length=30, required=True)
     password = forms.CharField(max_length=30, required=True)
-    server_fake_domain = forms.CharField(max_length=40, required=True)
     inbound_id = forms.IntegerField(required=True)
-    inbound_port = forms.IntegerField(required=True)
     active = forms.BooleanField(initial=True, required=False)
     maximum_connection = forms.IntegerField(required=False)
+    config_example = forms.CharField(widget=forms.Textarea, required=True)
+
     def clean_server_url(self):
         url = self.cleaned_data['server_url']
-        if not url.startswith('http://') or not url.endswith("/") or "panel/" in url:
+        if not url.startswith('http') or not url.endswith("/") or "panel/" in url:
             raise ValidationError("url اشتباه است.")
         return url
-
-
-# class ChangeConfigLocForm(forms.Form):
-#     def __init__(self, *args, **kwargs):
-#         self.server_id = kwargs.pop('server', None)
-#         super().__init__(*args, **kwargs)
-#         self.fields["server"].choices = self.ch()
-#
-#     def ch(self):
-#         return [(i.server_id, i.server_name) for i in Server.objects.all() if not i.server_id == self.server_id]
-#
-#     server = forms.ChoiceField()
-#
-#     def clean_server(self):
-#         server = self.cleaned_data['server']
-#         return int(server)
-#
-#
-# class ChangeUnlimitConfLimitForm(forms.Form):
-#     def __init__(self, *args, **kwargs):
-#         self.limit = kwargs.pop('limit', None)
-#         super().__init__(*args, **kwargs)
-#         if self.limit:
-#             self.fields["limit"].initial = self.limit
-#
-#     limit = forms.IntegerField()
-
 
