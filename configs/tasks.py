@@ -219,4 +219,4 @@ def create_all_configs_in_all_servers():
     for server in Server.objects.all():
             for service in Service.objects.all():
                 if not Config.objects.filter(server=server, service=service).exists():
-                    Config.objects.create(server=server, service=service)
+                    Config.objects.create(server=server, service=service).save()
