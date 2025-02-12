@@ -18,7 +18,7 @@ COMMANDS = {
     'buy_from_wallet': CommandRunner.buy_config_from_wallet,
     # 'abort_buying': CommandRunner.abort_buying,
     'کیف پول 💰': CommandRunner.show_wallet_status,
-    # 'تست رایگان 🔥': CommandRunner.test_conf,
+     'تست رایگان 🔥': CommandRunner.test_conf,
     'سرویس های من 🧑‍💻': CommandRunner.my_services,
     'تعرفه ها 💳': CommandRunner.send_prices,
     'ارتباط با ادمین 👤': CommandRunner.contact_us,

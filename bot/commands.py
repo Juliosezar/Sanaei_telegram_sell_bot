@@ -1132,3 +1132,11 @@ class CommandRunner:
                 'photo': image_file
             }
             CommandRunner.send_api("sendPhoto", data, files)
+
+    @classmethod
+    def test_conf(cls, chat_id,*args):
+            data = {
+                'chat_id': chat_id,
+                'text': f'برای دریافت سرویس تست به آی دی زیر پیام دهید: \n\n' + "🆔 @NapsV_supp"
+            }
+            cls.send_api("sendMessage", data)

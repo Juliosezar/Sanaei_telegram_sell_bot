@@ -78,9 +78,7 @@ def update_usage():
             else:
                 pass  # Todo: send not working notif
         except Exception as e:
-
             print(e) # TODO: log error
-            print(response)
         response2 = ServerApi.get_online_users(server.id)
         if response2:
             server.online_users = response2
