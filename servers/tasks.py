@@ -8,7 +8,7 @@ import json
 
 @shared_task
 def servers_connection():
-    servers = Server.objects.all()
+    servers = Server.objects.filter(active=True)
     text = ""
     for server in servers:
         if server.online_users < 4:
