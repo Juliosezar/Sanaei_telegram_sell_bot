@@ -46,7 +46,7 @@ class ConfigAction:
     @staticmethod
     def create_config_db(service_uuid):
         service = Service.objects.get(uuid=service_uuid)
-        for server in Server.objects.all():
+        for server in Server.objects.filter(active=True):
             Config.objects.create(
                 status=-1,
                 server=server,
@@ -59,6 +59,12 @@ class ConfigAction:
     def create_config_job_queue(service_uuid, job, by_user=None):
         service = Service.objects.get(uuid=service_uuid)
         for config in Config.objects.filter(service=service):
+            if not config.server.active:
+                if job == 2:
+                    config.status = 3
+                config.save()
+                continue
+
             ConfigJobsQueue.objects.create(
                 config=config,
                 job=job,
