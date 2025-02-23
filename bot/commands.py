@@ -237,7 +237,7 @@ class CommandRunner:
     def contact_us(cls, chat_id, *args):
         data = {
             'chat_id': chat_id,
-            'text': f' با سلام خدمت شما کاربر گرامی \n\n' + "🟢 پشتیبانی از 8 صبح تا 12 شب 👇\n" + "🆔 @NapsV_supp"
+            'text': f' با سلام خدمت شما کاربر گرامی \n\n' + "🟢 پشتیبانی از 8 صبح تا 12 شب 👇\n" + f"🆔 {environ.get("ADMIN_USERNAME")}"
         }
         cls.send_api("sendMessage", data)
 

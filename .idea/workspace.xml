@@ -28,6 +28,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///JetClient Request Console" root0="SKIP_INSPECTION" />
+    <setting file="mock:///JetClient Request Console" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/bot/commands.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bot/views.py" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -193,6 +194,8 @@
       <workItem from="1738831255190" duration="24705000" />
       <workItem from="1739304816849" duration="14000" />
       <workItem from="1739355457097" duration="1380000" />
+      <workItem from="1740318892728" duration="689000" />
+      <workItem from="1740322089529" duration="724000" />
     </task>
     <servers />
   </component>
