@@ -17,7 +17,7 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_SSL_REDIRECT = True
-    ALLOWED_HOSTS = ["194.146.123.65", "admin-napsv.ir" ,"napsv.ir"]
+    ALLOWED_HOSTS = environ.get("PANEL_DOMAINS").split(",")
 else:
     ALLOWED_HOSTS = ['127.0.0.1', "*"]
     CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
