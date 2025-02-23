@@ -85,7 +85,7 @@ class CommandRunner:
         CustomerTmpStatus.objects.create(
             customer=Customer.objects.get(chat_id=chat_id),
         ).save()
-        cls.send_msg(chat_id, "به بات NapsV Vpn خوش آمدید :)")
+        cls.send_msg(chat_id, f"به بات {environ.get('SITE_NAME')} خوش آمدید :)")
         cls.main_menu(chat_id)
         return {"username": username, "first_name": first_name}
 
