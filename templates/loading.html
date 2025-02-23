@@ -2,16 +2,14 @@
 <div id="loading">
         <div dir="ltr" class="loading-container">
           <div class="loading-text">
-            <span>N</span>
-            <span>A</span>
-            <span>P</span>
-            <span>S</span>
-            <span>V</span>
+              {% for i in LOADING1 %}
+            <span>{{ i }}</span>
+              {% endfor %}
           </div>
             <div class="loading-text">
-            <span>V</span>
-            <span>P</span>
-            <span>N</span>
+            {% for i in LOADING2 %}
+            <span>{{ i }}</span>
+              {% endfor %}
           </div>
         </div>
         <h3 dir="ltr" style="margin-top: 2rem ;font-size: large">Connecting Server ...</h3>
