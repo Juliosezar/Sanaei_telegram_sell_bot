@@ -320,7 +320,7 @@ class Sublink(APIView):
             if service.owner:
                 service_name = service.owner.brand + "_" + service_name
             else:
-                service_name =  "Napsv_" + service_name
+                service_name =  environ.get("SITE_NAME")+ "_" + service_name
             content = []
             for server in Server.objects.filter(active=True):
                 content.append(server.config_example.replace("uuid", str(config_uuid))+ f"{service_name} / {server.name}")
