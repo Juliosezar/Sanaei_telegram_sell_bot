@@ -1137,6 +1137,6 @@ class CommandRunner:
     def test_conf(cls, chat_id,*args):
             data = {
                 'chat_id': chat_id,
-                'text': f'برای دریافت سرویس تست به آی دی زیر پیام دهید: \n\n' + "🆔 @NapsV_supp"
+                'text': f'برای دریافت سرویس تست به آی دی زیر پیام دهید: \n\n' + f"🆔 {environ.get("ADMIN_USERNAME")}"
             }
             cls.send_api("sendMessage", data)
