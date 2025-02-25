@@ -14,7 +14,7 @@ import os
 
 @shared_task
 def run_jobs():
-    for job_queue in ConfigJobsQueue.objects.filter(done=False):
+    for job_queue in ConfigJobsQueue.objects.filter(done=False, config__server__active=True):
         response = False
         if job_queue.job == 0: # create
             response = ServerApi.create_config(job_queue.config.server.id, job_queue.config.service.name, job_queue.config.service.uuid)
@@ -45,7 +45,7 @@ def run_jobs():
 
 @shared_task
 def update_usage():
-    for server in Server.objects.all():
+    for server in Server.objects.filter(active=True):
         response = ServerApi.get_list_configs(server.id)
         try:
             if response:
@@ -118,7 +118,7 @@ def delete_service():
 
 @shared_task
 def delete_not_recorded_config():
-    for server in Server.objects.all():
+    for server in Server.objects.filter(active=True):
         response = ServerApi.get_list_configs(server.id)
         if response:
             for name in response:
@@ -129,7 +129,7 @@ def delete_not_recorded_config():
 
 @shared_task
 def create_recorded_configs():
-    for server in Server.objects.all():
+    for server in Server.objects.filter(active=True):
         response = ServerApi.get_list_configs(server.id)
         if response:
             list_uuid = []
