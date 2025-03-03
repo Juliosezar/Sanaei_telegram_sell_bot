@@ -638,6 +638,7 @@ class CommandRunner:
             text = '❌ این سرویس دیگر فعال نیست.'
 
         keybord.append([{'text': 'دریافت QRCode', 'callback_data': f"QRcode<~>{conf_uuid}"}])
+        keybord.append([{'text': '♻️ تمدید ♻️', 'callback_data': f'renew<~>{conf_uuid}'}])
         keybord.append([{'text': '🔙 بازگشت', 'callback_data': f"سرویس های من 🧑‍💻"}])
         data = {
             'chat_id': chat_id,
