@@ -14,4 +14,10 @@ urlpatterns = [
 
     path("send_msgs_log/", views.SendMsgsLogsView.as_view(), name="send_msgs_log"),
     path("delete_msgs/<str:typ>", views.DeleteMsgView.as_view(), name="delete_msgs"),
+
+    path("report_all/", views.ReportsAll.as_view(), name="report_all"),
+    path("report_bot/", views.ReportsBot.as_view(), name="report_bot"),
+    path("report_sellers/", views.ReportsSellers.as_view(), name="report_sellers"),
+
+    path("reports_all/api/<str:r_type>/", views.ChartData.as_view()),
 ]

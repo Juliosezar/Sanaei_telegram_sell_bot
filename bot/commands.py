@@ -628,7 +628,7 @@ class CommandRunner:
 
             else:
                 status = "تماما شده 🔴"
-                keybord.append([{'text': '♻️ تمدید ♻️', 'callback_data': f'renew<~>{conf_uuid}'}])
+                # keybord.append([{'text': '♻️ تمدید ♻️', 'callback_data': f'renew<~>{conf_uuid}'}])
             text += '\n' "📥 حجم مصرفی: " f'{service.usage}GB از {usage_limit}' '\n' '⏳ روز های باقی مانده: ' f'{expire_days}' '\n' '📶 وضعیت: ' f'{status}' '\n' f'⚙️ نوع: ' f'{kind}'
             text = text.replace('_', "\\_")
             text += ("\n\n"'📡 کانفیگ شما:' ' 'f"\n`{sub_link}`\n\n")
@@ -638,7 +638,7 @@ class CommandRunner:
             text = '❌ این سرویس دیگر فعال نیست.'
 
         keybord.append([{'text': 'دریافت QRCode', 'callback_data': f"QRcode<~>{conf_uuid}"}])
-        # keybord.append([{'text': '♻️ تمدید ♻️', 'callback_data': f'renew<~>{conf_uuid}'}])
+        keybord.append([{'text': '♻️ تمدید ♻️', 'callback_data': f'renew<~>{conf_uuid}'}])
         keybord.append([{'text': '🔙 بازگشت', 'callback_data': f"سرویس های من 🧑‍💻"}])
         data = {
             'chat_id': chat_id,
