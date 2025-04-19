@@ -140,48 +140,51 @@ class ServerApi:
 
     @classmethod
     def get_config(cls, server_id, config_name):
-        server_obj = Server.objects.get(id=server_id)
-        url = server_obj.url + f"panel/api/inbounds/getClientTraffics/{config_name}"
-        session = cls.create_session(server_id)
-        if not session:
-            return False
-        respons = session.get(url, timeout=6)
-        if respons.status_code == 200:
-            if respons.json()['success']:
-                obj = respons.json()["obj"]
-                if obj:
-                    expired = False
-                    started = True
-                    presentDate = datetime.datetime.now()
-                    unix_timestamp = datetime.datetime.timestamp(presentDate) * 1000
-                    time_expire = obj["expiryTime"]
-                    if time_expire > 0:
-                        time_expire = (time_expire - unix_timestamp) / 86400000
-                        if time_expire < 0:
-                            expired = True
-                    elif time_expire == 0:
-                        if obj['down'] + obj["up"] == 0:
+        try:
+            server_obj = Server.objects.get(id=server_id)
+            url = server_obj.url + f"panel/api/inbounds/getClientTraffics/{config_name}"
+            session = cls.create_session(server_id)
+            if not session:
+                return False
+            respons = session.get(url, timeout=6)
+            if respons.status_code == 200:
+                if respons.json()['success']:
+                    obj = respons.json()["obj"]
+                    if obj:
+                        expired = False
+                        started = True
+                        presentDate = datetime.datetime.now()
+                        unix_timestamp = datetime.datetime.timestamp(presentDate) * 1000
+                        time_expire = obj["expiryTime"]
+                        if time_expire > 0:
+                            time_expire = (time_expire - unix_timestamp) / 86400000
+                            if time_expire < 0:
+                                expired = True
+                        elif time_expire == 0:
+                            if obj['down'] + obj["up"] == 0:
+                                started = False
+                        else:
+                            time_expire = abs(int(time_expire / 86400000))
                             started = False
-                    else:
-                        time_expire = abs(int(time_expire / 86400000))
-                        started = False
-                    usage = round(convert_units(obj["up"] + obj["down"], BinaryUnits.BYTE, BinaryUnits.GB)[0], 2)
-                    started = True if usage > 0 else False
-                    total_usage = int(convert_units(obj['total'], BinaryUnits.BYTE, BinaryUnits.GB)[0])
-                    total_usage = 0 if total_usage < 0 else total_usage
-                    session.close()
-                    return {
-                        'ended': obj["enable"],
-                        'time_expire': time_expire,
-                        'usage': usage,
-                        'usage_limit': total_usage,
-                        'started': started,
-                        'exp_time_sta': expired,
-                        'inbound_id': int(obj["inboundId"]),
-                        "expired": expired
-                    }
-        session.close()
-        return False
+                        usage = round(convert_units(obj["up"] + obj["down"], BinaryUnits.BYTE, BinaryUnits.GB)[0], 2)
+                        started = True if usage > 0 else False
+                        total_usage = int(convert_units(obj['total'], BinaryUnits.BYTE, BinaryUnits.GB)[0])
+                        total_usage = 0 if total_usage < 0 else total_usage
+                        session.close()
+                        return {
+                            'ended': obj["enable"],
+                            'time_expire': time_expire,
+                            'usage': usage,
+                            'usage_limit': total_usage,
+                            'started': started,
+                            'exp_time_sta': expired,
+                            'inbound_id': int(obj["inboundId"]),
+                            "expired": expired
+                        }
+            session.close()
+            return False
+        except Exception as e:
+            return False
 
 
     @classmethod

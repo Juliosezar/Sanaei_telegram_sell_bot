@@ -22,6 +22,10 @@ def run_jobs():
                 status = Config.objects.get(configjobsqueue=job_queue)
                 status.status = 1
                 status.save()
+            else:
+                if ServerApi.get_config(job_queue.config.server.id, job_queue.config.service.name):
+                    response = True
+
 
         elif job_queue.job == 1: # disable
             response = ServerApi.disable_config(job_queue.config.server.id, job_queue.config.service.uuid, False)
