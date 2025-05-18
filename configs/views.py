@@ -239,7 +239,37 @@ class ConfigPage(LoginRequiredMixin, View):
         else:
             service = False
         get_config_link = f"نام سرویس: {service.name}" "\n\n" "برای دریافت کانفیگ روی لینک زیر کلیک کنید 👇🏻" "\n"  f'tg://resolve?domain={environ.get('BOT_USERNAME')}&start=register_{config_uuid}'
-        return render(request, 'config_page.html', {'service': service, 'sub_link': sub_link, "get_config_link":get_config_link})
+
+        # config
+        client_config_page = urllib.parse.urljoin(sub_link_domain, "configs/client_config_page/" + str(service.uuid))
+        content_str = ""
+        content_str_2 = ""
+        service_name = service.name.split("@")[1] if "@" in service.name else service.name
+        if service.owner:
+            service_name = service.owner.brand + "_" + service_name
+        else:
+            service_name = environ.get("SITE_NAME") + "_" + service_name
+        content = []
+        for configs in Config.objects.filter(service=service):
+            if configs.server.copy_in_link:
+                content.append(configs.server.config_example.replace("uuid",
+                                                                     str(config_uuid)) + f"{service_name} / {configs.server.name}")
+        if "مخابرات" in content[0]:
+            content.reverse()
+        for i in content:
+            content_str += (i + "\n")
+            content_str_2 += f"```\n{i}```\n\n"
+
+        sub_link_with_name = (
+                    f'🌐 شماره سرویس: {service.name}\n\n' + content_str_2 + "\n" + "🔃 حجم و زمان باقی مانده:" + "\n" + client_config_page)
+
+        img = qrcode.make(content_str)
+        img.save(str(settings.MEDIA_ROOT) + f"/{config_uuid}.jpg")
+        qrcode_link = urllib.parse.urljoin(sub_link_domain, f"/media/{config_uuid}.jpg")
+        qrcode_link = sub_link_with_name + "\n\n" + "💠 QrCode :\n" + qrcode_link
+
+
+        return render(request, 'config_page.html', {'service': service, 'sub_link': sub_link, "get_config_link":get_config_link, "sub_link_with_name": sub_link_with_name, "qrcode_link": qrcode_link})
 
 class DeleteConfig(LoginRequiredMixin, View):
     def get(self, request, config_uuid):
@@ -614,7 +644,32 @@ class SellersConfigPage(LoginRequiredMixin, View):
             img.save(str(settings.MEDIA_ROOT) + f"/{config_uuid}.jpg")
             qrcode_link = urllib.parse.urljoin(sub_link_domain, f"/media/{config_uuid}.jpg")
             qrcode_link = sub_link_with_name + "\n\n" + "💠 QrCode : \n\n" + qrcode_link
-            return render(request, 'sellers_config_page.html', {'service': service, 'sub_link': sub_link, "sub_link_with_name": sub_link_with_name, "qrcode_link":qrcode_link})
+
+
+            # configs
+            client_config_page = urllib.parse.urljoin(sub_link_domain,
+                                                      "configs/client_config_page/" + str(service.uuid))
+            content_str = ""
+            content_str_2 = ""
+            service_name = service.name.split("@")[1] if "@" in service.name else service.name
+            if service.owner:
+                service_name = service.owner.brand + "_" + service_name
+            else:
+                service_name = environ.get("SITE_NAME") + "_" + service_name
+            content = []
+            for configs in Config.objects.filter(service=service):
+                if configs.server.copy_in_link:
+                    content.append(configs.server.config_example.replace("uuid",
+                                                                         str(config_uuid)) + f"{service_name} / {configs.server.name}")
+            # shuffle(content)
+            if "مخابرات" in content[0]:
+                content.reverse()
+            for i in content:
+                content_str += (i + "\n")
+                content_str_2 += f"```\n{i}```\n\n"
+            configs = (f'🌐 شماره سرویس: {service.name} \n\n ' + content_str_2 + "\n" + "🔃 حجم و زمان باقی مانده:" + "\n" + client_config_page)
+
+            return render(request, 'sellers_config_page.html', {'service': service, 'sub_link': sub_link, "sub_link_with_name": sub_link_with_name, "qrcode_link":qrcode_link, "configs":configs})
         else:
             messages.info(request, "این کانفیک حذف شده است.")
             return redirect("accounts:home_sellerso")

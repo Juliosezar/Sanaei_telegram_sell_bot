@@ -132,7 +132,19 @@
                 <div class="btnslist">
                     <button class="btn" onclick="copyToClipboard('#vless')">📡 کپی لینک سابکریپشن 📡</button>
                 </div>
+                <hr style="width: 100%; background-color: #d8d8d8">
+               <div class="btnslist">
+                    <button dir="rtl" class="btn" onclick="copyToClipboard('#configs')">📋 کپی کانفیگ ها 📋</button>
+                </div>
 
+                <div class="btnslist">
+                    <button dir="rtl" class="btn" onclick="copyToClipboard('#configs_qr')">📡 کپی کانفیگ ها با QR_Code 📡</button>
+                </div>
+
+
+
+                <p hidden id="configs" style="white-space: pre-line;">{{ sub_link_with_name }}</p>
+                <p hidden id="configs_qr">{{ qrcode_link }}</p>
 
 
                     <p hidden id="vless">{{ sub_link }}</p>

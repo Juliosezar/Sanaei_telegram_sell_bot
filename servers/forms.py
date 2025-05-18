@@ -126,6 +126,7 @@ class AddServerForm(forms.Form):
     active = forms.BooleanField(initial=True, required=False)
     maximum_connection = forms.IntegerField(required=False, initial=0)
     config_example = forms.CharField(widget=forms.Textarea, required=True)
+    copy_in_link = forms.BooleanField(required=False, initial=True)
 
     def clean_server_url(self):
         url = self.cleaned_data['server_url']
@@ -147,6 +148,8 @@ class EditServerForm(forms.Form):
         self.fields["active"].initial = server.active
         self.fields["maximum_connection"].initial = server.maximum_connection
         self.fields["config_example"].initial = server.config_example
+        self.fields["copy_in_link"].initial = server.copy_in_link
+
     server_name = forms.CharField(max_length=30, required=True)
     server_url = forms.CharField(max_length=60, required=True)
     username = forms.CharField(max_length=30, required=True)
@@ -155,6 +158,8 @@ class EditServerForm(forms.Form):
     active = forms.BooleanField(initial=True, required=False)
     maximum_connection = forms.IntegerField(required=False)
     config_example = forms.CharField(widget=forms.Textarea, required=True)
+    copy_in_link = forms.BooleanField(required=False)
+
 
     def clean_server_url(self):
         url = self.cleaned_data['server_url']

@@ -132,10 +132,14 @@
                 <div class="btnslist">
                     <button dir="rtl" class="btn" onclick="copyToClipboard('#qrcode_link')">📡 لینک ساب با QrCode (ارسال در تلگرام) 📡</button>
                 </div>
-
+                    <hr style="width: 100%; background-color: #d6d6d6">
+                <div class="btnslist">
+                    <button class="btn" onclick="copyToClipboard('#configs')"> 📡 کپی کانفیگ ها 📡</button>
+                </div>
 
 
                     <p hidden id="vless">{{ sub_link_with_name }}</p>
+                    <p hidden id="configs">{{ configs }}</p>
                     <p hidden id="qrcode_link">{{ qrcode_link }}</p>
                     <p hidden id="bot_link" style="white-space: pre-line;">{{ sub_link }}</p>
                 <hr style="width: 100%; background-color: #d8d8d8">

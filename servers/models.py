@@ -14,5 +14,5 @@ class Server(models.Model):
     online_users = PositiveIntegerField(default=0)
     last_update = models.BigIntegerField(default=0)
     config_example = models.TextField(default='')
-
+    copy_in_link = models.BooleanField(default=True)
 
