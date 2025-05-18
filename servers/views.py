@@ -34,6 +34,7 @@ class AddServer(LoginRequiredMixin, View):
                 password=cd["password"],
                 inbound_id=cd["inbound_id"],
                 active=cd["active"],
+                copy_in_link=cd["copy_in_link"],
                 maximum_connection=cd["maximum_connection"],
                 config_example=config_text.replace(matches.group(), "uuid"),
             ).save()
@@ -63,6 +64,7 @@ class EditServer(LoginRequiredMixin, View):
             obj.password = cd["password"]
             obj.inbound_id = cd["inbound_id"]
             obj.active = cd["active"]
+            obj.copy_in_link = cd["copy_in_link"]
             obj.maximum_connection = cd["maximum_connection"]
             obj.config_example = config_example
             obj.save()
