@@ -102,6 +102,13 @@ def sum_usage_and_ending_services():
                     status = 2
             if service.status != status:
                 service.status = status
+
+        if service.start_time == 0 and service.usage > 0:
+            time_stamp = datetime.now().timestamp()
+            service.start_time = time_stamp
+            if not service.expire_time == 0:
+                service.expire_time = time_stamp + (service.expire_time * 86400)
+
         service.save()
 
 
