@@ -5,7 +5,7 @@ from bot.commands import CommandRunner
 from sellers.models import SubSellerSubset
 from accounts.models import User
 from .forms import (CreateConfigForm, ManualCreateConfigForm, SearchConfigForm, ChangeConfigSettingForm,
-                    SellersCreateConfigForm, ManualSellersCreateConfigForm, DisableAllForm)
+                    SellersCreateConfigForm, ManualSellersCreateConfigForm, DisableAllForm, ChangeInfiniteLimirForm)
 from finance.models import Prices, SellersPrices
 from django.contrib import messages
 from rest_framework.views import APIView
@@ -78,6 +78,30 @@ class ConfigAction:
             config.usage = 0
             config.save()
 
+    @staticmethod
+    def infinit_limit(u,m):
+        if m < 60:
+            m = 1
+        elif m < 90:
+            m = 2
+        else:
+            m = 3
+        u = 2 if u > 2 else u
+        m = 3 if m > 3 else m
+        with open(settings.BASE_DIR / "settings.json", "r") as f:
+            data = json.load(f)["unlimit_limit"]
+            if u == 1:
+                data = data["1u"]
+            elif u == 2:
+                data = data["2u"]
+            else:
+                data = data["1u"]
+
+            if m > 0:
+                return data[f"{m}m"]
+            else:
+                return data[f"1m"]
+
 
 
 class BotCreateConfigView(LoginRequiredMixin, View):
@@ -94,6 +118,7 @@ class BotCreateConfigView(LoginRequiredMixin, View):
             ip_limit = 0
             time_limit = 0
             usage = 0
+            infinite_limit = 0
             cd = form.cleaned_data
 
             if cd['type'] == "limited":
@@ -111,7 +136,8 @@ class BotCreateConfigView(LoginRequiredMixin, View):
             else:
                 price = cd['price'] * 1000
             paid = cd["paid"]
-
+            if cd['type'] == 'usage_unlimit':
+                infinite_limit = ConfigAction.infinit_limit(ip_limit, time_limit)
             service_uuid = uuid.uuid4()
             service_name = ConfigAction.generate_config_name()
             Service.objects.create(
@@ -123,6 +149,7 @@ class BotCreateConfigView(LoginRequiredMixin, View):
                 paid=paid,
                 created_by=request.user,
                 price=price,
+                infinit_limit=infinite_limit,
             ).save()
             ConfigAction.create_config_db(service_uuid)
             ConfigAction.create_config_job_queue(service_uuid, 0, request.user)
@@ -147,6 +174,7 @@ class BotRenewConfigView(LoginRequiredMixin, View):
             ip_limit = 0
             time_limit = 0
             usage = 0
+            infinite_limit = 0
             cd = form.cleaned_data
 
             if cd['type'] == "limited":
@@ -165,7 +193,8 @@ class BotRenewConfigView(LoginRequiredMixin, View):
             else:
                 price = cd['price'] * 1000
             paid = cd["paid"]
-
+            if cd['type'] == 'usage_unlimit':
+                infinite_limit = ConfigAction.infinit_limit(ip_limit, time_limit)
 
             service.usage_limit = usage
             if time_limit == 0:
@@ -174,6 +203,7 @@ class BotRenewConfigView(LoginRequiredMixin, View):
                 service.expire_time = (datetime.now().timestamp() + (time_limit * 86400)) if service.start_time != 0 else time_limit
             service.user_limit = ip_limit
             service.paid = paid
+            service.infinit_limit = infinite_limit
             service.price = price
             service.save()
             ConfigAction.create_config_job_queue(service.uuid, 4, request.user)
@@ -241,7 +271,7 @@ class ConfigPage(LoginRequiredMixin, View):
         get_config_link = f"نام سرویس: {service.name}" "\n\n" "برای دریافت کانفیگ روی لینک زیر کلیک کنید 👇🏻" "\n"  f'tg://resolve?domain={environ.get('BOT_USERNAME')}&start=register_{config_uuid}'
 
         # config
-        client_config_page = urllib.parse.urljoin(sub_link_domain, "configs/client_config_page/" + str(service.uuid))
+        client_config_page = urllib.parse.urljoin(sub_link_domain, "configs/sublink/" + str(service.uuid))
         content_str = ""
         content_str_2 = ""
         service_name = service.name.split("@")[1] if "@" in service.name else service.name
@@ -367,7 +397,25 @@ class Sublink(APIView):
             return Response({"obj":content_str, "name":service_name})
 
 
+class ChangeUnlimitLimitView(LoginRequiredMixin, View):
+    def get(self, request, config_uuid, is_bot):
+        service = Service.objects.get(uuid=config_uuid)
+        form = ChangeInfiniteLimirForm
+        return render(request, "change_unlimit_limit.html", {"service":service, "bot":bool(is_bot), "form":form})
 
+    def post(self, request, config_uuid, is_bot):
+        service = Service.objects.get(uuid=config_uuid)
+        form = ChangeInfiniteLimirForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            usage_limit = cd["usage_limit"] or 0
+            service.infinit_limit = usage_limit
+            service.save()
+            if is_bot:
+                return redirect("configs:conf_page",config_uuid)
+            else:
+                return redirect("configs:sellers_conf_page",config_uuid)
+        return render(request, "change_unlimit_limit.html", {"service":service, "bot":bool(is_bot), "form":form})
 
 
 # Api
@@ -476,6 +524,7 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
             ip_limit = 0
             time_limit = 0
             usage = 0
+            infinite_limit = 0
             cd = form.cleaned_data
 
             if cd['type'] == "limited":
@@ -493,6 +542,8 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
             else:
                 price = cd['price'] * 1000
 
+            if cd['type'] == 'usage_unlimit':
+                infinite_limit = ConfigAction.infinit_limit(ip_limit, time_limit)
             service_uuid = uuid.uuid4()
             service_name = ConfigAction.generate_config_name()
             Service.objects.create(
@@ -503,6 +554,7 @@ class SellersCreateConfigView(LoginRequiredMixin, View):
                 user_limit=ip_limit,
                 created_by=request.user,
                 owner=owner,
+                infinit_limit=infinite_limit,
             ).save()
             ConfigAction.create_config_db(service_uuid)
             ConfigAction.create_config_job_queue(service_uuid, 0, request.user)
@@ -527,6 +579,7 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
         form = forms[form_type](request.POST, username=service.owner.username)
         if form.is_valid():
             ip_limit = 0
+            infinite_limit = 0
             time_limit = 0
             usage = 0
             cd = form.cleaned_data
@@ -545,12 +598,16 @@ class SellersRenewConfigView(LoginRequiredMixin, View):
             else:
                 price = cd['price'] * 1000
 
+            if cd['type'] == 'usage_unlimit':
+                infinite_limit = ConfigAction.infinit_limit(ip_limit, time_limit)
+
             service.usage_limit = usage
             if time_limit == 0:
                 service.expire_time = 0
             else:
                 service.expire_time = (datetime.now().timestamp() + (time_limit * 86400)) if service.start_time != 0 else time_limit
             service.user_limit = ip_limit
+            service.infinit_limit = infinite_limit
             service.save()
             ConfigAction.create_config_job_queue(service.uuid, 4, request.user)
             ConfigAction.reset_config_db(service.uuid)

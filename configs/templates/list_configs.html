@@ -144,10 +144,10 @@
                                                     <div class="progressـusage progress-bar bg-unlimit" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">∞</div>
                                                 {% endif %}
                                             </div>
-{#                                            {% if service.uuid|infinit_limit %}#}
-{#                                                <h3 class="sys_limit">⛔ {{ service.uuid|infinit_limit }} GB ⛔</h3>#}
-{#                                            {% endif %}#}
-                                        </div>
+                                        {% if user.level_access == 10 %}
+                                            <h3 class="sys_limit">⛔ {% if service.infinit_limit == 0  %}∞{% else %}{{ service.infinit_limit }}{% endif %} GB ⛔</h3>
+                                        {% endif %}
+                                            </div>
                                     {% else %}
                                         {% if service.usage|percent:service.usage_limit > 99 %}
                                         <div class="centering">

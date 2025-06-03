@@ -206,3 +206,11 @@ class DisableAllForm(forms.Form):
 
         if seller == "" or action == "":
             raise ValidationError("انتخاب کنید.")
+
+class ChangeInfiniteLimirForm(forms.Form):
+    usage_limit = forms.IntegerField(required=False, min_value=0, max_value=10000)
+
+    # def clean_usage_limit(self):
+    #     usage_limit = self.cleaned_data.get('usage_limit')
+    #
+    #     return self.cleaned_data.get('usage_limit')

@@ -3,6 +3,8 @@ from celery import shared_task
 from django.conf import settings
 from zipfile import ZipFile
 
+from django.db.models import Q
+
 from bot.commands import CommandRunner
 from finance.models import BotPayment
 from servers.models import Server
@@ -103,7 +105,7 @@ def sum_usage_and_ending_services():
             if service.status != status:
                 service.status = status
 
-        if service.start_time == 0 and service.usage > 0:
+        if (service.start_time == 0) and (service.usage > 0.005):
             time_stamp = datetime.now().timestamp()
             service.start_time = time_stamp
             if not service.expire_time == 0:
@@ -197,7 +199,12 @@ def auto_delete_service():
                     LogAction.create_celery_log(service.owner, f"🆑 delete sevice by celery ❌ /  service \'{service.name}\'",
                                                 service.customer, 2)
 
-
+@shared_task
+def disable_infinite_limit():
+    for service in Service.objects.filter(~Q(infinit_limit=0)):
+        if service.usage > service.infinit_limit:
+            service.status = 1
+            service.save()
 
 
 

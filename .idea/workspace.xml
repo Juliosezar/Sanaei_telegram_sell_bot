@@ -5,8 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/SanaeiBot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SanaeiBot.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/home_sellers.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_sellers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/change_unlimit_limit.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/change_unlimit_limit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/config_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/sellers_config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/sellers_config_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/templates/sellers_list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/sellers_list_configs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +40,6 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///JetClient Request Console" root0="SKIP_INSPECTION" />
     <setting file="mock:///JetClient Request Console" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/bot/commands.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/bot/views.py" root0="FORCE_HIGHLIGHTING" />
@@ -58,7 +69,7 @@
     &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
     &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/sezar/projects/SanaeiBot&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/sezar/projects/ToolBot&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -223,6 +234,18 @@
       <workItem from="1747693541604" duration="225000" />
       <workItem from="1747693890514" duration="167000" />
       <workItem from="1747694104322" duration="936000" />
+      <workItem from="1747742188275" duration="689000" />
+      <workItem from="1747855222404" duration="620000" />
+      <workItem from="1747991320397" duration="222000" />
+      <workItem from="1747991705471" duration="64000" />
+      <workItem from="1747991784565" duration="30000" />
+      <workItem from="1747991857740" duration="13000" />
+      <workItem from="1747991889928" duration="52000" />
+      <workItem from="1747991977035" duration="15000" />
+      <workItem from="1747992012309" duration="14000" />
+      <workItem from="1747992128711" duration="151000" />
+      <workItem from="1748937144030" duration="5226000" />
+      <workItem from="1748957315505" duration="1878000" />
     </task>
     <servers />
   </component>

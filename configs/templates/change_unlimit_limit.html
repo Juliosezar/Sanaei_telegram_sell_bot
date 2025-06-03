@@ -19,14 +19,18 @@
     </script>
 </head>
 <body>
-    {% include "navbar.html" %}
+    {% if bot %}
+        {% include "navbar_bot.html" %}
+    {% else %}
+        {% include "navbar_bot.html" %}
+    {% endif %}
     {% include 'messages.html' %}
     <div id="main">
         <div id="box1">
                 <div class="paybox" >
                     <div class="pay_info">
                         <div class="infobox">
-                            <a class="info" href="">{{ config.config_name }}</a>
+                            <a class="info" href="">{{ service.name }}</a>
                         </div>
                         <form novalidate method="post" action="" class="conf_btns">
                             {% csrf_token %}
@@ -36,7 +40,8 @@
                               {% endfor %}
                             {% endfor %}
                             <div class="confirm_price_btn">
-                                <div style="color: #0a0000; text-align: center">{{ form.limit }}GB</div>
+                                <div style="color: #0a0000; text-align: center">{{ form.usage_limit }}GB</div>
+                                <h4 style="color: #0a0000; font-size: small; margin: 1rem 0.5rem; width: 10rem">0 = بدون محدودیت</h4>
                                 <input type="submit" value="تغییر محدودیت" class="confirm_price submit_btn">
                             </div>
                         </form>

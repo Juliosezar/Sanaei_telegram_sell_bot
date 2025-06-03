@@ -13,6 +13,8 @@ urlpatterns = [
     path("client_config_page/<str:config_uuid>/", views.ClientsConfigPage.as_view(), name="client_config_page"),
     path('delete_config/<str:config_uuid>/',views.DeleteConfig.as_view(), name="delete_config"),
     path('disable_config/<str:config_uuid>/<int:enable>/',views.DisableConfig.as_view(), name="disable_config"),
+    path("change_unlimit_limit/<uuid:config_uuid>/<int:is_bot>/", views.ChangeUnlimitLimitView.as_view(), name="change_unlimit_limit"),
+
 
     path("api_get_config_time_chices/", views.ApiGetConfigTimeChoices.as_view(), name="api_get_time_choices"),
     path("api_get_config_usage_chices/", views.ApiGetConfigUsageChoices.as_view(), name="api_get_usage_choices"),

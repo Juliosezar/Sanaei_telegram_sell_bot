@@ -43,11 +43,11 @@
                         </div>
                     </div>
                     <div class="safd">
+                        {% if user.level_access == 10 %}
                         <div class="kdfj" >
-{#                        {% if service.uuid|infinit_limit %}#}
-{#                            <h3 class="sys_limit">⛔ {{ config_usage.uuid|infinit_limit }} GB ⛔ </h3><a style="font-size: x-large" href="{% url "servers:change_unlimit_limit" config_usage.uuid %}">🔏️</a>#}
-{#                        {% endif %}#}
+                            <h3 class="sys_limit">⛔ {{ service.infinit_limit }} GB ⛔ </h3><a style="font-size: x-large" href="{% url "configs:change_unlimit_limit" service.uuid 1 %}">🔏️</a>
                          </div>
+                        {% endif %}
                     </div>
                 {% else %}
                     {% if service.usage|percent:service.usage_limit > 99 %}

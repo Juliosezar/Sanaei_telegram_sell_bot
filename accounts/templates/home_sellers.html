@@ -91,7 +91,7 @@
 
 
 
-        {% if user.level_access == 10 %} {# and finance accsess #}
+        {% if user.level_access == 10 %}
             <a href="{% url "finance:sellers_sum_bils" %}" class="links link2" id="customers">💵 صورت حساب 💳</a>
             <a href="{% url 'finance:select_seller' "sellers_show_prices" %}" id="select_prices" class="links">💰 تعرفه ها 🛒</a>
         {% else %}
