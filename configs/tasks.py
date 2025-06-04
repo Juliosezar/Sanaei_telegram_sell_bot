@@ -119,6 +119,9 @@ def delete_service():
     for service in Service.objects.filter(status=4):
         deleted = True
         for config in Config.objects.filter(service=service):
+            if not config.server.active:
+                config.status = 3
+                config.save()
             if not config.status == 3:
                 deleted = False
         if deleted:
