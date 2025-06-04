@@ -5,20 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee210b0d-931f-4bd0-9e82-4ac1cd29f2fe" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/SanaeiBot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SanaeiBot.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/home_sellers.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/home_sellers.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templates/change_unlimit_limit.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/change_unlimit_limit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templates/config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/config_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templates/list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/list_configs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templates/sellers_config_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/sellers_config_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/templates/sellers_list_configs.html" beforeDir="false" afterPath="$PROJECT_DIR$/configs/templates/sellers_list_configs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -245,7 +232,7 @@
       <workItem from="1747992012309" duration="14000" />
       <workItem from="1747992128711" duration="151000" />
       <workItem from="1748937144030" duration="5226000" />
-      <workItem from="1748957315505" duration="1878000" />
+      <workItem from="1748957315505" duration="5527000" />
     </task>
     <servers />
   </component>

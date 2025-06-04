@@ -56,29 +56,32 @@ def update_usage():
         try:
             if response:
                 for name in response:
-                    config_uuid = (response[name]["uuid"])
-                    if Config.objects.filter(service__uuid=config_uuid, server=server, status__in=[1,2]).exists():
-                        config_obj = Config.objects.get(service__uuid=config_uuid, server=server)
-                        config_obj.usage = response[name]["usage"]
-                        if response[name]["enable"]:
-                            config_obj.status = 1
-                        else:
-                            config_obj.status = 2
-                        config_obj.last_update = datetime.now().timestamp()
-                        if config_obj.service.status == 0 and not response[name]["enable"]:
-                            r = ServerApi.disable_config(server.id, config_obj.service.uuid, True)
-                            if r:
-                                LogAction.create_celery_log(config_obj.service.owner, f"✅ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer, 4)
-                        elif config_obj.service.status in [1,2] and response[name]["enable"]:
-                            r = ServerApi.disable_config(server.id, config_obj.service.uuid, False)
-                            if r:
-                                LogAction.create_celery_log(config_obj.service.owner, f"⛔ Disable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer,5)
-                        elif config_obj.service.status == 4:
-                            delete = ServerApi.delete_config(server.id, config_obj.service.uuid)
-                            if delete:
-                                config_obj.status = 3
-                                LogAction.create_celery_log(config_obj.service.owner, f"❌ Delete / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer,3)
-                        config_obj.save()
+                    try:
+                        config_uuid = (response[name]["uuid"])
+                        if Config.objects.filter(service__uuid=config_uuid, server=server, status__in=[1,2]).exists():
+                            config_obj = Config.objects.get(service__uuid=config_uuid, server=server)
+                            config_obj.usage = response[name]["usage"]
+                            if response[name]["enable"]:
+                                config_obj.status = 1
+                            else:
+                                config_obj.status = 2
+                            config_obj.last_update = datetime.now().timestamp()
+                            if config_obj.service.status == 0 and not response[name]["enable"]:
+                                r = ServerApi.disable_config(server.id, config_obj.service.uuid, True)
+                                if r:
+                                    LogAction.create_celery_log(config_obj.service.owner, f"✅ Enable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer, 4)
+                            elif config_obj.service.status in [1,2] and response[name]["enable"]:
+                                r = ServerApi.disable_config(server.id, config_obj.service.uuid, False)
+                                if r:
+                                    LogAction.create_celery_log(config_obj.service.owner, f"⛔ Disable / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer,5)
+                            elif config_obj.service.status == 4:
+                                delete = ServerApi.delete_config(server.id, config_obj.service.uuid)
+                                if delete:
+                                    config_obj.status = 3
+                                    LogAction.create_celery_log(config_obj.service.owner, f"❌ Delete / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer,3)
+                            config_obj.save()
+                    except Exception as e:
+                        print(server.name,e)
                 server.last_update = datetime.now().timestamp()
                 server.save()
             else:
