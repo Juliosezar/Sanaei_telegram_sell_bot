@@ -71,7 +71,7 @@ class ServerApi:
         url = server_obj.url + "panel/api/inbounds/addClient"
         setting = {
             'clients': [{
-                'id': str(uid), 'alterId': 0, 'email': config_name,
+                'id': str(uid), 'alterId': 0, 'email': str(server_obj.id) + "__" + str(config_name),
                 'limitIp': 0, 'totalGB': 0,
                 'expiryTime': 0, 'enable': enable,
                 "tgId": '', 'subId': ''
@@ -103,6 +103,9 @@ class ServerApi:
         url = server_obj.url + "panel/api/inbounds"
         expire_time = (int(expire_time) * 24 * 60 * 60 * 1000 * -1)
         total_usage = (int(convert_units(int(total_usage), BinaryUnits.GB, BinaryUnits.BYTE)[0]))
+        service = Service.objects.get(uuid=config_uuid)
+        if service.new_version:
+            config_name = str(server_obj.id) + "__" + str(config_name)
         setting = {
             'clients': [{
                 'id': str(config_uuid), 'alterId': 0, 'email': config_name,
@@ -142,6 +145,9 @@ class ServerApi:
     def get_config(cls, server_id, config_name):
         try:
             server_obj = Server.objects.get(id=server_id)
+            service = Service.objects.get(name=config_name)
+            if service.new_version:
+                config_name = str(server_obj.id) + "__" + str(config_name)
             url = server_obj.url + f"panel/api/inbounds/getClientTraffics/{config_name}"
             session = cls.create_session(server_id)
             if not session:
@@ -207,10 +213,10 @@ class ServerApi:
         server_obj = Server.objects.get(id=server_id)
         service_obj = Service.objects.get(uuid=config_uuid)
         url = server_obj.url + f"panel/api/inbounds/updateClient/{config_uuid}"
-
+        config_name = str(server_obj.id) + "__" + server_obj.name if service_obj.new_version is True else service_obj.name
         setting = {
             'clients': [{
-                'id': str(config_uuid), 'alterId': 0, 'email': service_obj.name,
+                'id': str(config_uuid), 'alterId': 0, 'email': config_name,
                 'limitIp': 0, 'totalGB': 0,
                 'expiryTime': 0, 'enable': enable,
                 "tgId": '', 'subId': ''
@@ -235,6 +241,8 @@ class ServerApi:
     def reset_usage(cls, server_id, config_name):
         try:
             server_obj = Server.objects.get(id=server_id)
+            service = Service.objects.get(name=config_name)
+            config_name = str(server_obj.id) + "__" + server_obj.name if service.new_version is True else service.name
             session = cls.create_session(server_id)
             url = server_obj.url + "panel/api/inbounds"
             response = session.post(url + f"/{server_obj.inbound_id}/resetClientTraffic/{config_name}/", headers={},

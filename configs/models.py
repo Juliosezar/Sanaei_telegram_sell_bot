@@ -18,6 +18,7 @@ class Service(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, related_name='created_by')
     price = models.PositiveBigIntegerField(null=True)
     infinit_limit = models.PositiveIntegerField(null=True, default=0)
+    new_version = models.BooleanField(default=True)
 
 
 class Config(models.Model):
