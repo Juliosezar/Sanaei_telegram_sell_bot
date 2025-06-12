@@ -213,7 +213,7 @@ class ServerApi:
         server_obj = Server.objects.get(id=server_id)
         service_obj = Service.objects.get(uuid=config_uuid)
         url = server_obj.url + f"panel/api/inbounds/updateClient/{config_uuid}"
-        config_name = str(server_obj.id) + "__" + server_obj.name if service_obj.new_version is True else service_obj.name
+        config_name = str(server_obj.id) + "__" + service_obj.name if service_obj.new_version is True else service_obj.name
         setting = {
             'clients': [{
                 'id': str(config_uuid), 'alterId': 0, 'email': config_name,
@@ -242,7 +242,7 @@ class ServerApi:
         try:
             server_obj = Server.objects.get(id=server_id)
             service = Service.objects.get(name=config_name)
-            config_name = str(server_obj.id) + "__" + server_obj.name if service.new_version is True else service.name
+            config_name = str(server_obj.id) + "__" + service.name if service.new_version is True else service.name
             session = cls.create_session(server_id)
             url = server_obj.url + "panel/api/inbounds"
             response = session.post(url + f"/{server_obj.inbound_id}/resetClientTraffic/{config_name}/", headers={},
