@@ -2,7 +2,7 @@ import os
 import uuid
 from datetime import datetime
 from os import environ
-from configs.models import Service
+from configs.models import Service, Config
 from customers.models import Customer
 import requests
 import json
@@ -548,7 +548,19 @@ class CommandRunner:
         sub_link_domain = environ.get("SUB_LINK_DOMAIN")
         sub_link_domain = "https://" + sub_link_domain.replace("https://","").replace("http://","")
         sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
-        send_text = (f" 🔰 سرویس: {service.name}"  "\n\n" ' 🌐 لینک سرویس: \n\n  '+ sub_link + "\n" + "لینک بالا را کپی کرده و در برنامه مورد نظر اضافه کنید." + "\n" + "برای دریافت Qrcode و نمایش حجم و زمان باقی مانده میتوانید روی لینک کلیک کنید یا به بخش <<سرویس های من>> در منوی بات مراجعه کنید.")
+        content = []
+        content_str_2 = ""
+        for configs in Config.objects.filter(service=service):
+            if configs.server.copy_in_link:
+                content.append(configs.server.config_example.replace("uuid",
+                                                                     str(config_uuid)) + f"{service.name} / {configs.server.name}")
+        if "مخابرات" in content[0]:
+            content.reverse()
+        for i in content:
+            content_str_2 += f"```\n{i}```\n\n"
+
+        send_text = (f" 🔰 سرویس: {service.name}"  "\n\n" ' 🌐 لینک سرویس: \n\n  '+ content_str_2 + "\n" + "لینک بالا را کپی کرده و در برنامه مورد نظر اضافه کنید." + "\n" + "برای دریافت Qrcode و نمایش حجم و زمان باقی مانده میتوانید روی لینک کلیک کنید یا به بخش <<سرویس های من>> در منوی بات مراجعه کنید.")
+        # send_text = (f" 🔰 سرویس: {service.name}"  "\n\n" ' 🌐 لینک سرویس: \n\n  '+ sub_link + "\n" + "لینک بالا را کپی کرده و در برنامه مورد نظر اضافه کنید." + "\n" + "برای دریافت Qrcode و نمایش حجم و زمان باقی مانده میتوانید روی لینک کلیک کنید یا به بخش <<سرویس های من>> در منوی بات مراجعه کنید.")
         cls.send_msg(service.customer.chat_id, send_text)
 
 
