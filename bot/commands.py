@@ -640,17 +640,16 @@ class CommandRunner:
 
             else:
                 status = "تماما شده 🔴"
-                content = []
-                content_str_2 = ""
-                for configs in Config.objects.filter(service=service):
-                    if configs.server.copy_in_link:
-                        content.append(configs.server.config_example.replace("uuid",
-                                                                             str(conf_uuid)) + f"{service.name} / {configs.server.name}")
-                if "مخابرات" in content[0]:
-                    content.reverse()
-                for i in content:
-                    content_str_2 += f"```\n{i}```\n\n"
-
+            content = []
+            content_str_2 = ""
+            for configs in Config.objects.filter(service=service):
+                if configs.server.copy_in_link:
+                    content.append(configs.server.config_example.replace("uuid",
+                                                                         str(conf_uuid)) + f"{service.name} / {configs.server.name}")
+            if "مخابرات" in content[0]:
+                content.reverse()
+            for i in content:
+                content_str_2 += f"```\n{i}```\n\n"
                 # keybord.append([{'text': '♻️ تمدید ♻️', 'callback_data': f'renew<~>{conf_uuid}'}])
             text += '\n' "📥 حجم مصرفی: " f'{service.usage}GB از {usage_limit}' '\n' '⏳ روز های باقی مانده: ' f'{expire_days}' '\n' '📶 وضعیت: ' f'{status}' '\n' f'⚙️ نوع: ' f'{kind}'
             text = text.replace('_', "\\_")
