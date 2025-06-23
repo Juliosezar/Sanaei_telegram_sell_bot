@@ -723,7 +723,7 @@ class SellersConfigPage(LoginRequiredMixin, View):
                 content.reverse()
             for i in content:
                 content_str += (i + "\n")
-                content_str_2 += f"```\n{i}```\n\n"
+                content_str_2 += f"```\n{i}```\n\n\n"
             configs = (f'🌐 شماره سرویس: {service.name} \n\n ' + content_str_2 + "\n" + "🔃 حجم و زمان باقی مانده:" + "\n" + client_config_page)
 
             return render(request, 'sellers_config_page.html', {'service': service, 'sub_link': sub_link, "sub_link_with_name": sub_link_with_name, "qrcode_link":qrcode_link, "configs":configs})
