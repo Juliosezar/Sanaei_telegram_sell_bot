@@ -52,6 +52,7 @@ def run_jobs():
 @shared_task
 def update_usage():
     for server in Server.objects.filter(active=True):
+        no_error = True
         response = ServerApi.get_list_configs(server.id)
         try:
             if response:
@@ -82,8 +83,10 @@ def update_usage():
                                     LogAction.create_celery_log(config_obj.service.owner, f"❌ Delete / service \'{config_obj.service.name}\' / server \'{server.name}\'", config_obj.service.customer,3)
                             config_obj.save()
                     except Exception as e:
-                        print("!! ", name)
-                server.last_update = datetime.now().timestamp()
+                        no_error = False
+                        print(f"{server.id} ==> {name}")
+                if no_error:
+                    server.last_update = datetime.now().timestamp()
                 server.save()
             else:
                 pass  # Todo: send not working notif
