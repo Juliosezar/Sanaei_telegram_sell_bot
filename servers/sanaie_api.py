@@ -251,6 +251,7 @@ class ServerApi:
                 if response.json()['success']:
                     session.close()
                     return True
+                print(response.json())
                 return False
         except Exception as e:
             print(e)
