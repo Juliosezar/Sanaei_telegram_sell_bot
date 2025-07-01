@@ -849,7 +849,7 @@ class ApiSellersGetConfigPriceChoices(APIView):
 
 class CreateAllConfigsInAllServers(LoginRequiredMixin, View):
     def get(self,request):
-        for server in Server.objects.all():
+        for server in Server.objects.filter(active=True):
                 for service in Service.objects.all():
                     if not Config.objects.filter(server=server, service=service).exists():
                         Config.objects.create(server=server, service=service, status=1).save()

@@ -57,7 +57,6 @@ def update_usage():
         try:
             if response:
                 for name in response:
-
                     try:
                         config_uuid = (response[name]["uuid"])
                         if Config.objects.filter(service__uuid=config_uuid, server=server, status__in=[1,2]).exists():
@@ -89,7 +88,7 @@ def update_usage():
                     server.last_update = datetime.now().timestamp()
                 server.save()
             else:
-                pass  # Todo: send not working notif
+                print(f"{server.id} ==> no connection")
         except Exception as e:
             print(e) # TODO: log error
         response2 = ServerApi.get_online_users(server.id)
