@@ -136,7 +136,16 @@ def delete_service():
             LogAction.create_celery_log(service.owner, f"❌ delete completely ❌ /  service \'{service.name}\'", service.customer, 0)
             service.delete()
 
-
+@shared_task
+def delete_after_days_ended():
+    from views import ConfigAction
+    for service in Service.objects.filter(~Q(expire_time=0), status=2):
+        if (datetime.now().timestamp() - service.expire_time) > 691200:
+            service.status = 4
+            service.save()
+            ConfigAction.create_config_job_queue(service.uuid, 2)
+            run_jobs.delay()
+            LogAction.create_celery_log(None,f"Auto del / {service.name}",None,2)
 
 @shared_task
 def delete_not_recorded_config():
