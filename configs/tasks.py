@@ -159,7 +159,7 @@ def create_recorded_configs():
                     list_uuid.append(response[config]["uuid"])
                 for config in Config.objects.filter(server=server, status__in=[1,2]):
                     try:
-                        if (not config.service.uuid in list_uuid ) and config.service.status != 4:
+                        if (not str(config.service.uuid) in list_uuid ) and config.service.status != 4:
                             res = ServerApi.create_config(server.id, config.service.name, config.service.uuid)
                             if res:
                                 LogAction.create_celery_log(config.service.owner,
