@@ -138,7 +138,7 @@ def delete_service():
 
 @shared_task
 def delete_after_days_ended():
-    from views import ConfigAction
+    from .views import ConfigAction
     for service in Service.objects.filter(~Q(expire_time=0), status=2):
         print(datetime.now().timestamp() - service.expire_time)
         if (datetime.now().timestamp() - service.expire_time) > 691200:
