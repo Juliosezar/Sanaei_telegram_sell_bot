@@ -83,13 +83,16 @@ def update_usage():
                             config_obj.save()
                     except Exception as e:
                         no_error = False
+                        CommandRunner.send_msg_to_admins(name)
                         print(f"{server.id} ==> {name}")
                 if no_error:
                     server.last_update = datetime.now().timestamp()
                 server.save()
             else:
+                CommandRunner.send_msg_to_admins(f"{server.id} ==> no connection")
                 print(f"{server.id} ==> no connection")
         except Exception as e:
+            CommandRunner.send_msg_to_admins(e)
             print(e) # TODO: log error
         response2 = ServerApi.get_online_users(server.id)
         if response2:
@@ -176,6 +179,7 @@ def create_recorded_configs():
                                                             f"+ create / service \'{config.service.name}\' / server \'{server.name}\'",
                                                             config.service.customer, 1)
                     except:
+                        CommandRunner.send_msg_to_admins(f"error in create_recorded_configs ==> {config}")
                         print(f"error in create_recorded_configs ==> {config}")
 
 @shared_task

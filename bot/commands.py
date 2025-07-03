@@ -104,6 +104,13 @@ class CommandRunner:
             return True
         return False
 
+    @classmethod
+    def send_msg_to_admins(cls,msg):
+        with open(settings.BASE_DIR / 'settings.json', 'r') as f:
+            data = json.load(f)
+            admins = data["admins_id"]
+            for admin in admins:
+                cls.send_msg(admin, msg)
 
     @classmethod
     def download_photo(cls, file_id, chat_id):
