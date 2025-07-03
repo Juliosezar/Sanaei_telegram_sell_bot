@@ -51,7 +51,7 @@ class CommandRunner:
                 response = requests.post(url, json=data, timeout=3)
             else:
                 response = requests.post(url, data=data, timeout=3, files=file)
-            print(response.json())
+            # print(response.json())
             return response
         except requests.exceptions.RequestException as e:
             print(e)
@@ -76,7 +76,6 @@ class CommandRunner:
             first_name = info["result"]["first_name"]
         else:
             first_name = ""
-        print(data)
         Customer.objects.create(
             chat_id=chat_id,
             username=username,
