@@ -76,7 +76,7 @@ def webhook(request):
                     else:
                         CommandRunner.send_msg(chat_id, "ورودی نامعتبر")
                         CommandRunner.main_menu(chat_id)
-
+                        
                 elif "photo" in update["message"]:
                     chat_id = update['message']['chat']['id']
                     status = CustomerTmpStatus.objects.get(customer__chat_id=chat_id).status
@@ -104,6 +104,7 @@ def webhook(request):
                 else:
                     CommandRunner.send_msg(chat_id, "ورودی نامعتبر")
                     COMMANDS["/start"](chat_id)
+                
             return JsonResponse({'status': 'ok'})
         except Exception as e:
             print(e)

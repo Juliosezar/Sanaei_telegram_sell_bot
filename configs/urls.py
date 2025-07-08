@@ -38,6 +38,9 @@ urlpatterns = [
     path("sellers_api_get_axact_price/", views.ApiSellersGetConfigPriceChoices.as_view(), name="seller_api_get_axact_price"),
 
     path("CreateAllConfigsInAllServers/", views.CreateAllConfigsInAllServers.as_view(), name="CreateAllConfigsInAllServers"),
+
+
+    path("delete_service_by_force/<str:name>/", views.DeleteServiceByForce.as_view(), name="delete_service_by_force"),
 ]
 
 

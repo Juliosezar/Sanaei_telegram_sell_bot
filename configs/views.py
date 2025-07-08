@@ -17,7 +17,7 @@ import uuid
 import json
 from servers.models import Server
 from persiantools.jdatetime import JalaliDateTime
-from os import environ
+from os import environ 
 from django.http import HttpResponse
 from random import shuffle
 from datetime import datetime
@@ -855,3 +855,13 @@ class CreateAllConfigsInAllServers(LoginRequiredMixin, View):
                         Config.objects.create(server=server, service=service, status=1).save()
                         print(service.name)
         return redirect("accounts:home_bot")
+
+
+
+class DeleteServiceByForce(LoginRequiredMixin, View):
+    def get(self, request, name):
+        service = Service.objects.get(name=name)
+        service.delete()
+        service.save()
+    
+

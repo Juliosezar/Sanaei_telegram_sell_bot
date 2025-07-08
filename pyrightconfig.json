@@ -1,0 +1,10 @@
+{
+  "typeCheckingMode": "basic",
+  "extraPaths": [
+    "./.venv/lib/python3.13/site-packages"
+  ],
+  "reportMissingImports": true,
+  "reportUnknownMemberType": false,
+  "reportUnknownVariableType": false
+}
+
