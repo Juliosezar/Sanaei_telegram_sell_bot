@@ -119,7 +119,6 @@ def sum_usage_and_ending_services():
             service.start_time = time_stamp
             if not service.expire_time == 0:
                 service.expire_time = time_stamp + (service.expire_time * 86400)
-
         service.save()
 
 

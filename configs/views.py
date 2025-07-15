@@ -1,3 +1,4 @@
+import base64
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
@@ -292,12 +293,14 @@ class ConfigPage(LoginRequiredMixin, View):
 
         sub_link_with_name = (
                     f'🌐 شماره سرویس: {service.name}\n\n' + content_str_2 + "\n" + "🔃 حجم و زمان باقی مانده:" + "\n" + client_config_page)
-
+        if len(content_str) > 2900:
+            import zlib
+            content_str = base64.b64encode(zlib.compress(content_str.encode()))
         img = qrcode.make(content_str)
         img.save(str(settings.MEDIA_ROOT) + f"/{config_uuid}.jpg")
         qrcode_link = urllib.parse.urljoin(sub_link_domain, f"/media/{config_uuid}.jpg")
         qrcode_link = sub_link_with_name + "\n\n" + "💠 QrCode :\n" + qrcode_link
-
+        
 
         return render(request, 'config_page.html', {'service': service, 'sub_link': sub_link, "get_config_link":get_config_link, "sub_link_with_name": sub_link_with_name, "qrcode_link": qrcode_link})
 
