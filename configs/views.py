@@ -1,5 +1,6 @@
 import base64
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.utils import AltersData
 from django.shortcuts import render, redirect
 from django.views import View
 from bot.commands import CommandRunner
@@ -266,6 +267,7 @@ class ConfigPage(LoginRequiredMixin, View):
             sub_link_domain = environ.get("SUB_LINK_DOMAIN")
             sub_link_domain = "https://" + sub_link_domain.replace("https://", "").replace("http://", "")
             sub_link = urllib.parse.urljoin(sub_link_domain, f"/configs/sublink/{config_uuid}/")
+            sub_qr  = sub_link
             sub_link = ('کانفیگ شما: \n\n  ' + sub_link + "")
         else:
             service = False
@@ -296,7 +298,10 @@ class ConfigPage(LoginRequiredMixin, View):
         if len(content_str) > 2900:
             import zlib
             content_str = base64.b64encode(zlib.compress(content_str.encode()))
-        img = qrcode.make(content_str)
+        try:
+            img = qrcode.make(content_str)
+        except:
+            img = qrcode.make("sub_qr")
         img.save(str(settings.MEDIA_ROOT) + f"/{config_uuid}.jpg")
         qrcode_link = urllib.parse.urljoin(sub_link_domain, f"/media/{config_uuid}.jpg")
         qrcode_link = sub_link_with_name + "\n\n" + "💠 QrCode :\n" + qrcode_link

@@ -72,3 +72,11 @@ class EditServer(LoginRequiredMixin, View):
         return render(request, "add_server.html", {'form': form, "edit": True})
 
 
+# class DeleteServer(LoginRequiredMixin):
+#     def get(self, request, serverid):
+#         server_obj = Server.objects.get(id=serverid)
+
+
+
+
+

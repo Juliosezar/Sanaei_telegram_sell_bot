@@ -12,7 +12,7 @@ from configs.forms import SearchConfigForm
 
 class LoginView(View):
     formclass = LoginForm
-
+    
     def get(self, request):
         form = self.formclass
         return render(request, "log_in.html", {"form": form})

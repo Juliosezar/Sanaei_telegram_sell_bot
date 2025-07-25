@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group
 from .models import User
 from .forms import UserCreationForm, UserChangeForm
 
+
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm

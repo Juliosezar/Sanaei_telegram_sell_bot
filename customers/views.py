@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from bot.commands import CommandRunner
 from bot.tasks import send_msg_again
 from django.contrib import messages

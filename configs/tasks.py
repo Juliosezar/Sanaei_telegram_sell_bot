@@ -104,7 +104,7 @@ def update_usage():
 def sum_usage_and_ending_services():
     for service in Service.objects.all():
         service.usage = sum([config.usage for config in Config.objects.filter(service=service)])
-        if not service.status in [4, 1]:
+        if not service.status in [1, 4]:
             status = 0
             if service.usage >= service.usage_limit and not service.usage_limit == 0:
                 status = 2
@@ -172,9 +172,10 @@ def create_recorded_configs():
                 for config in Config.objects.filter(server=server, status__in=[1,2]):
                     try:
                         if (not str(config.service.uuid) in list_uuid ) and config.service.status != 4:
-                            res = ServerApi.create_config(server.id, config.service.name, config.service.uuid)
-                            if res:
-                                LogAction.create_celery_log(config.service.owner,
+                            if ServerApi.get_config(server.id, config.service.name): 
+                                res = ServerApi.create_config(server.id, config.service.name, config.service.uuid)
+                                if res:
+                                    LogAction.create_celery_log(config.service.owner,
                                                             f"+ create / service \'{config.service.name}\' / server \'{server.name}\'",
                                                             config.service.customer, 1)
                     except:
