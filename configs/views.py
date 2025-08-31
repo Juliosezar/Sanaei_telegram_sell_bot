@@ -289,9 +289,11 @@ class ConfigPage(LoginRequiredMixin, View):
                                                                      str(config_uuid)) + f"{service_name} / {configs.server.name}")
         if "مخابرات" in content[0]:
             content.reverse()
+        count = 0
         for i in content:
+            count += 1
             content_str += (i + "\n")
-            content_str_2 += f"```\n{i}```\n\n"
+            content_str_2 += f"server {count}\n```\n{i}```\n\n"
 
         sub_link_with_name = (
                     f'🌐 شماره سرویس: {service.name}\n\n' + content_str_2 + "\n" + "🔃 حجم و زمان باقی مانده:" + "\n" + client_config_page)
@@ -729,9 +731,11 @@ class SellersConfigPage(LoginRequiredMixin, View):
             # shuffle(content)
             if "مخابرات" in content[0]:
                 content.reverse()
+            count = 0
             for i in content:
+                count += 1
                 content_str += (i + "\n")
-                content_str_2 += f"```\n{i}```\n\n\n"
+                content_str_2 += f"server {count}\n```\n{i}```\n\n"
             configs = (f'🌐 شماره سرویس: {service.name} \n\n ' + content_str_2 + "\n" + "🔃 حجم و زمان باقی مانده:" + "\n" + client_config_page)
 
             return render(request, 'sellers_config_page.html', {'service': service, 'sub_link': sub_link, "sub_link_with_name": sub_link_with_name, "qrcode_link":qrcode_link, "configs":configs})

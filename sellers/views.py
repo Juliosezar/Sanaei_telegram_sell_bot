@@ -33,7 +33,7 @@ class ChangeSellerAccesses(LoginRequiredMixin, View):
         if form.is_valid():
             cd = form.cleaned_data
             seller.level_access = cd["level_access"]
-            seller.payment_limit = cd["payment_limit"] * 1000
+            seller.payment_limit = cd["payment_limit"] 
             seller.finance_access = cd["finance_access"]
             seller.create_config_acc = cd["create_config_acc"]
             seller.list_configs_acc = cd["list_configs_acc"]

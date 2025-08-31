@@ -65,7 +65,7 @@
             </div>
 
             {% if user.level_access == 0 %}
-                {% if user.create_config_acc %}
+                {% if user.create_config_acc and can_buy %}
                     <a href="{% url "configs:seller_create" user.username "auto" %}" class="links link2">➕ ساخت کانفیگ 🔗</a>
                 {% else %}
                     <p class="links link2 no_access">➕ ساخت کانفیگ 🔗</p>
@@ -76,7 +76,7 @@
                     <p class="links link2 no_access">📋 لیست کانفیگ ها 🔗</p>
                 {% endif %}
             {% else %}
-                {% if user.create_config_acc %}
+                {% if user.create_config_acc and can_buy %}
                     <a href="{% url "sellers:select_seller" "create" %}" class="links link2" id="create_config">➕ ساخت کانفیگ 🔗</a>
                 {% else %}
                     <p class="links link2 no_access">➕ ساخت کانفیگ 🔗</p>

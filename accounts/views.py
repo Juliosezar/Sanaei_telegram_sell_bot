@@ -9,6 +9,9 @@ import json
 from django.conf import settings
 from customers.forms import SearchCustomerForm
 from configs.forms import SearchConfigForm
+from sellers.models import SubSellerSubset
+from finance.models import PurchaseRecord
+
 
 class LoginView(View):
     formclass = LoginForm
@@ -68,10 +71,20 @@ class HomeBotView(LoginRequiredMixin, View):
         return render(request, "home_bot.html", {'search_customer':search_user, 'search_config':search_config})
 
 
+
 class HomeSellersView(LoginRequiredMixin, View):
     def get(self, request):
+        list_of_subs = [sub.sub for sub in SubSellerSubset.objects.filter(head__username=request.user.username)]
+        list_of_subs.append(User.objects.get(username=request.user.username))
+        purchases = PurchaseRecord.objects.filter(created_for__in=list_of_subs).order_by("date_time")
+        sum_bills = sum(p.price if p.type in [0,1] else p.price * -1 for p in purchases)
+        can_buy = True
+        if request.user.payment_limit != 0 and request.user.payment_limit*1000 < sum_bills:
+            messages.error(request, "خرید شما به دلیل عدم پرداخت صورتحساب محدود شده است. برای خرید سرویس ابتدا صورت حساب خود را پرداخت کنید.")
+            can_buy = False
+
         search_config = SearchConfigForm()
-        return render(request, "home_sellers.html", {"search_config":search_config})
+        return render(request, "home_sellers.html", {"search_config":search_config, "can_buy":can_buy})
 
 
 

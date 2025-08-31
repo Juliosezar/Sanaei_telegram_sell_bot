@@ -20,7 +20,7 @@ class ServerApi:
         header = {"Accept": "application/json"}
         try:
             session = requests.Session()
-            login_response = session.post(login_url, headers=header, json=login_payload, timeout=15)
+            login_response = session.post(login_url, headers=header, json=login_payload, timeout=15, verify=False)
             if login_response.status_code == 200:
                 if login_response.json()["success"]:
                     return session
@@ -38,7 +38,7 @@ class ServerApi:
             session = cls.create_session(server_id)
             if not session:
                 return False
-            list_configs = session.get(server_obj.url + "panel/api/inbounds/list/", timeout=10)
+            list_configs = session.get(server_obj.url + "panel/api/inbounds/list/", timeout=10, verify=False)
             if list_configs.status_code != 200:
                 session.close()
                 return False
@@ -86,7 +86,7 @@ class ServerApi:
             session = cls.create_session(server_id)
             if not session:
                 return False
-            respons = session.post(url, headers=header, json=data1, timeout=6)
+            respons = session.post(url, headers=header, json=data1, timeout=6, verify=False)
             if respons.status_code == 200:
                 if respons.json()['success']:
                     session.close()
@@ -123,10 +123,10 @@ class ServerApi:
             session = cls.create_session(server_id)
             if not session:
                 return False
-            respons = session.post(url + f"/updateClient/{str(config_uuid)}/", headers=header, json=data1, timeout=6)
+            respons = session.post(url + f"/updateClient/{str(config_uuid)}/", headers=header, json=data1, timeout=6, verify=False)
             if reset:
                 respons2 = session.post(url + f"/{server_obj.inbound_id}/resetClientTraffic/{config_name}/", headers={},
-                                        data={}, timeout=6)
+                                        data={}, timeout=6, verify=False)
                 if not respons2.status_code == 200:
                     session.close()
                     return False
@@ -150,7 +150,7 @@ class ServerApi:
             session = cls.create_session(server_id)
             if not session:
                 return False
-            respons = session.get(url, timeout=6)
+            respons = session.get(url, timeout=6, verify=False)
             if respons.status_code == 200:
                 if respons.json()['success']:
                     obj = respons.json()["obj"]
@@ -198,7 +198,7 @@ class ServerApi:
         session = cls.create_session(server_id)
         if not session:
             return False
-        response = session.post(url, timeout=6)
+        response = session.post(url, timeout=6, verify=False)
         if response.status_code == 200:
             if response.json()['success']:
                 session.close()
@@ -226,7 +226,7 @@ class ServerApi:
         }
         header = {"Accept": "application/json"}
         try:
-            respons = session.post(url, headers=header, json=data1, timeout=6)
+            respons = session.post(url, headers=header, json=data1, timeout=6, verify=False)
             if respons.status_code == 200:
                 if respons.json()['success']:
                     return True
@@ -244,7 +244,7 @@ class ServerApi:
             session = cls.create_session(server_id)
             url = server_obj.url + "panel/api/inbounds"
             response = session.post(url + f"/{server_obj.inbound_id}/resetClientTraffic/{config_name}/", headers={},
-                                    data={}, timeout=6)
+                                    data={}, timeout=6, verify=False)
             if response.status_code == 200:
                 if response.json()['success']:
                     session.close()
@@ -261,7 +261,7 @@ class ServerApi:
             server_obj = Server.objects.get(id=server_id)
             session = cls.create_session(server_id)
             url = server_obj.url + "panel/api/inbounds"
-            response = session.post(url + f"/onlines", headers={},data={}, timeout=6)
+            response = session.post(url + f"/onlines", headers={},data={}, timeout=6, verify=False)
             if response.status_code == 200:
                 if response.json()['success']:
                     session.close()
