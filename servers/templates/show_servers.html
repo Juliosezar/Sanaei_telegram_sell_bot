@@ -27,16 +27,19 @@
                     <h3 class="server_url">ID = <span class="cspan">{{ server.id }}</span></h3>
                     <h3 class="server_url">server name: <span class="cspan">{{ server.name }}</span></h3>
                     <h3 class="server_url">server url: <span class="cspan">{{ server.url }}</span></h3>
-                    <h3 class="server_url">fake domain: <span class="cspan">{{ server.fake_domain }}</span></h3>
                     <h3 class="server_url">inbound id: <span class="cspan">{{ server.inbound_id }}</span></h3>
-                    <h3 class="server_url">inbound port: <span class="cspan">{{ server.inbound_port }}</span></h3>
-                    <h3 class="server_url">Max Connection: <span class="cspan">{{ server.maximum_connection }}</span></h3>
 
                     {% if server.active %}
-                    	<h3 dir="rtl" class="server_url"> <span class="cspan"> فعال ✅</span> :status</h3>
+                    	<h3 dir="ltr" class="server_url">Active: <span class="cspan">  ✅</span> </h3>
                      {% else %}
-                        <h3 dir="rtl" class="server_url">وضعیت: غیرفعال ❌</h3>
+                        <h3 dir="ltr" class="server_url">Active: ❌</h3>
                     {% endif %}
+                    {% if server.copy_in_link %}
+                    	<h3 dir="ltr" class="server_url">Vless: <span class="cspan">  ✅</span></h3>
+                     {% else %}
+                        <h3 dir="ltr" class="server_url">Vless:  ❌</h3>
+                    {% endif %}
+ 
                     <div class="btnn" style="width: 100%">
                         <a class="edit_btn" href="{% url "servers:edit_server" server.id %}">Edit Server</a>
                     </div>
